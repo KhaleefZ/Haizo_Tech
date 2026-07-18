@@ -10,6 +10,15 @@
  * secret. Both are declared here from day one so a deploy can't discover them late.
  */
 import { z } from 'zod';
+import dotenv from 'dotenv';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Resolve .env relative to THIS file, not to process.cwd(). Turbo, vitest and a
+// PM2 deploy all invoke the server from different working directories, and
+// cwd-relative loading silently yields an empty env in at least one of them.
+const here = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(here, '../../.env') });
 
 const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),

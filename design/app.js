@@ -17,7 +17,7 @@
   }
 
   /* Scroll reveal. Transform/opacity only, so it can't hurt LCP. */
-  var revealables = document.querySelectorAll('.reveal');
+  var revealables = document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .reveal-media');
   if (reduced || !('IntersectionObserver' in window)) {
     revealables.forEach(function (el) { el.classList.add('is-in'); });
   } else {
@@ -87,4 +87,24 @@
       });
     });
   });
+
+  /* Scroll rails: fill as their section passes through the viewport. */
+  var rails = document.querySelectorAll('.rail');
+  if (rails.length) {
+    var updateRails = function () {
+      rails.forEach(function (rail) {
+        var section = rail.closest('section') || rail.parentElement;
+        if (!section) return;
+        var box = section.getBoundingClientRect();
+        var travelled = window.innerHeight - box.top;
+        var total = box.height + window.innerHeight;
+        var pct = Math.max(0, Math.min(1, travelled / total));
+        var fill = rail.querySelector('.rail__fill');
+        if (fill) fill.style.width = (pct * 100).toFixed(1) + '%';
+      });
+    };
+    updateRails();
+    window.addEventListener('scroll', updateRails, { passive: true });
+    window.addEventListener('resize', updateRails, { passive: true });
+  }
 })();

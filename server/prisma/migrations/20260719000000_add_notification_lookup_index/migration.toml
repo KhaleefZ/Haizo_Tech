@@ -1,0 +1,4 @@
+# Prisma wraps migrations in a transaction by default; CREATE INDEX CONCURRENTLY
+# is illegal inside one.
+[migration]
+transaction = false

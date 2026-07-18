@@ -104,69 +104,137 @@
   </section>
 
   <!-- ======================================================== story -->
+  <!-- ==================================================== the story
+       Problem left, Approach right, What we built left, Result right.
+       The alternation is done with .alt-row--flip (a CSS order swap), so the
+       DOM order stays text-then-media on every row and the reading order is
+       unchanged for screen readers. -->
   <section class="section section--tint">
     <div class="container">
-      <div class="prose reveal">
-        <h2>Problem</h2>
-        <p>
-          Sri ASK Residency was booking rooms the way most independent properties do: a
-          phone call, a name written into a register, and a member of staff who knew from
-          memory which rooms were free. It works until it doesn't. The register is a single
-          physical object, so only one person can consult it at a time; two enquiries
-          arriving together is enough to create a double booking.
-        </p>
-        <p>
-          The knock-on effects were the expensive part. Nobody could answer "how full are
-          we next weekend" without leafing through pages. Rates varied by who took the
-          call. Month-end revenue figures were reconstructed after the fact from receipts,
-          which made them slow to produce and impossible to fully trust.
-        </p>
 
-        <h2>Approach</h2>
-        <p>
-          We spent the first week at the property rather than in a specification document,
-          because the register encoded rules nobody had written down — which rooms are held
-          for walk-ins, how long a phone booking stays unconfirmed, what happens when a
-          guest extends. Those rules were the actual product; the software was the easy part.
-        </p>
-        <p>
-          The decision that shaped the build: availability is derived from bookings, never
-          stored as an editable field. A room cannot be marked free while a booking exists
-          against it, because "free" isn't a value anyone can set. That closes the
-          double-booking class of bug at the data model rather than patching it in the UI.
-        </p>
-        <p>
-          We scoped v1 deliberately narrow — bookings, availability, check-in and reporting —
-          and wrote down what was excluded, including the online guest-facing booking portal.
-          Getting the front desk off paper first meant the system earned trust before it
-          grew.
-        </p>
-
-        <h2>What we built</h2>
-        <ul>
-          <li><strong>Live availability calendar</strong> across all rooms, computed from bookings, visible to every staff member at once.</li>
-          <li><strong>Booking workflow</strong> covering enquiry, hold with expiry, confirmation, check-in, extension and check-out.</li>
-          <li><strong>Rate rules</strong> by room type, season and length of stay, so pricing no longer depends on who answers the phone.</li>
-          <li><strong>Payment and balance tracking</strong> per booking, with advances and outstanding amounts visible at check-in.</li>
-          <li><strong>Guest records</strong> with stay history, so returning guests are recognised rather than re-entered.</li>
-          <li><strong>Occupancy and revenue reporting</strong> for the owner, exportable for the accountant.</li>
-          <li><strong>Role-based access</strong> — front desk, manager and owner see different things, enforced on the server.</li>
-          <li><strong>Automated nightly backups</strong> with a restore we ran in front of the owner before handover.</li>
-        </ul>
-
-        <h2>Result</h2>
-        <p>
-          Front-desk administration time dropped by roughly 40%, mostly because the
-          questions that used to require searching the register are now answered on screen.
-          There have been <span class="unverified" title="Unverified: invented for the mockup. Confirm with Sri ASK Residency before publishing.">no double bookings since launch</span>, which is a property of the design
-          rather than a run of good luck.
-        </p>
-        <p>
-          The owner gets occupancy and revenue figures on demand instead of at month end.
-          The system has run at <span class="unverified" title="Unverified: invented for the mockup.">99.9% uptime</span>, and the property has since taken over
-          day-to-day administration of it themselves — which was the point.
-        </p>
+      <!-- 01 · Problem — text left -->
+      <div class="alt-row">
+        <div class="alt-row__text reveal-l">
+          <div class="alt-index" aria-hidden="true">01</div>
+          <h2>Problem</h2>
+          <p class="muted" style="margin-top:var(--space-4)">
+            Sri ASK Residency was booking rooms the way most independent properties do: a
+            phone call, a name written into a register, and a member of staff who knew from
+            memory which rooms were free. It works until it doesn't. The register is a single
+            physical object, so only one person can consult it at a time; two enquiries
+            arriving together is enough to create a double booking.
+          </p>
+          <p class="muted" style="margin-top:var(--space-4)">
+            The knock-on effects were the expensive part. Nobody could answer “how full are
+            we next weekend” without leafing through pages. Rates varied by who took the
+            call. Month-end revenue was reconstructed after the fact from receipts, which
+            made it slow to produce and impossible to fully trust.
+          </p>
+        </div>
+        <div class="alt-row__media reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h7"/>
+            </svg>
+            <p class="panel-art__caption">Before: one paper register, one reader at a time.</p>
+          </div>
+        </div>
       </div>
+
+      <!-- 02 · Approach — text right -->
+      <div class="alt-row alt-row--flip">
+        <div class="alt-row__text reveal-r">
+          <div class="alt-index" aria-hidden="true">02</div>
+          <h2>Approach</h2>
+          <p class="muted" style="margin-top:var(--space-4)">
+            We spent the first week at the property rather than in a specification document,
+            because the register encoded rules nobody had written down — which rooms are held
+            for walk-ins, how long a phone booking stays unconfirmed, what happens when a
+            guest extends. Those rules were the actual product; the software was the easy part.
+          </p>
+          <p class="muted" style="margin-top:var(--space-4)">
+            The decision that shaped the build: availability is derived from bookings, never
+            stored as an editable field. A room cannot be marked free while a booking exists
+            against it, because “free” isn't a value anyone can set. That closes the
+            double-booking class of bug at the data model rather than patching it in the UI.
+          </p>
+        </div>
+        <div class="alt-row__media reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="3.5"/>
+            </svg>
+            <p class="panel-art__caption">Availability computed from bookings, not stored.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 · What we built — text left -->
+      <div class="alt-row">
+        <div class="alt-row__text reveal-l">
+          <div class="alt-index" aria-hidden="true">03</div>
+          <h2>What we built</h2>
+          <ul class="muted" style="margin-top:var(--space-4);padding-left:1.15rem;display:flex;flex-direction:column;gap:var(--space-2)">
+            <li><strong class="strong">Live availability calendar</strong> across all rooms, computed from bookings, visible to every staff member at once.</li>
+            <li><strong class="strong">Booking workflow</strong> covering enquiry, hold with expiry, confirmation, check-in, extension and check-out.</li>
+            <li><strong class="strong">Rate rules</strong> by room type, season and length of stay, so pricing no longer depends on who answers the phone.</li>
+            <li><strong class="strong">Payment and balance tracking</strong> per booking, with advances and outstanding amounts visible at check-in.</li>
+            <li><strong class="strong">Guest records</strong> with stay history, so returning guests are recognised rather than re-entered.</li>
+            <li><strong class="strong">Occupancy and revenue reporting</strong> for the owner, exportable for the accountant.</li>
+            <li><strong class="strong">Role-based access</strong> — front desk, manager and owner see different things, enforced on the server.</li>
+            <li><strong class="strong">Automated nightly backups</strong> with a restore we ran in front of the owner before handover.</li>
+          </ul>
+        </div>
+        <div class="alt-row__media reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8 14h3M14 14h2M8 17h2"/>
+            </svg>
+            <p class="panel-art__caption">Availability calendar — all rooms, one month.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 · Result — text right -->
+      <div class="alt-row alt-row--flip">
+        <div class="alt-row__text reveal-r">
+          <div class="alt-index" aria-hidden="true">04</div>
+          <h2>Result</h2>
+          <p class="muted" style="margin-top:var(--space-4)">
+            Front-desk administration time dropped by roughly 40%, mostly because the
+            questions that used to require searching the register are now answered on screen.
+            There have been <span class="unverified" title="Unverified: invented for the mockup. Confirm with Sri ASK Residency before publishing.">no double bookings since launch</span>, which is a property of the design
+            rather than a run of good luck.
+          </p>
+          <p class="muted" style="margin-top:var(--space-4)">
+            The owner gets occupancy and revenue figures on demand instead of at month end.
+            The system has run at <span class="unverified" title="Unverified: invented for the mockup.">99.9% uptime</span>, and the property has since taken over
+            day-to-day administration of it themselves — which was the point.
+          </p>
+
+          <!-- Live link block. Rendered only when the record has a liveUrl; the
+               admin leaves it empty for internal systems that aren't public. -->
+          <div class="card" style="margin-top:var(--space-5);background:var(--color-bg);padding:var(--space-4)">
+            <div class="row row--between row--wrap">
+              <div>
+                <p class="overline">Live system</p>
+                <p class="small muted" style="margin-top:4px">Private deployment — access is with the property.</p>
+              </div>
+              <span class="badge badge--neutral">No public URL</span>
+            </div>
+          </div>
+        </div>
+        <div class="alt-row__media reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-7"/>
+            </svg>
+            <p class="panel-art__caption">Occupancy and revenue, on demand.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail" style="margin-top:var(--space-6)" aria-hidden="true"><span class="rail__fill"></span></div>
     </div>
   </section>
 
@@ -235,7 +303,7 @@
       </div>
 
       <div class="steps steps--draw reveal">
-        <div class="step">
+        <div class="step reveal-l">
           <h4>On site first</h4>
           <p class="small muted" style="margin-top:.5rem">
             We spent time at the property watching how bookings were actually taken before
@@ -243,14 +311,14 @@
             payments — never come up in a meeting.
           </p>
         </div>
-        <div class="step">
+        <div class="step reveal-r">
           <h4>Clickable before coded</h4>
           <p class="small muted" style="margin-top:.5rem">
             The front desk walked through screens they could click while it was still cheap
             to move things. The check-in flow changed twice at this stage and cost nothing.
           </p>
         </div>
-        <div class="step">
+        <div class="step reveal-l">
           <h4>Built in slices</h4>
           <p class="small muted" style="margin-top:.5rem">
             Bookings and availability first, since everything else depends on them, then
@@ -258,7 +326,7 @@
             open.
           </p>
         </div>
-        <div class="step">
+        <div class="step reveal-r">
           <h4>Ran alongside the register</h4>
           <p class="small muted" style="margin-top:.5rem">
             For the first stretch the property kept the paper register in parallel. When
@@ -343,10 +411,22 @@
         <div class="section-head" style="margin-bottom:0">
           <p class="overline">Next case study</p>
           <h2>Keep reading</h2>
+          <p class="small muted" style="margin-top:.5rem">
+            This whole section renders only when another published case study exists.
+            With one work published there is nothing to link to, and an empty
+            “keep reading” that goes nowhere is worse than no section at all.
+          </p>
         </div>
         <a class="btn btn--outline btn--sm" href="work.html">All work</a>
       </div>
-      <a class="card card--link card--flush reveal" href="work-detail.html">
+
+      <div class="mockup-note" style="margin-bottom:var(--space-5)">
+        <strong>Rendering rule:</strong> query the next published work by
+        <code>order</code>, excluding the current one. If the result is empty, render
+        nothing — no heading, no card, no dead link. The build should treat this
+        section as conditional, not as a slot to fill.
+      </div>
+      <a class="card card--link card--flush reveal" href="work.html#schoolos">
         <div class="grid grid--2" style="gap:0;align-items:stretch">
           <div class="thumb" style="aspect-ratio:auto;min-height:220px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div>
           <div style="padding:var(--space-6)">

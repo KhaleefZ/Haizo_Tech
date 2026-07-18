@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Services — HaizoTech</title>
-<meta name="description" content="Four practices: custom software, AI and intelligent systems, web and mobile apps, infrastructure and security. What we deliver, the stack, and typical timelines.">
+<meta name="description" content="Four services: custom software development, web and mobile application development, AI systems and integrations, and network services and IT solutions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -39,287 +39,212 @@
 </header>
 
 <main id="main">
-<div class="container" style="padding-top:var(--space-4)">
-  <div class="mockup-note mockup-note--warn">
-    <strong>Unverified copy on this page.</strong> Anything highlighted in amber was written for the
-    mockup and has <em>not</em> been confirmed — figures, timelines, pricing and narrative detail.
-    Hover a highlight to see what needs checking. This page must not go live until every highlight is
-    verified and the <code>.unverified</code> class is removed.
-  </div>
-</div>
 
+  <!-- ============================================================= hero
+       Same restrained pattern as the home page: staggered words on the H1,
+       fade-up on everything below it, and the soft wash behind. No new
+       colour, no glow — the movement is the only ornament here. -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"><div class="hero-blob"></div></div>
+    <div class="container" style="position:relative;z-index:1;max-width:900px">
+      <p class="overline fade-up" data-delay="0">Services</p>
 
-  <!-- ========================================================== intro -->
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <p class="overline">Services</p>
-        <h1>Four practices we can show you shipped</h1>
-        <p class="lead muted">
-          Each one below is something we've delivered end-to-end for a paying client,
-          not a capability we'd like to try. What you get, what we build it with, and
-          how long it usually takes — stated up front.
-        </p>
-      </div>
-      <div class="row row--wrap">
+      <h1 style="max-width:none;margin-top:var(--space-4)">
+        <span class="word">Four</span>
+        <span class="word">things</span>
+        <span class="word">we</span>
+        <span class="word">do,</span>
+        <span class="fade-up" data-delay="320" style="display:block">done properly.</span>
+      </h1>
+
+      <p class="lead fade-up" data-delay="460" style="max-width:62ch;margin-top:var(--space-5)">
+        We keep the list short on purpose. Each of these is something our team has
+        shipped into production and can still support afterwards — not a capability
+        added to the page to look bigger.
+      </p>
+
+      <div class="hero-ctas fade-up" data-delay="560">
         <a class="btn btn--primary" href="contact.html">
           Start a Project
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a class="btn btn--outline" href="work.html">See the work behind these</a>
+        <a class="btn btn--outline" href="work.html">See what we've built</a>
       </div>
     </div>
   </section>
 
-  <!-- ================================================ custom software -->
-  <section class="section section--tint">
+  <!-- ================================================ alternating services
+       Rows alternate text-left / media-left down the page. The flip is done
+       with the .alt-row--flip class only — the DOM order stays
+       text-then-media on every row, so the reading order never changes.
+
+       Reveal direction follows the side the text visually sits on: reveal-l
+       on the odd rows, reveal-r on the flipped rows, reveal-media on every
+       panel. `reveal` is kept alongside so the observer picks each one up. -->
+  <!-- overflow-x:clip contains the ±38px start transform of .reveal-l/.reveal-r
+       so the page never scrolls sideways on a narrow viewport. Clip rather than
+       hidden: it creates no scroll container and no new stacking surprises. -->
+  <section class="section" style="overflow-x:clip">
     <div class="container">
-      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
-        <div class="reveal">
-          <p class="overline">01 — Custom software</p>
-          <h2 style="margin-top:.75rem">Line-of-business systems, built around your actual process</h2>
+
+      <!-- ------------------------------------------------------- 01 -->
+      <article class="alt-row">
+        <div class="alt-row__text reveal reveal-l">
+          <p class="alt-index" aria-hidden="true">01</p>
+          <h2 style="margin-top:.5rem">Custom software development</h2>
           <p class="lead muted" style="margin-top:1rem">
-            Most teams outgrow spreadsheets and off-the-shelf tools in the same way:
-            the tool can't express one rule that matters, so the workaround becomes
-            the process. We build the system that holds the rule properly — with
-            roles, audit trails and reporting that match how the work really runs.
+            End-to-end development of bespoke software solutions designed to streamline
+            operations, enhance productivity, and drive digital transformation.
           </p>
-          <div class="stack" style="margin-top:2rem">
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Timeline</span>
-              <p class="small"><span class="unverified" title="Unverified: invented for the mockup.">6–12 weeks</span> to a production v1, depending on how many roles and integrations are in scope.</p>
-            </div>
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Shipped</span>
-              <p class="small">Sri ASK Residency RBMS, SchoolOS, and a venue/mandapam booking SaaS.</p>
-            </div>
-          </div>
-          <p style="margin-top:1.5rem">
-            <a class="small accent" style="font-weight:600" href="service-detail.html">Read the full custom software breakdown →</a>
+          <ul class="muted" style="margin-top:1.5rem;padding-left:1.25rem;line-height:1.9">
+            <li>100% IP ownership</li>
+            <li>No vendor lock-in</li>
+            <li>Perfectly aligned with your workflows</li>
+            <li>Scalable microservices architecture</li>
+          </ul>
+          <p style="margin-top:1.75rem">
+            <a class="btn btn--outline btn--sm" href="service-detail.html">
+              Custom software in detail
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
           </p>
         </div>
-
-        <div class="card reveal" data-delay="60">
-          <h3>What you get</h3>
-          <div class="prose" style="margin-top:1rem">
-            <ul>
-              <li>A written scope that says what v1 includes <em>and</em> excludes, agreed before we build.</li>
-              <li>Data model and role/permission design, reviewed with you before code.</li>
-              <li>The application itself — server-enforced access control, not UI-hidden buttons.</li>
-              <li>An admin surface for the people who run the business day to day.</li>
-              <li>Reporting and exports that finance or ops can actually use.</li>
-              <li>The repository, CI pipeline, environments and handover documentation.</li>
-            </ul>
-          </div>
-          <h3 style="margin-top:2rem">Stack</h3>
-          <div class="strip" style="margin-top:1rem">
-            <span class="badge">Next.js</span>
-            <span class="badge">React</span>
-            <span class="badge">TypeScript</span>
-            <span class="badge">Node.js</span>
-            <span class="badge">PostgreSQL</span>
-            <span class="badge">Prisma</span>
-            <span class="badge">OpenAPI</span>
-            <span class="badge">GitHub Actions</span>
+        <div class="alt-row__media reveal reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m16 17 5-5-5-5M8 7l-5 5 5 5"/>
+              <path d="M13.5 4.5 10.5 19.5"/>
+            </svg>
+            <p class="panel-art__caption">Systems built around your process, not the other way round.</p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </article>
 
-  <!-- ============================================ AI & intelligent systems -->
-  <section class="section">
-    <div class="container">
-      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
-        <div class="reveal">
-          <p class="overline">02 — AI &amp; intelligent systems</p>
-          <h2 style="margin-top:.75rem">Retrieval and extraction wired into your real data</h2>
+      <!-- ------------------------------------------------- 02 (flipped) -->
+      <article class="alt-row alt-row--flip">
+        <div class="alt-row__text reveal reveal-r">
+          <p class="alt-index" aria-hidden="true">02</p>
+          <h2 style="margin-top:.5rem">Web &amp; mobile application development</h2>
           <p class="lead muted" style="margin-top:1rem">
-            We build the unglamorous kind of AI feature: search that finds the right
-            document, extraction that turns a PDF into a row, an assistant that answers
-            from your records instead of guessing. We'll tell you where the model is
-            unreliable and what we did about it, because that's the part that decides
-            whether it survives contact with users.
+            Creating intuitive, fast-loading web and mobile applications with cutting-edge
+            technologies for exceptional user experiences.
           </p>
-          <div class="stack" style="margin-top:2rem">
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Timeline</span>
-              <p class="small">2–4 weeks for a scoped pilot with an evaluation set; 8–14 weeks to production.</p>
-            </div>
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Honest limit</span>
-              <p class="small">If a rules engine or a good query would do the job better, we'll say so before you pay for a model.</p>
-            </div>
+          <ul class="muted" style="margin-top:1.5rem;padding-left:1.25rem;line-height:1.9">
+            <li>Sub-second page loads</li>
+            <li>Cross-platform consistency</li>
+            <li>High conversion UI/UX</li>
+            <li>SEO-optimized architectures</li>
+          </ul>
+          <div class="row row--wrap" style="margin-top:1.5rem">
+            <span class="badge badge--neutral">React</span>
+            <span class="badge badge--neutral">Next.js</span>
+            <span class="badge badge--neutral">React Native</span>
+          </div>
+          <p style="margin-top:1.75rem">
+            <a class="btn btn--outline btn--sm" href="service-detail.html">
+              How we build apps
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </p>
+        </div>
+        <div class="alt-row__media reveal reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="1.5" y="4" width="14" height="11" rx="1.5"/>
+              <path d="M1.5 7.5h14"/>
+              <rect x="13.5" y="9" width="9" height="12.5" rx="1.75"/>
+              <path d="M17.5 19h1.5"/>
+            </svg>
+            <p class="panel-art__caption">One standard of quality across browser and device.</p>
           </div>
         </div>
+      </article>
 
-        <div class="card reveal" data-delay="60">
-          <h3>What you get</h3>
-          <div class="prose" style="margin-top:1rem">
-            <ul>
-              <li>A retrieval pipeline over your documents or records — chunking, embeddings, and a store you own.</li>
-              <li>An evaluation set built from your real cases, so quality is measured, not asserted.</li>
-              <li>Guardrails: grounding, citations back to source, and refusal behaviour when the answer isn't there.</li>
-              <li>Cost and latency budgets per request, monitored after launch.</li>
-              <li>A fallback path for when the model is down or wrong.</li>
-              <li>Plain-English documentation of what the system can and cannot be trusted with.</li>
-            </ul>
-          </div>
-          <h3 style="margin-top:2rem">Stack</h3>
-          <div class="strip" style="margin-top:1rem">
-            <span class="badge">Python</span>
-            <span class="badge">TypeScript</span>
-            <span class="badge">pgvector</span>
-            <span class="badge">RAG</span>
-            <span class="badge">Evals</span>
-            <span class="badge">Queues</span>
-            <span class="badge">FastAPI</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================== web & mobile apps -->
-  <section class="section section--tint">
-    <div class="container">
-      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
-        <div class="reveal">
-          <p class="overline">03 — Web &amp; mobile apps</p>
-          <h2 style="margin-top:.75rem">From first screen to store release, and the release after that</h2>
+      <!-- ------------------------------------------------------- 03 -->
+      <article class="alt-row">
+        <div class="alt-row__text reveal reveal-l">
+          <p class="alt-index" aria-hidden="true">03</p>
+          <h2 style="margin-top:.5rem">AI systems &amp; integrations</h2>
           <p class="lead muted" style="margin-top:1rem">
-            Responsive web and cross-platform mobile from one codebase where that's the
-            right call, and native where it isn't. We treat performance and accessibility
-            as build requirements rather than a later pass — it's considerably cheaper
-            that way, and it's the difference between an app that demos well and one
-            that holds up on a mid-range Android on patchy network.
+            Leveraging artificial intelligence capabilities including RAG pipelines,
+            multi-agent orchestration, and LLM integrations.
           </p>
-          <div class="stack" style="margin-top:2rem">
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Timeline</span>
-              <p class="small">6 weeks to a usable MVP on a staging URL; 10–16 weeks to store submission.</p>
-            </div>
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Included</span>
-              <p class="small">Store listing setup, build signing, and the first two release cycles with us on hand.</p>
-            </div>
+          <ul class="muted" style="margin-top:1.5rem;padding-left:1.25rem;line-height:1.9">
+            <li>Automated complex reasoning</li>
+            <li>Secure on-premise AI deployments</li>
+            <li>Drastic reduction in manual overhead</li>
+            <li>Data-driven predictive modelling</li>
+          </ul>
+          <p style="margin-top:1.75rem">
+            <a class="btn btn--outline btn--sm" href="service-detail.html">
+              How we approach AI work
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </p>
+        </div>
+        <div class="alt-row__media reveal reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="2.75"/>
+              <circle cx="4" cy="5" r="1.75"/>
+              <circle cx="20" cy="5" r="1.75"/>
+              <circle cx="4" cy="19" r="1.75"/>
+              <circle cx="20" cy="19" r="1.75"/>
+              <path d="M5.4 6.4 9.9 10.2M18.6 6.4 14.1 10.2M5.4 17.6 9.9 13.8M18.6 17.6 14.1 13.8"/>
+            </svg>
+            <p class="panel-art__caption">Retrieval, orchestration and model calls you can audit.</p>
           </div>
         </div>
+      </article>
 
-        <div class="card reveal" data-delay="60">
-          <h3>What you get</h3>
-          <div class="prose" style="margin-top:1rem">
-            <ul>
-              <li>Clickable flows and screens before we build them, so changes stay cheap.</li>
-              <li>A component library and design tokens — one button, one input, one card.</li>
-              <li>Web build meeting Core Web Vitals on real devices, not just on a laptop.</li>
-              <li>iOS and Android builds from a shared codebase, with over-the-air update support.</li>
-              <li>Offline and poor-network behaviour designed deliberately, not left to chance.</li>
-              <li>Keyboard and screen-reader accessibility verified before launch.</li>
-            </ul>
-          </div>
-          <h3 style="margin-top:2rem">Stack</h3>
-          <div class="strip" style="margin-top:1rem">
-            <span class="badge">React</span>
-            <span class="badge">Next.js</span>
-            <span class="badge">React Native</span>
-            <span class="badge">Expo</span>
-            <span class="badge">TypeScript</span>
-            <span class="badge">Tailwind</span>
-            <span class="badge">Playwright</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======================================= infrastructure & security -->
-  <section class="section">
-    <div class="container">
-      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
-        <div class="reveal">
-          <p class="overline">04 — Infrastructure &amp; security</p>
-          <h2 style="margin-top:.75rem">Set up once, properly, so releases stop being events</h2>
+      <!-- ------------------------------------------------- 04 (flipped) -->
+      <article class="alt-row alt-row--flip">
+        <div class="alt-row__text reveal reveal-r">
+          <p class="alt-index" aria-hidden="true">04</p>
+          <h2 style="margin-top:.5rem">Network services &amp; IT solutions</h2>
           <p class="lead muted" style="margin-top:1rem">
-            Deployments that need a specific person awake are a business risk, not an
-            engineering preference. We put in the pipeline, the environments, the
-            backups and the access control — then prove the restore works rather than
-            assuming it does. This is also the work we do on other people's codebases,
-            not only our own.
+            Designing and implementing robust network infrastructure, cloud strategies,
+            and scalable IT architectures.
           </p>
-          <div class="stack" style="margin-top:2rem">
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Timeline</span>
-              <p class="small"><span class="unverified" title="Unverified: invented for the mockup.">1–3 weeks</span> for a standard setup or hardening pass on an existing system.</p>
-            </div>
-            <div class="row" style="align-items:flex-start">
-              <span class="badge">Shipped</span>
-              <p class="small">CloudUnify — a multi-cloud control plane with cost and access visibility in one view.</p>
-            </div>
+          <ul class="muted" style="margin-top:1.5rem;padding-left:1.25rem;line-height:1.9">
+            <li>99.99% uptime guarantees</li>
+            <li>Zero-trust security posture</li>
+            <li>Automated CI/CD pipelines</li>
+            <li>Disaster recovery &amp; redundancy</li>
+          </ul>
+          <div class="row row--wrap" style="margin-top:1.5rem">
+            <span class="badge badge--neutral">Kubernetes</span>
+            <span class="badge badge--neutral">Infrastructure-as-Code</span>
+          </div>
+          <p style="margin-top:1.75rem">
+            <a class="btn btn--outline btn--sm" href="service-detail.html">
+              How we run infrastructure
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </p>
+        </div>
+        <div class="alt-row__media reveal reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2.5" y="2.5" width="19" height="6" rx="1.5"/>
+              <rect x="2.5" y="15.5" width="19" height="6" rx="1.5"/>
+              <path d="M6 5.5h.01M6 18.5h.01"/>
+              <path d="M8 8.5v7M16 8.5v7"/>
+            </svg>
+            <p class="panel-art__caption">Networks and pipelines that stay boring under load.</p>
           </div>
         </div>
+      </article>
 
-        <div class="card reveal" data-delay="60">
-          <h3>What you get</h3>
-          <div class="prose" style="margin-top:1rem">
-            <ul>
-              <li>CI/CD that gates every merge on typecheck, lint, build and tests.</li>
-              <li>Separate development, staging and production environments with real secret management.</li>
-              <li>Automated database backups, with a restore we have actually run in front of you.</li>
-              <li>Role-based access and least-privilege credentials across services.</li>
-              <li>Monitoring, error tracking and alerts that reach a human.</li>
-              <li>A documented rollback path, known before the first deploy — not during the first incident.</li>
-            </ul>
-          </div>
-          <h3 style="margin-top:2rem">Stack</h3>
-          <div class="strip" style="margin-top:1rem">
-            <span class="badge">GitHub Actions</span>
-            <span class="badge">Docker</span>
-            <span class="badge">PostgreSQL</span>
-            <span class="badge">Linux VPS</span>
-            <span class="badge">Cloudflare</span>
-            <span class="badge">Terraform</span>
-            <span class="badge">Sentry</span>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- ==================================================== engagement -->
-  <section class="section section--tint">
-    <div class="container">
-      <div class="section-head reveal">
-        <p class="overline">How engagements run</p>
-        <h2>Same four steps, whichever practice you start with</h2>
-      </div>
-      <div class="steps">
-        <div class="step reveal">
-          <h4>Scope</h4>
-          <p class="small muted" style="margin-top:.5rem">We map the problem, the users and the constraints, then write down what v1 will and won't include.</p>
-        </div>
-        <div class="step reveal" data-delay="60">
-          <h4>Design</h4>
-          <p class="small muted" style="margin-top:.5rem">Flows and screens you can click before we build them, so changes are cheap.</p>
-        </div>
-        <div class="step reveal" data-delay="120">
-          <h4>Build</h4>
-          <p class="small muted" style="margin-top:.5rem">Weekly working software on a staging URL. You see progress, not status reports.</p>
-        </div>
-        <div class="step reveal" data-delay="180">
-          <h4>Ship &amp; support</h4>
-          <p class="small muted" style="margin-top:.5rem">Deploy, monitor, hand over the keys and stay on for the settling-in period.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====================================================== CTA band -->
+  <!-- ========================================================= CTA band -->
   <section class="section section--tight">
     <div class="container">
       <div class="cta-band reveal">
-        <h2>Not sure which of the four you need?</h2>
-        <p class="lead">Describe the problem in your own words. We'll tell you which practice fits, roughly what it costs, and whether we're the right team for it.</p>
+        <h2>Not sure which of these you need?</h2>
+        <p class="lead">Describe the problem in plain terms. We'll tell you which service fits — or that none of them do.</p>
         <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
       </div>
     </div>
@@ -341,7 +266,7 @@
           HaizoTech
         </a>
         <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
-          Custom software, plainly delivered. A product studio in Coimbatore, Tamil Nadu.
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
         </p>
       </div>
       <div>
@@ -357,7 +282,6 @@
         <h4>Company</h4>
         <div class="footer-links">
           <a href="about.html">About</a>
-          <!-- Label fixed: nav and footer both say "Work" now. -->
           <a href="work.html">Our Works</a>
           <a href="blog.html">Blog</a>
           <a href="contact.html">Contact</a>

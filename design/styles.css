@@ -563,3 +563,251 @@ a:hover { color: var(--color-brand-blue-600); }
   .hero { padding-block: var(--space-7); }
   .hero h1 { max-width: none; }
 }
+
+/* ==========================================================================
+   ADDITIONS — alternating sections, principles ring, industry tiles.
+   ========================================================================== */
+
+/* ------------------------------------------------- directional scroll reveal
+   Used by the alternating service rows and the work-detail story blocks.
+   Same IntersectionObserver as .reveal; only the starting transform differs. */
+
+.reveal-l { opacity: 0; transform: translateX(-38px); transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out); }
+.reveal-r { opacity: 0; transform: translateX(38px); transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out); }
+.reveal-l.is-in, .reveal-r.is-in { opacity: 1; transform: none; }
+
+/* Media panel that counter-moves slightly as the row enters — gives the
+   alternation a sense of depth without a parallax library. */
+.reveal-media { opacity: 0; transform: translateY(26px) scale(.97); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+.reveal-media.is-in { opacity: 1; transform: none; }
+
+/* ---------------------------------------------------------- alternating row
+   Row 1 text-left / media-right, row 2 flipped, and so on. The flip is done by
+   swapping grid order, NOT by reordering the DOM — so the reading order stays
+   text-then-media for screen readers on every row. */
+
+.alt-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+  padding-block: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+.alt-row:first-of-type { border-top: 0; }
+.alt-row__text { min-width: 0; }
+.alt-row__media { min-width: 0; }
+.alt-row--flip .alt-row__text { order: 2; }
+.alt-row--flip .alt-row__media { order: 1; }
+
+/* The big faded index numeral that anchors each row. */
+.alt-index {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-bg-tint-2);
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------- media panel
+   Stands in for a screenshot. Tinted surface, thin blue frame, faint grid —
+   deliberately abstract rather than stock photography. */
+
+.panel-art {
+  position: relative;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-tint);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.panel-art:hover { box-shadow: var(--shadow-lift); transform: translateY(-3px); }
+.panel-art::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--color-bg-tint-2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-bg-tint-2) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: .8;
+}
+.panel-art > * { position: relative; }
+.panel-art__glyph { color: var(--color-brand-sky); opacity: .85; }
+.panel-art__caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-card);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}
+
+/* ============================================================== principles
+   Adapted from the live site's Core Values section: four numbered principles
+   arranged around a central mark, with concentric rings and orbiting dots.
+
+   The composition is kept; the palette is not. The live version is dark purple
+   with glow — this is white with thin blue strokes, because glow and dark
+   surfaces are exactly what the redesign removes. The ghost numerals stay,
+   since these genuinely are enumerated values rather than decoration.
+   ========================================================================== */
+
+.principles {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--space-7) var(--space-8);
+  align-items: center;
+}
+
+.principle { position: relative; padding-top: var(--space-5); }
+.principle h3 { position: relative; }
+.principle p { margin-top: var(--space-3); color: var(--color-text-muted); }
+
+/* Ghost numeral behind each principle. */
+.principle::before {
+  content: attr(data-n);
+  position: absolute;
+  top: -.35em; left: -.12em;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-brand-blue);
+  opacity: .09;
+  letter-spacing: -0.04em;
+  user-select: none;
+  z-index: 0;
+}
+.principle > * { position: relative; z-index: 1; }
+
+/* Odd principles sit left and read right-aligned; even sit right. */
+.principle--l { grid-column: 1; text-align: right; }
+.principle--l::before { left: auto; right: -.12em; }
+.principle--r { grid-column: 3; text-align: left; }
+
+.principles__core {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  width: 210px; height: 210px;
+  display: grid; place-items: center;
+}
+.principles__mark {
+  width: 84px; height: 84px;
+  border-radius: 20px;
+  background: var(--hero-gradient);
+  display: grid; place-items: center;
+  color: #fff;
+  box-shadow: var(--shadow-lift);
+  z-index: 2;
+}
+.ring {
+  position: absolute; inset: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+}
+.ring--2 { inset: 26px; border-color: var(--color-bg-tint-2); }
+.ring--3 { inset: 52px; border-style: dashed; border-color: var(--color-border); }
+
+/* Two dots orbiting at different speeds. Transform-only, so it stays cheap. */
+.orbit { position: absolute; inset: 0; animation: spin 26s linear infinite; }
+.orbit--slow { animation-duration: 40s; animation-direction: reverse; }
+.orbit i {
+  position: absolute; top: -4px; left: 50%;
+  width: 8px; height: 8px; margin-left: -4px;
+  border-radius: 999px; background: var(--color-brand-sky);
+}
+.orbit--slow i { background: var(--color-brand-blue); width: 6px; height: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================== industries
+   Six tiles with imagery, a scroll-driven stagger, and a hover that lifts the
+   art rather than the whole card. */
+
+.ind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+
+.ind-tile {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: box-shadow var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+.ind-tile:hover { box-shadow: var(--shadow-lift); border-color: var(--color-brand-blue); transform: translateY(-4px); }
+
+.ind-tile__art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--color-bg-tint);
+  display: grid; place-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+}
+.ind-tile__art::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(59,130,246,.14) 50%, transparent 60%);
+  transform: translateX(-130%);
+  transition: transform 800ms var(--ease-out);
+}
+.ind-tile:hover .ind-tile__art::after { transform: translateX(130%); }
+.ind-tile__art svg { color: var(--color-brand-sky); transition: transform var(--dur-slow) var(--ease-out); }
+.ind-tile:hover .ind-tile__art svg { transform: scale(1.08) translateY(-3px); }
+
+/* Faint contour lines behind the icon so the art panel isn't flat. */
+.ind-tile__art::before {
+  content: '';
+  position: absolute; inset: -30%;
+  background:
+    radial-gradient(circle at 30% 40%, transparent 28%, var(--color-bg-tint-2) 28.5%, transparent 29%),
+    radial-gradient(circle at 30% 40%, transparent 44%, var(--color-bg-tint-2) 44.5%, transparent 45%),
+    radial-gradient(circle at 30% 40%, transparent 60%, var(--color-bg-tint-2) 60.5%, transparent 61%);
+  animation: bob 9s ease-in-out infinite;
+}
+.ind-tile__body { padding: var(--space-5); }
+.ind-tile__body h3 { font-size: 1.25rem; }
+
+/* ------------------------------------------------------------ scroll rail
+   A thin progress bar showing how far through a long section you are. Used on
+   the industries strip and the services list. */
+.rail { position: relative; height: 2px; background: var(--color-border); border-radius: 2px; overflow: hidden; }
+.rail__fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--hero-gradient); border-radius: 2px; transition: width 120ms linear; }
+
+@media (max-width: 1000px) {
+  .principles { grid-template-columns: 1fr; }
+  .principle--l, .principle--r { grid-column: 1; text-align: left; }
+  .principle--l::before { left: -.12em; right: auto; }
+  .principles__core { grid-column: 1; grid-row: auto; margin-inline: auto; }
+  .ind-grid { grid-template-columns: repeat(2, 1fr); }
+  .alt-row { grid-template-columns: 1fr; gap: var(--space-5); }
+  .alt-row--flip .alt-row__text, .alt-row--flip .alt-row__media { order: initial; }
+}
+@media (max-width: 700px) {
+  .ind-grid { grid-template-columns: 1fr; }
+}
+
+/* Directional reveals start 38px off-axis, which on a narrow viewport extends the
+   document past the window and creates a horizontal scrollbar. Below the point
+   where the alternating layout collapses to one column the sideways motion has
+   nothing left to express anyway, so fade up instead. */
+@media (max-width: 1000px) {
+  .reveal-l, .reveal-r { transform: translateY(20px); }
+  .reveal-l.is-in, .reveal-r.is-in { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-l, .reveal-r, .reveal-media { opacity: 1 !important; transform: none !important; }
+  .orbit, .ind-tile__art::before { animation: none; }
+}
