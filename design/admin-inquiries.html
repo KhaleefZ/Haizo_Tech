@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inquiries — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <!-- ========================================================== sidebar -->
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="admin-kanban.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>
+        Kanban
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Calendar
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Projects
+      </a>
+      <a class="side-link" href="admin-chat.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>
+        Chat
+        <span class="count">4</span>
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Insights">
+      <h5>Insights</h5>
+      <a class="side-link" href="admin-analytics.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Analytics
+      </a>
+      <a class="side-link" href="admin-activity.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Activity
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Blogs
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Work
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>
+        Services
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonials
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l19-9-9 19-2-8z"/></svg>
+        Announcements
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" aria-current="page" href="admin-inquiries.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>
+        Inquiries
+        <span class="count">7</span>
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/></svg>
+        Clients
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+        Team
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div style="min-width:0">
+          <div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div>
+          <div style="color:#64748B;font-size:.75rem">Super admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================= main -->
+  <div class="main">
+
+    <header class="topbar">
+      <span class="crumb">Inquiries</span>
+
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search projects, tasks, clients…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+
+      <a class="icon-btn" href="admin-notifications.html" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </a>
+
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="content" id="main">
+
+      <div class="page-head">
+        <div>
+          <h1>Inquiries</h1>
+          <p class="small muted" style="margin-top:4px">Everything that came in from the public site, in one queue.</p>
+        </div>
+        <div class="row row--wrap">
+          <div class="field">
+            <label for="inq-status">Status</label>
+            <select class="select" id="inq-status">
+              <option selected>All statuses</option>
+              <option>New</option>
+              <option>Read</option>
+              <option>Replied</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="inq-source">Source</label>
+            <select class="select" id="inq-source">
+              <option selected>All sources</option>
+              <option>Contact form</option>
+              <option>Chat widget</option>
+              <option>Direct email</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="inq-service">Service</label>
+            <select class="select" id="inq-service">
+              <option selected>All services</option>
+              <option>Custom Software Development</option>
+              <option>Web &amp; Mobile Application Development</option>
+              <option>AI Systems &amp; Integrations</option>
+              <option>Network Services &amp; IT Solutions</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid--2" style="align-items:start;gap:var(--space-5)">
+
+        <!-- ------------------------------------------------------- master -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2 style="font-size:1rem">Queue</h2>
+            <span class="badge badge--neutral">7 open</span>
+          </div>
+          <div class="panel-body panel-body--flush">
+            <div class="table-wrap">
+              <table class="table">
+                <caption class="hp">Inquiries, newest first. Select a row to open it in the detail panel.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr aria-current="true" style="background:var(--color-bg-tint-2)">
+                    <td><div class="cell-strong">Priya Raman</div><div class="muted" style="font-size:.75rem">priya@example.in</div></td>
+                    <td>Custom Software Development</td>
+                    <td><span class="badge badge--neutral">Chat widget</span></td>
+                    <td><span class="badge"><span class="badge-dot"></span>New</span></td>
+                    <td class="muted">12 min ago</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Arun Kumar</div><div class="muted" style="font-size:.75rem">arun@example.com</div></td>
+                    <td>Web &amp; Mobile Application Development</td>
+                    <td><span class="badge badge--neutral">Contact form</span></td>
+                    <td><span class="badge"><span class="badge-dot"></span>New</span></td>
+                    <td class="muted">1 hour ago</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Nikhil Varma</div><div class="muted" style="font-size:.75rem">nikhil@example.in</div></td>
+                    <td>Network Services &amp; IT Solutions</td>
+                    <td><span class="badge badge--neutral">Chat widget</span></td>
+                    <td><span class="badge"><span class="badge-dot"></span>New</span></td>
+                    <td class="muted">3 hours ago</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Meera Suresh</div><div class="muted" style="font-size:.75rem">meera@example.in</div></td>
+                    <td>AI Systems &amp; Integrations</td>
+                    <td><span class="badge badge--neutral">Contact form</span></td>
+                    <td><span class="badge badge--warning">Read</span></td>
+                    <td class="muted">Yesterday</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Fatima Zahra</div><div class="muted" style="font-size:.75rem">fatima@example.com</div></td>
+                    <td>Custom Software Development</td>
+                    <td><span class="badge badge--neutral">Direct email</span></td>
+                    <td><span class="badge badge--warning">Read</span></td>
+                    <td class="muted">Yesterday</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">David Okafor</div><div class="muted" style="font-size:.75rem">david@example.com</div></td>
+                    <td>Network Services &amp; IT Solutions</td>
+                    <td><span class="badge badge--neutral">Chat widget</span></td>
+                    <td><span class="badge badge--success">Replied</span></td>
+                    <td class="muted">14 Jul</td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Sneha Pillai</div><div class="muted" style="font-size:.75rem">sneha@example.in</div></td>
+                    <td>Web &amp; Mobile Application Development</td>
+                    <td><span class="badge badge--neutral">Contact form</span></td>
+                    <td><span class="badge badge--success">Replied</span></td>
+                    <td class="muted">12 Jul</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span>Showing 7 of 63</span>
+              <div class="row">
+                <button class="btn btn--ghost btn--sm" type="button">Previous</button>
+                <button class="btn btn--outline btn--sm" type="button">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------- detail -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2 style="font-size:1rem">Priya Raman</h2>
+            <span class="badge"><span class="badge-dot"></span>New</span>
+          </div>
+          <div class="panel-body stack">
+
+            <div class="row" style="align-items:flex-start;gap:var(--space-3)">
+              <span class="avatar">PR</span>
+              <div style="min-width:0">
+                <div class="cell-strong" style="font-weight:600;color:var(--color-text-strong)">Priya Raman</div>
+                <div class="small muted">priya@example.in · +91 98470 00000</div>
+                <div class="small muted">Vytilla, Kochi · asked about Custom Software Development</div>
+              </div>
+            </div>
+
+            <div class="card" style="padding:var(--space-4)">
+              <h3 style="font-size:.875rem">Message</h3>
+              <p class="small" style="margin-top:var(--space-2)">
+                We run a chain of four tuition centres and we are tracking attendance, fees and
+                exam marks across three different spreadsheets that nobody trusts any more.
+                We looked at two off-the-shelf products and both assume a single campus.
+                Is a custom build realistic for us, and roughly what would a first phase cost?
+                We would want to start before the new term in September.
+              </p>
+            </div>
+
+            <div class="card" style="padding:var(--space-4)">
+              <h3 style="font-size:.875rem">Where it came from</h3>
+              <div class="row row--between small" style="margin-top:var(--space-2)">
+                <span class="muted">Source</span>
+                <span class="badge badge--neutral">Chat widget</span>
+              </div>
+              <div class="row row--between small" style="margin-top:var(--space-2)">
+                <span class="muted">Started on</span>
+                <span>/services/custom-software</span>
+              </div>
+              <div class="row row--between small" style="margin-top:var(--space-2)">
+                <span class="muted">Received</span>
+                <span>18 Jul 2026, 09:14</span>
+              </div>
+              <div class="row row--between small" style="margin-top:var(--space-2)">
+                <span class="muted">Transcript</span>
+                <a href="admin-chat.html" style="font-weight:600">Open the chat →</a>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="inq-detail-status">Status</label>
+              <select class="select" id="inq-detail-status">
+                <option selected>New</option>
+                <option>Read</option>
+                <option>Replied</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inq-assignee">Assignee</label>
+              <select class="select" id="inq-assignee">
+                <option>Unassigned</option>
+                <option selected>Sana Fathima — Manager</option>
+                <option>Khaleef — Super admin</option>
+                <option>Arjun Menon — Dev</option>
+                <option>Divya R — Dev</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inq-notes">Internal notes</label>
+              <textarea class="textarea" id="inq-notes" placeholder="Only the team sees this. The sender never does.">Four sites, so multi-tenant from day one. Sounds close to the SchoolOS fee module — worth checking whether we can reuse it before quoting a first phase.</textarea>
+              <p class="field-hint">Notes are internal. They are never included in a reply.</p>
+            </div>
+
+            <div class="row row--wrap">
+              <button class="btn btn--primary btn--sm" type="button">Reply by email</button>
+              <button class="btn btn--outline btn--sm" type="button">Mark as read</button>
+              <button class="btn btn--ghost btn--sm" type="button">Save notes</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="mockup-note" style="margin-top:var(--space-5)">
+        <strong>Changing the status sends a notification.</strong> Assigning an enquiry, or moving
+        it between New, Read and Replied, emits a notification to the assignee — so ownership is
+        never something someone has to be told about in passing. The enquiry itself is never
+        deleted from the queue; "Replied" is a state, not a removal, which is what keeps the
+        response-time figure on the analytics page honest.
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

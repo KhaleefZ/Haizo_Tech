@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <!-- ========================================================== sidebar -->
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="admin-kanban.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>
+        Kanban
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Calendar
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Projects
+      </a>
+      <a class="side-link" href="admin-chat.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>
+        Chat
+        <span class="count">4</span>
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Insights">
+      <h5>Insights</h5>
+      <a class="side-link" href="admin-analytics.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Analytics
+      </a>
+      <a class="side-link" aria-current="page" href="admin-activity.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Activity
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Blogs
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Work
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>
+        Services
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonials
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l19-9-9 19-2-8z"/></svg>
+        Announcements
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" href="admin-inquiries.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>
+        Inquiries
+        <span class="count">7</span>
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/></svg>
+        Clients
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+        Team
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div style="min-width:0">
+          <div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div>
+          <div style="color:#64748B;font-size:.75rem">Super admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================= main -->
+  <div class="main">
+
+    <header class="topbar">
+      <span class="crumb">Activity</span>
+
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search projects, tasks, clients…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+
+      <a class="icon-btn" href="admin-notifications.html" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </a>
+
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="content" id="main">
+
+      <div class="page-head">
+        <div>
+          <h1>Activity</h1>
+          <p class="small muted" style="margin-top:4px">Who did what, to which record, and when.</p>
+        </div>
+        <div class="row row--wrap">
+          <div class="field">
+            <label for="act-actor">Actor</label>
+            <select class="select" id="act-actor">
+              <option selected>Everyone</option>
+              <option>Khaleef — Super admin</option>
+              <option>Sana Fathima — Manager</option>
+              <option>Arjun Menon — Dev</option>
+              <option>Divya R — Dev</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="act-entity">Entity type</label>
+            <select class="select" id="act-entity">
+              <option selected>All entities</option>
+              <option>Task</option>
+              <option>Blog</option>
+              <option>Work</option>
+              <option>Inquiry</option>
+              <option>User</option>
+              <option>Settings</option>
+              <option>Session</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Today — Saturday, 18 July 2026</h2>
+          <span class="badge badge--neutral">5 events</span>
+        </div>
+        <div class="panel-body panel-body--flush">
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">SF</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Sana Fathima</span> moved a task from In progress to In review</div>
+                <div class="notif-m">Task · SchoolOS — fee module schedule generator</div>
+                <div class="notif-w">09:41</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-kanban.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">K</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Khaleef</span> changed enquiry settings</div>
+                <div class="notif-m">Settings · Inquiries</div>
+                <div class="card" style="padding:var(--space-3);margin-top:var(--space-2)">
+                  <div class="row row--between small" style="gap:var(--space-3);flex-wrap:wrap">
+                    <span class="muted">Reply-to address</span>
+                    <span><span class="badge badge--danger">hello@haizotech.example</span> → <span class="badge badge--success">enquiries@haizotech.example</span></span>
+                  </div>
+                  <div class="row row--between small" style="gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-2)">
+                    <span class="muted">Auto-assign new enquiries</span>
+                    <span><span class="badge badge--danger">Off</span> → <span class="badge badge--success">On — Sana Fathima</span></span>
+                  </div>
+                </div>
+                <div class="notif-w">09:12</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">AM</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Arjun Menon</span> created a work entry</div>
+                <div class="notif-m">Work · CloudUnify — consolidating three billing stacks</div>
+                <div class="notif-w">08:55</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-table.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">DR</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Divya R</span> signed in</div>
+                <div class="notif-m">Session · Chrome on macOS · Kochi</div>
+                <div class="notif-w">08:30</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">SF</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Sana Fathima</span> signed in</div>
+                <div class="notif-m">Session · Chrome on Windows · Kochi</div>
+                <div class="notif-w">08:04</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:var(--space-5)">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Yesterday — Friday, 17 July 2026</h2>
+          <span class="badge badge--neutral">4 events</span>
+        </div>
+        <div class="panel-body panel-body--flush">
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">K</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Khaleef</span> published a blog post</div>
+                <div class="notif-m">Blog · Indexing Postgres for real workloads</div>
+                <div class="notif-w">17:20</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-table.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">K</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Khaleef</span> invited a user</div>
+                <div class="notif-m">User · Divya R — invited as Dev</div>
+                <div class="notif-w">15:02</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">DR</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Divya R</span> accepted an invite and set a password</div>
+                <div class="notif-m">User · Divya R</div>
+                <div class="notif-w">15:48</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">AM</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Arjun Menon</span> moved a task from Backlog to In progress</div>
+                <div class="notif-m">Task · Sri ASK Residency RBMS — booking calendar sync</div>
+                <div class="notif-w">11:36</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-kanban.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:var(--space-5)">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Thursday, 16 July 2026</h2>
+          <span class="badge badge--neutral">3 events</span>
+        </div>
+        <div class="panel-body panel-body--flush">
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">SF</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Sana Fathima</span> replied to an enquiry</div>
+                <div class="notif-m">Inquiry · David Okafor — Network Services &amp; IT Solutions</div>
+                <div class="notif-w">16:10</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-inquiries.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">DR</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Divya R</span> created a task</div>
+                <div class="notif-m">Task · CloudUnify — retry policy for failed invoices</div>
+                <div class="notif-w">14:22</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-kanban.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+            <div class="notif">
+              <span class="avatar avatar--xs" aria-hidden="true">K</span>
+              <div style="min-width:0;flex:1">
+                <div class="notif-t"><span style="font-weight:700">Khaleef</span> published a work entry</div>
+                <div class="notif-m">Work · SchoolOS — one system for a 1,400-student campus</div>
+                <div class="notif-w">10:05</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-table.html" style="margin-left:auto;align-self:center;white-space:nowrap">View →</a>
+            </div>
+        </div>
+        <div class="table-foot">
+          <span>Showing 12 of 486 events</span>
+          <button class="btn btn--outline btn--sm" type="button">Load older activity</button>
+        </div>
+      </section>
+
+      <div class="mockup-note" style="margin-top:var(--space-5)">
+        <strong>Nobody writes these entries by hand.</strong> The feed is produced by a decorator
+        around the service layer: any create, update, delete or state transition that passes
+        through a service is recorded with its actor, entity and before/after values, so a new
+        endpoint is audited the day it ships without anyone remembering to add a log line. The
+        same table backs the "Recent" section of the ⌘K palette — recent items are simply this
+        actor's last few touched entities, which is why the two can never drift apart.
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

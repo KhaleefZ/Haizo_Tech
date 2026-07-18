@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifications — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <!-- ========================================================== sidebar -->
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="admin-kanban.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>
+        Kanban
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Calendar
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Projects
+      </a>
+      <a class="side-link" href="admin-chat.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>
+        Chat
+        <span class="count">4</span>
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Insights">
+      <h5>Insights</h5>
+      <a class="side-link" href="admin-analytics.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Analytics
+      </a>
+      <a class="side-link" href="admin-activity.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Activity
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Blogs
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Work
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>
+        Services
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonials
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l19-9-9 19-2-8z"/></svg>
+        Announcements
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" href="admin-inquiries.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>
+        Inquiries
+        <span class="count">7</span>
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/></svg>
+        Clients
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+        Team
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div style="min-width:0">
+          <div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div>
+          <div style="color:#64748B;font-size:.75rem">Super admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================= main -->
+  <div class="main">
+
+    <header class="topbar">
+      <span class="crumb">Notifications</span>
+
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search projects, tasks, clients…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+
+      <a class="icon-btn" href="admin-notifications.html" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </a>
+
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="content" id="main">
+
+      <div class="page-head">
+        <div>
+          <h1>Notifications</h1>
+          <p class="small muted" style="margin-top:4px">Everything the system has told you, and what it is allowed to tell you next.</p>
+        </div>
+        <div class="row">
+          <button class="btn btn--ghost btn--sm" type="button">Mark all read</button>
+          <button class="btn btn--outline btn--sm" type="button">Notification settings</button>
+        </div>
+      </div>
+
+      <div data-tabs>
+        <div class="tabs" role="tablist" aria-label="Notification filter">
+          <button class="tab" role="tab" data-tab="all" aria-selected="true" type="button">All</button>
+          <button class="tab" role="tab" data-tab="unread" aria-selected="false" type="button">Unread</button>
+          <button class="tab" role="tab" data-tab="mentions" aria-selected="false" type="button">Mentions</button>
+        </div>
+
+        <section data-panel="all" role="tabpanel" aria-label="All notifications">
+          <div class="panel">
+            <div class="panel-head">
+              <h2 style="font-size:1rem">All notifications</h2>
+              <span class="badge badge--neutral">3 unread</span>
+            </div>
+            <div class="panel-body panel-body--flush">
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">New enquiry from Priya Raman</div>
+                <div class="notif-m">Custom Software Development · arrived via the chat widget</div>
+                <div class="notif-w">12 minutes ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-inquiries.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to enquiry →</a>
+            </div>
+            <div class="notif is-unread">
+              <span class="notif-ico notif-ico--warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">4 tasks are overdue</div>
+                <div class="notif-m">SchoolOS · fee module · assigned to Arjun Menon</div>
+                <div class="notif-w">1 hour ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-kanban.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to board →</a>
+            </div>
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sana Fathima mentioned you in #rbms</div>
+                <div class="notif-m">“@khaleef can you confirm the migration window?”</div>
+                <div class="notif-w">2 hours ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-chat.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to chat →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico notif-ico--warn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Password reset requested</div>
+                <div class="notif-m">Divya R · from a new device in Kochi · link expires in 30 minutes</div>
+                <div class="notif-w">4 hours ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">Go to security →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico notif-ico--ok"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Blog published — “Indexing Postgres for real workloads”</div>
+                <div class="notif-m">Live on the public site · revalidated in 0.4s</div>
+                <div class="notif-w">Yesterday</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-table.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to blog →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico notif-ico--ok"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Divya R accepted their invite</div>
+                <div class="notif-m">Joined as Dev · invited by Khaleef</div>
+                <div class="notif-w">Yesterday</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="#" style="margin-left:auto;align-self:center;white-space:nowrap">Go to team →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">New enquiry from Nikhil Varma</div>
+                <div class="notif-m">Network Services &amp; IT Solutions · arrived via the chat widget</div>
+                <div class="notif-w">2 days ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-inquiries.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to enquiry →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Arjun Menon mentioned you in #cloudunify</div>
+                <div class="notif-m">“@khaleef the staging DB is back up”</div>
+                <div class="notif-w">3 days ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-chat.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to chat →</a>
+            </div>
+            </div>
+          </div>
+        </section>
+
+        <section data-panel="unread" role="tabpanel" aria-label="Unread notifications" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 style="font-size:1rem">Unread</h2>
+              <button class="btn btn--ghost btn--sm" type="button">Mark all read</button>
+            </div>
+            <div class="panel-body panel-body--flush">
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">New enquiry from Priya Raman</div>
+                <div class="notif-m">Custom Software Development · arrived via the chat widget</div>
+                <div class="notif-w">12 minutes ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-inquiries.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to enquiry →</a>
+            </div>
+            <div class="notif is-unread">
+              <span class="notif-ico notif-ico--warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">4 tasks are overdue</div>
+                <div class="notif-m">SchoolOS · fee module · assigned to Arjun Menon</div>
+                <div class="notif-w">1 hour ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-kanban.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to board →</a>
+            </div>
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sana Fathima mentioned you in #rbms</div>
+                <div class="notif-m">“@khaleef can you confirm the migration window?”</div>
+                <div class="notif-w">2 hours ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-chat.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to chat →</a>
+            </div>
+            </div>
+          </div>
+        </section>
+
+        <section data-panel="mentions" role="tabpanel" aria-label="Mentions" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 style="font-size:1rem">Mentions</h2>
+              <span class="badge badge--neutral">Only messages that named you</span>
+            </div>
+            <div class="panel-body panel-body--flush">
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sana Fathima mentioned you in #rbms</div>
+                <div class="notif-m">“@khaleef can you confirm the migration window?”</div>
+                <div class="notif-w">2 hours ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-chat.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to chat →</a>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Arjun Menon mentioned you in #cloudunify</div>
+                <div class="notif-m">“@khaleef the staging DB is back up”</div>
+                <div class="notif-w">3 days ago</div>
+              </div>
+              <a class="btn btn--ghost btn--sm" href="admin-chat.html" style="margin-left:auto;align-self:center;white-space:nowrap">Go to chat →</a>
+            </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- --------------------------------------------------- preferences -->
+      <section class="panel" style="margin-top:var(--space-5)">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Notification preferences</h2>
+          <span class="badge badge--neutral">Applies to your account only</span>
+        </div>
+        <div class="panel-body stack">
+
+          <div class="row row--between" style="gap:var(--space-4)">
+            <div style="min-width:0">
+              <label for="pref-master" style="font-weight:600;color:var(--color-text-strong)">Send me notifications</label>
+              <p class="small muted" style="margin-top:2px">Turn this off and delivery stops. History keeps recording.</p>
+            </div>
+            <input type="checkbox" id="pref-master" checked>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="hp">Per-type notification preferences, in-app and by email</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Type</th>
+                  <th scope="col">In-app</th>
+                  <th scope="col">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="cell-strong">Enquiry received</div><div class="muted" style="font-size:.75rem;margin-top:2px">A new enquiry arrives from any source</div></td>
+                  <td><input type="checkbox" id="p-inq-app" checked><label for="p-inq-app" class="hp">In-app for Enquiry received</label></td>
+                  <td><input type="checkbox" id="p-inq-mail" checked><label for="p-inq-mail" class="hp">Email for Enquiry received</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Task assigned to me</div></td>
+                  <td><input type="checkbox" id="p-task-app" checked><label for="p-task-app" class="hp">In-app for Task assigned to me</label></td>
+                  <td><input type="checkbox" id="p-task-mail"><label for="p-task-mail" class="hp">Email for Task assigned to me</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Task overdue</div><div class="muted" style="font-size:.75rem;margin-top:2px">A task you own passes its due date</div></td>
+                  <td><input type="checkbox" id="p-over-app" checked><label for="p-over-app" class="hp">In-app for Task overdue</label></td>
+                  <td><input type="checkbox" id="p-over-mail" checked><label for="p-over-mail" class="hp">Email for Task overdue</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Mentioned in chat</div><div class="muted" style="font-size:.75rem;margin-top:2px">Someone writes @khaleef</div></td>
+                  <td><input type="checkbox" id="p-men-app" checked><label for="p-men-app" class="hp">In-app for Mentioned in chat</label></td>
+                  <td><input type="checkbox" id="p-men-mail"><label for="p-men-mail" class="hp">Email for Mentioned in chat</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Blog or work published</div></td>
+                  <td><input type="checkbox" id="p-pub-app" checked><label for="p-pub-app" class="hp">In-app for Blog or work published</label></td>
+                  <td><input type="checkbox" id="p-pub-mail"><label for="p-pub-mail" class="hp">Email for Blog or work published</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Password reset requested</div><div class="muted" style="font-size:.75rem;margin-top:2px">Security — email is always sent</div></td>
+                  <td><input type="checkbox" id="p-pwd-app" checked><label for="p-pwd-app" class="hp">In-app for Password reset requested</label></td>
+                  <td><input type="checkbox" id="p-pwd-mail" checked disabled><label for="p-pwd-mail" class="hp">Email for Password reset requested</label></td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Invite sent or accepted</div><div class="muted" style="font-size:.75rem;margin-top:2px">Security — email is always sent</div></td>
+                  <td><input type="checkbox" id="p-inv-app" checked><label for="p-inv-app" class="hp">In-app for Invite sent or accepted</label></td>
+                  <td><input type="checkbox" id="p-inv-mail" checked disabled><label for="p-inv-mail" class="hp">Email for Invite sent or accepted</label></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="field" style="max-width:320px">
+            <label for="pref-digest">Digest frequency</label>
+            <select class="select" id="pref-digest">
+              <option>Off</option>
+              <option selected>Daily</option>
+              <option>Weekly</option>
+            </select>
+            <p class="field-hint">A single summary email instead of one per event. Security notifications are never bundled into it.</p>
+          </div>
+
+          <div class="row">
+            <button class="btn btn--primary btn--sm" type="button">Save preferences</button>
+            <button class="btn btn--ghost btn--sm" type="button">Reset to defaults</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="mockup-note" style="margin-top:var(--space-5)">
+        <strong>Preferences control delivery, not the record.</strong> Every notification is
+        written to the database whether or not it is ever delivered, so this screen stays a
+        complete history even for someone who has switched everything off — and so a missed
+        handover can be reconstructed after the fact. Two categories deliberately ignore
+        preferences: password resets and invites always send an email, because those are the
+        messages that tell someone their account is being changed, and letting a setting suppress
+        them would turn a preference into a security hole.
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

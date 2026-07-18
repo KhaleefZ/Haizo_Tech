@@ -528,11 +528,6 @@ a:hover { color: var(--color-brand-blue-600); }
   cursor: help;
 }
 
-.mockup-note--warn {
-  background: rgba(217, 119, 6, .09);
-  border-left-color: var(--color-warning);
-}
-
 .mockup-note {
   background: var(--color-bg-tint-2);
   border-left: 3px solid var(--color-brand-blue);
@@ -540,6 +535,14 @@ a:hover { color: var(--color-brand-blue-600); }
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-small);
   color: var(--color-text);
+}
+
+/* Modifier must follow the base rule: both are single-class selectors, so at
+   equal specificity the later declaration wins. Declared first, this silently
+   did nothing and every "unverified copy" warning rendered in the normal blue. */
+.mockup-note--warn {
+  background: rgba(217, 119, 6, .09);
+  border-left-color: var(--color-warning);
 }
 
 /* ---------------------------------------------------------------- responsive */

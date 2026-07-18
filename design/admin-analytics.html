@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <!-- ========================================================== sidebar -->
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <a class="side-link" href="admin-kanban.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>
+        Kanban
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Calendar
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Projects
+      </a>
+      <a class="side-link" href="admin-chat.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>
+        Chat
+        <span class="count">4</span>
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Insights">
+      <h5>Insights</h5>
+      <a class="side-link" aria-current="page" href="admin-analytics.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        Analytics
+      </a>
+      <a class="side-link" href="admin-activity.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Activity
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Blogs
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Work
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>
+        Services
+      </a>
+      <a class="side-link" href="admin-table.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonials
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l19-9-9 19-2-8z"/></svg>
+        Announcements
+      </a>
+    </nav>
+
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" href="admin-inquiries.html">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>
+        Inquiries
+        <span class="count">7</span>
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/></svg>
+        Clients
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+        Team
+      </a>
+      <a class="side-link" href="#">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div style="min-width:0">
+          <div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div>
+          <div style="color:#64748B;font-size:.75rem">Super admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================= main -->
+  <div class="main">
+
+    <header class="topbar">
+      <span class="crumb">Analytics</span>
+
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search projects, tasks, clients…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+
+      <a class="icon-btn" href="admin-notifications.html" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </a>
+
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="content" id="main">
+
+      <div class="mockup-note mockup-note--warn">
+        <strong>Unverified figures on this page.</strong> Every number highlighted in amber was
+        invented for the mockup — visitor counts, conversion rates, response times and page
+        rankings. None of it came from real analytics. Hover a highlight to see what needs
+        checking. This page must not go live until each figure is replaced with a real
+        measurement and the <code>.unverified</code> class is removed.
+      </div>
+
+      <div class="page-head" style="margin-top:var(--space-5)">
+        <div>
+          <h1>Analytics</h1>
+          <p class="small muted" style="margin-top:4px">How the public site is performing, and what it is bringing in.</p>
+        </div>
+        <div class="row row--wrap">
+          <div class="field">
+            <label for="an-range">Date range</label>
+            <select class="select" id="an-range">
+              <option>Last 7 days</option>
+              <option selected>Last 30 days</option>
+              <option>Last 90 days</option>
+              <option>This year</option>
+              <option>Custom…</option>
+            </select>
+          </div>
+          <button class="btn btn--outline btn--sm" type="button" style="align-self:flex-end">Export CSV</button>
+        </div>
+      </div>
+
+      <!-- ------------------------------------------------ headline stats -->
+      <section class="stat-grid" aria-label="Headline metrics">
+        <div class="stat">
+          <div class="label">Site visitors</div>
+          <div class="value"><span class="unverified" title="Invented for the mockup — replace with real analytics">8,412</span></div>
+          <div class="delta delta--up">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <span class="unverified" title="Invented for the mockup — replace with real analytics">+14%</span> vs previous 30 days
+          </div>
+        </div>
+        <div class="stat">
+          <div class="label">Enquiries received</div>
+          <div class="value"><span class="unverified" title="Invented for the mockup — replace with real analytics">63</span></div>
+          <div class="delta delta--up">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <span class="unverified" title="Invented for the mockup — replace with real analytics">+9</span> vs previous 30 days
+          </div>
+        </div>
+        <div class="stat">
+          <div class="label">Enquiry to conversation</div>
+          <div class="value"><span class="unverified" title="Invented for the mockup — replace with real analytics">41%</span></div>
+          <div class="delta delta--flat"><span class="unverified" title="Invented for the mockup — replace with real analytics">26 of 63</span> reached a real reply</div>
+        </div>
+        <div class="stat">
+          <div class="label">Average response time</div>
+          <div class="value"><span class="unverified" title="Invented for the mockup — replace with real analytics">3.2h</span></div>
+          <div class="delta delta--up">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <span class="unverified" title="Invented for the mockup — replace with real analytics">1.1h</span> faster
+          </div>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------ traffic over time -->
+      <section class="panel" style="margin-top:var(--space-5)">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Visitors per day</h2>
+          <span class="badge badge--neutral">Last 30 days</span>
+        </div>
+        <div class="panel-body">
+          <div class="bar-chart" role="img" aria-label="Visitors per day over the last thirty days, rising from roughly 180 to roughly 420 a day with a dip mid-month">
+            <span style="height:43%"></span><span style="height:51%"></span><span style="height:38%"></span>
+            <span style="height:47%"></span><span style="height:62%"></span><span style="height:58%"></span>
+            <span style="height:35%"></span><span style="height:44%"></span><span style="height:66%"></span>
+            <span style="height:71%"></span><span style="height:54%"></span><span style="height:49%"></span>
+            <span style="height:68%"></span><span style="height:77%"></span><span style="height:82%"></span>
+            <span class="on" style="height:100%"></span>
+          </div>
+          <div class="row row--between small muted" style="margin-top:var(--space-3)">
+            <span>18 Jun</span>
+            <span>Peak <span class="unverified" title="Invented for the mockup — replace with real analytics">just over 400 visitors</span> on 15 Jul, the day the SchoolOS case study went live</span>
+            <span>18 Jul</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid grid--2" style="margin-top:var(--space-5);align-items:start;gap:var(--space-5)">
+
+        <!-- ------------------------------------------------------ top pages -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2 style="font-size:1rem">Top pages</h2>
+            <span class="badge badge--neutral">By views</span>
+          </div>
+          <div class="panel-body panel-body--flush">
+            <div class="table-wrap">
+              <table class="table">
+                <caption class="hp">Most viewed pages, with average time on page and enquiries attributed</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Path</th>
+                    <th scope="col">Views</th>
+                    <th scope="col">Avg. time</th>
+                    <th scope="col">Enquiries</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="cell-strong">/</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">3,104</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">1m 12s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">14</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">/services/custom-software</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">1,286</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">2m 40s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">19</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">/work/schoolos</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">967</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">3m 05s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">11</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">/contact</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">742</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">0m 48s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">13</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">/blog/indexing-postgres</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">531</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">4m 22s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">2</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">/services/network-services</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">388</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">1m 55s</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">4</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span>Showing 6 of <span class="unverified" title="Invented for the mockup — replace with real analytics">54</span> pages</span>
+              <a class="small" href="#" style="font-weight:600">See all pages →</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------ enquiry sources -->
+        <section class="panel">
+          <div class="panel-head">
+            <h2 style="font-size:1rem">Where enquiries come from</h2>
+            <span class="badge badge--neutral"><span class="unverified" title="Invented for the mockup — replace with real analytics">63</span> total</span>
+          </div>
+          <div class="panel-body panel-body--flush">
+            <div class="table-wrap">
+              <table class="table">
+                <caption class="hp">Enquiry volume by the channel it arrived through</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Source</th>
+                    <th scope="col">Enquiries</th>
+                    <th scope="col">Share</th>
+                    <th scope="col">Avg. first reply</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="cell-strong">Contact form</div><div class="muted" style="font-size:.75rem">/contact and per-service forms</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">34</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">54%</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">4.1h</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Chat widget</div><div class="muted" style="font-size:.75rem">Live widget on every public page</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">21</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">33%</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">0.6h</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="cell-strong">Direct email</div><div class="muted" style="font-size:.75rem">hello@ mailbox, forwarded in</div></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">8</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">13%</span></td>
+                    <td><span class="unverified" title="Invented for the mockup — replace with real analytics">6.8h</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span>The chat widget answers fastest but converts to a scoped brief least often.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ------------------------------------------------- service interest -->
+      <section class="panel" style="margin-top:var(--space-5)">
+        <div class="panel-head">
+          <h2 style="font-size:1rem">Service interest</h2>
+          <span class="badge badge--neutral">Which service each enquiry asked about</span>
+        </div>
+        <div class="panel-body panel-body--flush">
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="hp">Enquiries broken down by the service they asked about</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Service</th>
+                  <th scope="col">Enquiries</th>
+                  <th scope="col">Share</th>
+                  <th scope="col">Reached a conversation</th>
+                  <th scope="col">Top entry page</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="cell-strong">Custom Software Development</div></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">24</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">38%</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">13</span></td>
+                  <td>/services/custom-software</td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Web &amp; Mobile Application Development</div></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">18</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">29%</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">7</span></td>
+                  <td>/</td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">AI Systems &amp; Integrations</div></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">14</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">22%</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">4</span></td>
+                  <td>/blog/indexing-postgres</td>
+                </tr>
+                <tr>
+                  <td><div class="cell-strong">Network Services &amp; IT Solutions</div></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">7</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">11%</span></td>
+                  <td><span class="unverified" title="Invented for the mockup — replace with real analytics">2</span></td>
+                  <td>/services/network-services</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-foot">
+            <span>Service is taken from the form field, or inferred from the page the chat started on.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="mockup-note" style="margin-top:var(--space-5)">
+        <strong>Everything on this page reads from a nightly rollup, not from raw events.</strong>
+        A scheduled job folds the previous day's page views, enquiries and reply timings into one
+        <code>MetricDaily</code> row per day per dimension (path, source, service). The dashboard
+        then reads at most a few hundred rows for any range, so it answers in the same few
+        milliseconds whether the site has a month of history or five years of it. Querying the raw
+        page-view table directly would look identical today and get slower every week. The cost of
+        the rollup is that today's numbers only appear after the job runs — which is why the range
+        control never offers "today".
+      </div>
+
+      <!-- ---------------------------------------------------- Cmd-K overlay -->
+      <section style="margin-top:var(--space-6)">
+        <h2 style="font-size:1.125rem">Cmd-K search (shown for review)</h2>
+        <p class="small muted" style="margin-top:4px;margin-bottom:var(--space-4)">
+          In the real build this sits over a dimmed backdrop and opens from ⌘K or the topbar search
+          button. It is rendered inline here so the layout can be judged without interacting.
+        </p>
+
+        <div class="panel" style="max-width:640px">
+          <div class="panel-head" style="gap:var(--space-2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <div class="field" style="flex:1">
+              <label class="hp" for="cmdk-input">Search everything</label>
+              <input class="input" id="cmdk-input" type="search" value="sch" placeholder="Search projects, tasks, works, blogs, clients, people…">
+            </div>
+            <kbd class="kbd">esc</kbd>
+          </div>
+
+          <div class="panel-body panel-body--flush">
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Projects</h3>
+            </div>
+            <div class="notif is-unread">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">SchoolOS</div>
+                <div class="notif-m">Active · 5 open tasks · Sana Fathima</div>
+              </div>
+              <kbd class="kbd" style="margin-left:auto;align-self:center">↵</kbd>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sri ASK Residency RBMS</div>
+                <div class="notif-m">Active · 3 open tasks · Arjun Menon</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Tasks</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Fee module — schedule generator</div>
+                <div class="notif-m">SchoolOS · In review · Divya R</div>
+              </div>
+            </div>
+            <div class="notif">
+              <span class="notif-ico notif-ico--warn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">School term import — CSV validation</div>
+                <div class="notif-m">SchoolOS · Overdue by 2 days · Arjun Menon</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Works</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">SchoolOS — one system for a 1,400-student campus</div>
+                <div class="notif-m">Published · /work/schoolos</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Blogs</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Scheduling background jobs without a queue</div>
+                <div class="notif-m">Draft · Divya R</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Clients</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sri ASK Residency</div>
+                <div class="notif-m">Client · 1 active project · Kochi</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">People</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Sana Fathima</div>
+                <div class="notif-m">Manager · online</div>
+              </div>
+            </div>
+
+            <div style="padding:var(--space-3) var(--space-4) 4px;border-top:1px solid var(--color-border)">
+              <h3 class="small muted" style="font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Recent</h3>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">Enquiry — Priya Raman</div>
+                <div class="notif-m">Opened 12 minutes ago</div>
+              </div>
+            </div>
+            <div class="notif">
+              <span class="notif-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+              <div style="min-width:0">
+                <div class="notif-t">CloudUnify — sprint 4 board</div>
+                <div class="notif-m">Opened yesterday</div>
+              </div>
+            </div>
+
+            <div class="table-foot">
+              <span class="row" style="gap:var(--space-3);flex-wrap:wrap">
+                <span><kbd class="kbd" style="margin-left:0">↑</kbd> <kbd class="kbd" style="margin-left:0">↓</kbd> move</span>
+                <span><kbd class="kbd" style="margin-left:0">↵</kbd> open</span>
+                <span><kbd class="kbd" style="margin-left:0">⌘↵</kbd> open in new tab</span>
+                <span><kbd class="kbd" style="margin-left:0">esc</kbd> close</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
