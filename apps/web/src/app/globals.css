@@ -1,2 +1,7 @@
 /* The tokens are the single source of truth. Nothing is redefined here. */
 @import '@haizo/config/theme.css';
+
+/* Tailwind v4 auto-detects sources relative to this file and skips node_modules.
+   @haizo/ui is a symlinked workspace package, so its class names live outside
+   that scan and every component would render unstyled without this line. */
+@source "../../../../packages/ui/src";
