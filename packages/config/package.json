@@ -1,0 +1,24 @@
+{
+  "name": "@haizo/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./eslint": "./eslint.config.js"
+  },
+  "scripts": {
+    "lint": "echo '(config: nothing to lint)'",
+    "typecheck": "echo '(config: no TS)'"
+  },
+  "devDependencies": {
+    "eslint": "^9.17.0",
+    "typescript-eslint": "^8.18.1",
+    "@eslint/js": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0"
+  },
+  "dependencies": {
+    "tailwindcss": "^4.0.0"
+  }
+}

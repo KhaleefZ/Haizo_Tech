@@ -1,0 +1,18 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'server'
+  - 'e2e'
+
+# pnpm blocks postinstall scripts by default — a good default, since a postinstall is
+# arbitrary code execution at install time. These are the ones that genuinely need to
+# run, with the reason. Anything not listed stays blocked.
+allowBuilds:
+  '@prisma/client': true # generates the typed client
+  '@prisma/engines': true # fetches the query engine binary
+  prisma: true # CLI engine binaries
+  esbuild: true # platform-specific binary
+  sharp: true # Next.js image optimisation
+  unrs-resolver: true # native binding for the ESLint resolver
+  core-js: false # postinstall is only a funding message
+  protobufjs: false # not on any path we use

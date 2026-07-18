@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work — HaizoTech</title>
+<meta name="description" content="Case studies from HaizoTech: room and venue booking systems, school management SaaS and a multi-cloud control plane. Problem, build, result.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html" aria-current="page">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ========================================================== intro -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="overline">Our works</p>
+        <h1>What we've built, and what it changed</h1>
+        <p class="lead muted">
+          Systems running in production. Each one says what was wrong before, what we
+          actually did, and what changed afterwards — measured where we can measure it
+          and described plainly where we can't.
+        </p>
+      </div>
+
+      <div class="mockup-note" style="margin-bottom:var(--space-5)">
+        <strong>These filters are admin-driven.</strong> They render from
+        <code>GET /v1/work-categories</code> sorted by <code>order</code>, which is exactly what the
+        Categories manager in the admin writes. Add, rename or reorder a category there and this row
+        changes with it — no deploy. Each card's category is a foreign key to the same table, so a
+        rename can never leave a card orphaned or a filter matching nothing.
+      </div>
+
+      <h2 style="margin-bottom:1.25rem">Case studies</h2>
+
+      <!-- Rendered from the admin Categories manager. `data-filter` is the category
+           slug; `data-category-id` is the record id the cards join on. -->
+      <div class="strip" role="group" aria-label="Filter works by category">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All works</button>
+        <button type="button" class="chip" data-filter="hospitality" data-category-id="cat_hosp" aria-pressed="false">Hospitality</button>
+        <button type="button" class="chip" data-filter="edtech" data-category-id="cat_edu" aria-pressed="false">EdTech</button>
+        <button type="button" class="chip" data-filter="infrastructure" data-category-id="cat_infra" aria-pressed="false">Infrastructure</button>
+        <button type="button" class="chip" data-filter="fintech" data-category-id="cat_fin" aria-pressed="false">FinTech</button>
+      </div>
+
+      <div class="grid grid--3" style="margin-top:var(--space-6)">
+
+        <a class="card card--link card--flush reveal" data-industry="hospitality" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">Hospitality</span>
+            <h3 style="margin-top:.75rem">Sri ASK Residency — RBMS</h3>
+            <p class="muted small" style="margin-top:.5rem">A paper register and phone bookings replaced with a live room-booking system, with availability and pricing rules the front desk can trust.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Front-desk time down ~40%</p>
+            <p class="small accent" style="margin-top:.75rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+
+        <a class="card card--link card--flush reveal" data-delay="60" data-industry="edtech" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">EdTech</span>
+            <h3 style="margin-top:.75rem">SchoolOS</h3>
+            <p class="muted small" style="margin-top:.5rem">Multi-tenant school management SaaS — attendance, fees, timetables and a parent portal, with each school's data isolated.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Fee reconciliation from days to minutes</p>
+            <p class="small accent" style="margin-top:.75rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+
+        <a class="card card--link card--flush reveal" data-delay="120" data-industry="infrastructure" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">Infrastructure</span>
+            <h3 style="margin-top:.75rem">CloudUnify</h3>
+            <p class="muted small" style="margin-top:.5rem">One control plane across cloud providers, putting cost, resources and access permissions into a single view instead of four consoles.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Provider sprawl consolidated</p>
+            <p class="small accent" style="margin-top:.75rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+
+        <a class="card card--link card--flush reveal" data-industry="hospitality" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">Hospitality</span>
+            <h3 style="margin-top:.75rem">Venue &amp; mandapam booking SaaS</h3>
+            <p class="muted small" style="margin-top:.5rem">Multi-venue availability, slot-based pricing, advance payments and event schedules — built for the double-booking problem that phone-and-diary booking creates.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Double bookings eliminated by design</p>
+            <p class="small accent" style="margin-top:.75rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+
+        <!-- Deliberate empty state. We have no FinTech case study to publish yet, and
+             an invented one is exactly what this redesign exists to remove. -->
+        <div class="card reveal" data-delay="60" data-industry="fintech" style="border-style:dashed;box-shadow:none;display:grid;place-items:center;text-align:center;background:var(--color-bg-tint)">
+          <div>
+            <div class="card-icon" style="margin-inline:auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div>
+            <h3>FinTech — no published case study yet</h3>
+            <p class="small muted" style="margin-top:.5rem;max-width:36ch">
+              We've built UPI and Razorpay integrations and reconciliation flows inside other
+              projects, but nothing we can publish as a standalone study with the client's
+              agreement. It'll appear here when it exists — not before.
+            </p>
+            <a class="btn btn--outline btn--sm" style="margin-top:1.25rem" href="contact.html">Talk to us about FinTech</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mockup-note reveal" style="margin-top:2rem">
+        <strong>Design decision:</strong> the filter is honest about gaps. Selecting an industry
+        we haven't shipped a public study for returns an empty-state card explaining why, rather
+        than silently showing an unrelated project or padding the grid with invented clients.
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Yours could be the next one</h2>
+        <p class="lead">Tell us the problem. We'll tell you honestly whether we're the right team for it.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A product studio in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <!-- Label fixed: nav and footer both say "Work" now. -->
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

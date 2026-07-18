@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The spec is the source of truth, so it gets validated before anything is
+      # built from it. A malformed contract should fail in seconds, not after a
+      # five-minute build.
+      - name: Validate OpenAPI spec
+        run: pnpm run spec:lint
+
+      # Drift guard. Regenerating must be a no-op; if it isn't, someone changed
+      # the spec without committing the generated types, and the apps are now
+      # typed against a contract the server doesn't implement.
+      - name: Check generated types are current
+        run: pnpm run gen:check
+
+      - run: pnpm run typecheck
+      - run: pnpm run lint
+      - run: pnpm run build
+      - run: pnpm run test

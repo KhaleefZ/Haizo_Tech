@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
+      <a class="side-link" href="admin-kanban.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>Kanban</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+      <a class="side-link" aria-current="page" href="admin-chat.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>Chat<span class="count">4</span></a>
+    </nav>
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Blogs</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Work</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>Services</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Testimonials</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8z"/></svg>Announcements</a>
+    </nav>
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>Inquiries<span class="count">7</span></a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clients</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M20 12a8 8 0 1 1-8-8"/></svg>Settings</a>
+    </nav>
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div><div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div><div style="color:#64748B;font-size:.75rem">Super admin</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <span class="crumb">Chat</span>
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search messages, people…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </button>
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="chat" id="main">
+      <!-- The chat shell has no visible page title, but the document still needs one. -->
+      <h1 class="hp">Chat</h1>
+
+      <!-- =================================================== conversations -->
+      <section class="chat-list" aria-label="Conversations">
+        <div class="chat-list-head">
+          <div class="tabs" style="margin-bottom:var(--space-3);border-bottom:0">
+            <button class="tab" type="button" aria-selected="true">Team</button>
+            <button class="tab" type="button" aria-selected="false">Support <span class="badge badge--danger" style="margin-left:4px">2</span></button>
+          </div>
+          <input class="input" type="search" placeholder="Search conversations" aria-label="Search conversations" style="padding:7px 10px;font-size:var(--text-small)">
+        </div>
+
+        <div class="chat-scroll">
+          <div class="conv" aria-current="true">
+            <span class="pres" data-presence="online" aria-label="Online"><span class="avatar avatar--xs" style="background:var(--color-bg-tint-2)">#</span></span>
+            <div class="conv-body">
+              <div class="conv-top"><span class="conv-name">#schoolos</span><span class="conv-time">2m</span></div>
+              <div class="conv-prev">Sana: pushed the fee reconciliation fix</div>
+            </div>
+            <span class="unread">3</span>
+          </div>
+
+          <div class="conv">
+            <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:var(--color-bg-tint-2)">#</span></span>
+            <div class="conv-body">
+              <div class="conv-top"><span class="conv-name">#rbms</span><span class="conv-time">1h</span></div>
+              <div class="conv-prev">You: migration window confirmed for Sunday</div>
+            </div>
+          </div>
+
+          <div class="conv">
+            <span class="pres" data-presence="online"><span class="avatar avatar--xs">S</span></span>
+            <div class="conv-body">
+              <div class="conv-top"><span class="conv-name">Sana Fathima</span><span class="conv-time">3h</span></div>
+              <div class="conv-prev">Can you review the RLS migration?</div>
+            </div>
+            <span class="unread">1</span>
+          </div>
+
+          <div class="conv">
+            <span class="pres" data-presence="away"><span class="avatar avatar--xs">A</span></span>
+            <div class="conv-body">
+              <div class="conv-top"><span class="conv-name">Arjun Menon</span><span class="conv-time">Yesterday</span></div>
+              <div class="conv-prev">Sent the attendance export spec</div>
+            </div>
+          </div>
+
+          <div class="conv">
+            <span class="pres" data-presence="offline"><span class="avatar avatar--xs" style="background:var(--color-bg-tint-2)">#</span></span>
+            <div class="conv-body">
+              <div class="conv-top"><span class="conv-name">#cloudunify</span><span class="conv-time">2d</span></div>
+              <div class="conv-prev">Arjun: provider credentials rotated</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== thread -->
+      <section class="chat-main" aria-label="Conversation">
+        <div class="chat-head">
+          <span class="avatar avatar--xs" style="background:var(--color-bg-tint-2)">#</span>
+          <div>
+            <div class="strong" style="font-weight:600">#schoolos</div>
+            <div class="small muted">Project channel · 4 members · 3 online</div>
+          </div>
+          <div class="row" style="margin-left:auto">
+            <button class="icon-btn" type="button" aria-label="Search in conversation">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Conversation details">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-body">
+          <div class="day-rule">Today</div>
+
+          <div class="msg">
+            <span class="avatar avatar--xs" style="flex:none">S</span>
+            <div>
+              <div class="msg-who">Sana Fathima</div>
+              <div class="msg-bubble">Pushed the fee reconciliation fix — partial payments now carry forward correctly. Tests are green.</div>
+              <div class="msg-time">09:12</div>
+            </div>
+          </div>
+
+          <div class="msg">
+            <span class="avatar avatar--xs" style="flex:none">S</span>
+            <div>
+              <div class="msg-who">Sana Fathima</div>
+              <div class="msg-bubble">
+                <span class="msg-mention">@khaleef</span> can you confirm the migration window? I'd rather not run it during school hours.
+              </div>
+              <div class="msg-time">09:14</div>
+            </div>
+          </div>
+
+          <div class="msg msg--me">
+            <span class="avatar avatar--xs" style="flex:none">K</span>
+            <div>
+              <div class="msg-bubble">Sunday 02:00 IST. I'll take a dump first and keep the old release dir around for rollback.</div>
+              <div class="msg-time">09:21 · Read by 3</div>
+            </div>
+          </div>
+
+          <div class="msg">
+            <span class="avatar avatar--xs" style="flex:none">A</span>
+            <div>
+              <div class="msg-who">Arjun Menon</div>
+              <div class="msg-bubble">
+                Works for me. Attaching the attendance export spec.
+                <div class="row" style="margin-top:10px;padding:8px 10px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:8px">
+                  <span class="notif-ico" style="width:28px;height:28px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+                  <div style="min-width:0">
+                    <div class="small strong" style="font-weight:600">attendance-export-spec.pdf</div>
+                    <div class="muted" style="font-size:.6875rem">248 KB</div>
+                  </div>
+                </div>
+              </div>
+              <div class="msg-time">09:26</div>
+            </div>
+          </div>
+
+          <div class="typing" aria-live="polite">
+            <span class="avatar avatar--xs">S</span>
+            Sana is typing <i></i><i></i><i></i>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-box">
+            <button class="icon-btn" type="button" aria-label="Attach file" style="width:32px;height:32px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.4 11.05 12.25 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.19a3.67 3.67 0 0 1 5.18 5.18l-9.2 9.2a1.83 1.83 0 0 1-2.59-2.6l8.49-8.48"/></svg>
+            </button>
+            <label class="hp" for="composer">Message #schoolos</label>
+            <textarea id="composer" rows="1" placeholder="Message #schoolos — use @ to mention"></textarea>
+            <button class="btn btn--primary btn--sm" type="button" aria-label="Send message">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/></svg>
+            </button>
+          </div>
+          <p class="small muted" style="margin-top:6px">
+            Enter to send · Shift+Enter for a new line
+          </p>
+        </div>
+      </section>
+
+      <!-- =========================================================== aside -->
+      <aside class="chat-aside" aria-label="Conversation details">
+        <h5>Members</h5>
+        <div class="stack-sm" style="margin-bottom:var(--space-5)">
+          <div class="row" style="gap:8px">
+            <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+            <div style="min-width:0"><div class="small strong" style="font-weight:600">Khaleef</div><div class="muted" style="font-size:.6875rem">Super admin</div></div>
+          </div>
+          <div class="row" style="gap:8px">
+            <span class="pres" data-presence="online"><span class="avatar avatar--xs">S</span></span>
+            <div style="min-width:0"><div class="small strong" style="font-weight:600">Sana Fathima</div><div class="muted" style="font-size:.6875rem">Manager</div></div>
+          </div>
+          <div class="row" style="gap:8px">
+            <span class="pres" data-presence="away"><span class="avatar avatar--xs">A</span></span>
+            <div style="min-width:0"><div class="small strong" style="font-weight:600">Arjun Menon</div><div class="muted" style="font-size:.6875rem">Dev · away</div></div>
+          </div>
+          <div class="row" style="gap:8px">
+            <span class="pres" data-presence="offline"><span class="avatar avatar--xs">D</span></span>
+            <div style="min-width:0"><div class="small strong" style="font-weight:600">Divya R</div><div class="muted" style="font-size:.6875rem">Dev · offline</div></div>
+          </div>
+        </div>
+
+        <h5>Linked project</h5>
+        <a class="card" href="admin-kanban.html" style="padding:var(--space-3);display:block;margin-bottom:var(--space-5)">
+          <div class="small strong" style="font-weight:600">SchoolOS</div>
+          <div class="muted" style="font-size:.6875rem;margin-top:2px">18 tasks · 4 overdue</div>
+        </a>
+
+        <h5>Files</h5>
+        <div class="row" style="gap:8px">
+          <span class="notif-ico" style="width:28px;height:28px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+          <div style="min-width:0"><div class="small strong" style="font-weight:600">attendance-export-spec.pdf</div><div class="muted" style="font-size:.6875rem">248 KB · today</div></div>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

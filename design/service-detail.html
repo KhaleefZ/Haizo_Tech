@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom software development — HaizoTech</title>
+<meta name="description" content="Custom line-of-business software built around your process: what's included, the stack we use, our four-step process, related work and answers to the questions we're asked most.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html" aria-current="page">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber was written for the
+    mockup and has <em>not</em> been confirmed — figures, timelines, pricing and narrative detail.
+    Hover a highlight to see what needs checking. This page must not go live until every highlight is
+    verified and the <code>.unverified</code> class is removed.
+  </div>
+</div>
+
+
+  <!-- ========================================================== hero -->
+  <section class="section">
+    <div class="container">
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="services.html">Services</a> <span aria-hidden="true">/</span> Custom software
+      </p>
+      <div class="section-head" style="margin-bottom:var(--space-6)">
+        <p class="overline">Custom software</p>
+        <h1>Software shaped to your process, not the other way round</h1>
+        <p class="lead muted">
+          When the tool can't express the one rule that matters, the workaround becomes
+          the process — and nobody can tell you why the numbers are wrong. We build the
+          system that holds the rule properly: real roles, real audit trails, and
+          reporting your finance team doesn't have to re-key.
+        </p>
+      </div>
+      <div class="row row--wrap">
+        <a class="btn btn--primary" href="contact.html">
+          Discuss your build
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--outline" href="#related-work">See two we've shipped</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== what's included -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">What's included</p>
+        <h2>Everything needed to run it after we leave</h2>
+        <p class="lead muted">A build isn't finished when the feature works. It's finished when your team can operate, change and recover it without us.</p>
+      </div>
+      <div class="grid grid--3">
+        <div class="card reveal" data-delay="0">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+          <h3>Written scope</h3>
+          <p class="muted" style="margin-top:.5rem">A document that states what v1 includes and what it deliberately excludes, agreed before anyone writes code.</p>
+        </div>
+        <div class="card reveal" data-delay="60">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></div>
+          <h3>Data model &amp; roles</h3>
+          <p class="muted" style="margin-top:.5rem">Schema and permission design reviewed with you first — the two decisions that are expensive to change later.</p>
+        </div>
+        <div class="card reveal" data-delay="120">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Server-enforced access</h3>
+          <p class="muted" style="margin-top:.5rem">Every protected route checks permissions on the server. Hiding a button is not access control.</p>
+        </div>
+        <div class="card reveal" data-delay="0">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <h3>Admin surface</h3>
+          <p class="muted" style="margin-top:.5rem">The screens the people running the business need daily — not a database client with a login page.</p>
+        </div>
+        <div class="card reveal" data-delay="60">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-7"/></svg></div>
+          <h3>Reporting &amp; exports</h3>
+          <p class="muted" style="margin-top:.5rem">Figures ops and finance can act on, exportable in formats their existing process already accepts.</p>
+        </div>
+        <div class="card reveal" data-delay="120">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+          <h3>Repo, pipeline, docs</h3>
+          <p class="muted" style="margin-top:.5rem">Source, CI/CD, environments and handover documentation are yours from day one, not at the end.</p>
+        </div>
+      </div>
+
+      <div class="mockup-note reveal" style="margin-top:2rem">
+        <strong>Typical timeline:</strong> <span class="unverified" title="Unverified: invented for the mockup. Replace with your real commercial numbers.">6–12 weeks</span> to a production v1. The range is driven
+        by how many distinct roles the system has and how many external systems it must talk to —
+        we give you a firm number after scoping, not before.
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== stack -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
+        <div class="reveal">
+          <p class="overline">Tech stack</p>
+          <h2 style="margin-top:.75rem">Boring where it counts</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            We pick tools by how well they'll be understood by the next engineer who
+            opens the repository — which might not be us. That rules out a lot of
+            interesting choices, and it's why these systems are still running.
+          </p>
+        </div>
+        <div class="stack reveal" data-delay="60">
+          <div>
+            <h3>Frontend</h3>
+            <div class="strip" style="margin-top:.75rem">
+              <span class="badge">Next.js</span>
+              <span class="badge">React</span>
+              <span class="badge">TypeScript</span>
+              <span class="badge">Tailwind</span>
+            </div>
+          </div>
+          <div>
+            <h3>Backend</h3>
+            <div class="strip" style="margin-top:.75rem">
+              <span class="badge">Node.js</span>
+              <span class="badge">PostgreSQL</span>
+              <span class="badge">Prisma</span>
+              <span class="badge">OpenAPI</span>
+              <span class="badge">Zod</span>
+            </div>
+          </div>
+          <div>
+            <h3>Delivery</h3>
+            <div class="strip" style="margin-top:.75rem">
+              <span class="badge">GitHub Actions</span>
+              <span class="badge">Docker</span>
+              <span class="badge">Playwright</span>
+              <span class="badge">Sentry</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== process -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">Our process</p>
+        <h2>Four steps, no surprises</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <h4>Scope</h4>
+          <p class="small muted" style="margin-top:.5rem">We map the problem, the users and the constraints, then write down what v1 will and won't include.</p>
+        </div>
+        <div class="step reveal" data-delay="60">
+          <h4>Design</h4>
+          <p class="small muted" style="margin-top:.5rem">Flows and screens you can click before we build them, so changes are cheap.</p>
+        </div>
+        <div class="step reveal" data-delay="120">
+          <h4>Build</h4>
+          <p class="small muted" style="margin-top:.5rem">Weekly working software on a staging URL. You see progress, not status reports.</p>
+        </div>
+        <div class="step reveal" data-delay="180">
+          <h4>Ship &amp; support</h4>
+          <p class="small muted" style="margin-top:.5rem">Deploy, monitor, hand over the keys and stay on for the settling-in period.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== related work -->
+  <section class="section" id="related-work">
+    <div class="container">
+      <div class="row row--between reveal" style="align-items:flex-end;margin-bottom:2rem">
+        <div class="section-head" style="margin-bottom:0">
+          <p class="overline">Related work</p>
+          <h2>Two custom builds, start to finish</h2>
+        </div>
+        <a class="btn btn--outline btn--sm" href="work.html">All work</a>
+      </div>
+      <div class="grid grid--2">
+        <a class="card card--link card--flush reveal" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">Hospitality</span>
+            <h3 style="margin-top:.75rem">Sri ASK Residency — RBMS</h3>
+            <p class="muted small" style="margin-top:.5rem">A paper register and phone bookings replaced with a live room-booking system the front desk actually uses.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Front-desk time down ~40%</p>
+          </div>
+        </a>
+        <a class="card card--link card--flush reveal" data-delay="60" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">EdTech</span>
+            <h3 style="margin-top:.75rem">SchoolOS</h3>
+            <p class="muted small" style="margin-top:.5rem">Multi-tenant school management — attendance, fees, timetables and parent access under one roof.</p>
+            <p class="small strong" style="margin-top:1rem;font-weight:600">Fee reconciliation from days to minutes</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== FAQ -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">Questions</p>
+        <h2>What people ask before signing</h2>
+      </div>
+      <div class="grid grid--2">
+        <div class="card reveal" data-delay="0">
+          <h3>Who owns the code?</h3>
+          <p class="muted" style="margin-top:.75rem">
+            You do, from the first commit. The repository sits in your organisation and we
+            work in it — not in ours, with a handover promised later. The same goes for the
+            domain, the cloud accounts and the database.
+          </p>
+        </div>
+        <div class="card reveal" data-delay="60">
+          <h3>What does it cost, roughly?</h3>
+          <p class="muted" style="margin-top:.75rem">
+            Most custom v1 builds land <span class="unverified" title="Unverified: invented for the mockup. This is a commercial claim — replace with your real pricing.">between ₹5L and ₹15L</span>, driven mainly by the number of
+            roles and integrations. We quote a fixed price per phase after scoping, so you're
+            never approving an open-ended meter.
+          </p>
+        </div>
+        <div class="card reveal" data-delay="120">
+          <h3>Can you work on our existing system?</h3>
+          <p class="muted" style="margin-top:.75rem">
+            Yes, and it's a fair amount of what we do. We start with a read-only review of the
+            codebase and infrastructure, then give you a written assessment before proposing
+            work — including the option that says leave it alone.
+          </p>
+        </div>
+        <div class="card reveal" data-delay="0">
+          <h3>What happens after launch?</h3>
+          <p class="muted" style="margin-top:.75rem">
+            We stay on through the settling-in period, when the real usage patterns show up.
+            After that you can keep a monthly support arrangement or take it fully in-house —
+            the documentation and pipeline are built assuming you'll do the latter.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Tell us what's breaking</h2>
+        <p class="lead">A short call is usually enough for us to say whether custom software is the answer — or whether something cheaper would do.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A product studio in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <!-- Label fixed: nav and footer both say "Work" now. -->
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

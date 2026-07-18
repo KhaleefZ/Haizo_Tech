@@ -1,0 +1,443 @@
+openapi: 3.1.0
+
+info:
+  title: HaizoTech API
+  version: 1.0.0
+  description: |
+    Single source of truth for the HaizoTech API.
+
+    This spec is **hand-authored and canonical**. Types in `packages/types` and request
+    validators in `server/src/schemas/generated` are generated from it, and CI fails if
+    regenerating produces a diff. Code-first generation was rejected deliberately: a spec
+    derived from the implementation can never catch "the implementation is wrong", which
+    is the exact class of bug the previous backend had.
+
+    Conventions, applied without exception:
+      * Base path `/v1`.
+      * Every error response is an `Error` — one shape, everywhere.
+      * Collections return `{ data, meta }`. Page-based for stable content,
+        cursor-based for live-inserting feeds (notifications, chat).
+      * Every schema lives under `components/schemas` and is `$ref`-ed. No inline objects.
+      * Every operation has an `operationId`; the contract test suite asserts each one is
+        exercised, and that every mounted Express route appears here.
+
+servers:
+  - url: http://localhost:5001/v1
+    description: Local
+  - url: https://api.haizotech.com/v1
+    description: Production
+
+tags:
+  - name: Health
+  - name: Content
+    description: Public read endpoints backing the marketing site.
+  - name: Inquiries
+  - name: Auth
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Liveness and dependency check
+      tags: [Health]
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /services:
+    get:
+      operationId: listServices
+      summary: List published services
+      tags: [Content]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of services
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceList' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /services/{slug}:
+    get:
+      operationId: getServiceBySlug
+      summary: Get one published service
+      tags: [Content]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+      responses:
+        '200':
+          description: The service
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Service' }
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /work-categories:
+    get:
+      operationId: listWorkCategories
+      summary: List work categories
+      description: |
+        Backs the filter row on the public Our Works page. Ordered by `order`, which is what
+        the admin Categories manager writes — reordering there changes the public site with
+        no deploy.
+      tags: [Content]
+      security: []
+      responses:
+        '200':
+          description: All categories, ordered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkCategoryList' }
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /inquiries:
+    post:
+      operationId: createInquiry
+      summary: Submit a contact enquiry
+      description: |
+        Rate limited per IP and honeypot-protected. `website` is the honeypot field: it is
+        never shown to a human, so a non-empty value is treated as a bot and answered with
+        `201` to avoid teaching the bot anything.
+      tags: [Inquiries]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateInquiry' }
+      responses:
+        '201':
+          description: Enquiry received
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InquiryReceipt' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/login:
+    post:
+      operationId: login
+      summary: Authenticate and set session cookies
+      description: |
+        On success sets `hz_at` (15 min access), `hz_rt` (30 day refresh, scoped to
+        `/v1/auth`) and a readable `hz_csrf` value. No token is returned in the body —
+        credentials never touch JavaScript.
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Authenticated
+          headers:
+            Set-Cookie:
+              description: hz_at, hz_rt and hz_csrf
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CurrentUser' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      summary: The signed-in user
+      tags: [Auth]
+      responses:
+        '200':
+          description: The current user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CurrentUser' }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/logout:
+    post:
+      operationId: logout
+      summary: Clear session cookies
+      tags: [Auth]
+      responses:
+        '204':
+          description: Signed out
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: hz_at
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    Slug:
+      name: slug
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/Slug' }
+
+  responses:
+    BadRequest:
+      description: Request failed validation
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Not authenticated
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Authenticated but not permitted
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: No such resource
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Slug:
+      type: string
+      pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+      maxLength: 120
+      examples: ['custom-software']
+
+    Error:
+      type: object
+      description: The one and only error shape returned by this API.
+      required: [error]
+      additionalProperties: false
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          additionalProperties: false
+          properties:
+            code:
+              type: string
+              description: Stable, machine-readable. Safe to branch on.
+              examples: ['VALIDATION_FAILED']
+            message:
+              type: string
+              description: Human-readable. Never contains a stack trace or SQL.
+            details:
+              type: array
+              description: Present on validation failures — one entry per bad field.
+              items: { $ref: '#/components/schemas/ErrorDetail' }
+            requestId:
+              type: string
+              description: Correlates with server logs.
+
+    ErrorDetail:
+      type: object
+      required: [path, message]
+      additionalProperties: false
+      properties:
+        path: { type: string, examples: ['email'] }
+        message: { type: string, examples: ['Enter a valid email address'] }
+
+    PageMeta:
+      type: object
+      required: [page, pageSize, total, totalPages, hasNext]
+      additionalProperties: false
+      properties:
+        page: { type: integer, minimum: 1 }
+        pageSize: { type: integer, minimum: 1 }
+        total: { type: integer, minimum: 0 }
+        totalPages: { type: integer, minimum: 0 }
+        hasNext: { type: boolean }
+
+    Health:
+      type: object
+      required: [status, uptimeSeconds, version]
+      additionalProperties: false
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        uptimeSeconds: { type: number, minimum: 0 }
+        version: { type: string }
+        checks:
+          type: object
+          additionalProperties: { type: string }
+
+    Service:
+      type: object
+      required: [id, slug, title, summary, order, published]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, maxLength: 120 }
+        summary: { type: string, maxLength: 400 }
+        body: { type: [string, 'null'] }
+        icon: { type: [string, 'null'] }
+        stack:
+          type: array
+          items: { type: string }
+        deliverables:
+          type: array
+          items: { type: string }
+        timeline: { type: [string, 'null'] }
+        order: { type: integer }
+        published: { type: boolean }
+        seoTitle: { type: [string, 'null'] }
+        seoDescription: { type: [string, 'null'] }
+
+    ServiceList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Service' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    WorkCategory:
+      type: object
+      required: [id, slug, name, order]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { $ref: '#/components/schemas/Slug' }
+        name: { type: string, maxLength: 60 }
+        order: { type: integer }
+
+    WorkCategoryList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/WorkCategory' }
+
+    CreateInquiry:
+      type: object
+      required: [name, email, message, consent]
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 2, maxLength: 120 }
+        email: { type: string, format: email, maxLength: 200 }
+        phone: { type: [string, 'null'], maxLength: 30 }
+        company: { type: [string, 'null'], maxLength: 120 }
+        projectType:
+          type: [string, 'null']
+          enum:
+            [
+              custom-software,
+              ai-intelligent-systems,
+              web-mobile-apps,
+              infrastructure-security,
+              not-sure,
+              null,
+            ]
+        budgetRange:
+          type: [string, 'null']
+          enum: [under-2l, 2-5l, 5-15l, 15l-plus, not-sure, null]
+        message: { type: string, minLength: 10, maxLength: 5000 }
+        consent:
+          type: boolean
+          const: true
+          description: DPDP/GDPR consent. Must be true; false is a validation failure.
+        website:
+          type: [string, 'null']
+          description: Honeypot. Must be empty or absent for a real submission.
+          maxLength: 200
+
+    InquiryReceipt:
+      type: object
+      required: [id, receivedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        receivedAt: { type: string, format: date-time }
+
+    Role:
+      type: string
+      enum: [SUPER_ADMIN, MANAGER, DEV]
+      description: |
+        Matches the live database exactly. REDESIGN.md's ADMIN/EDITOR naming was a sketch;
+        renaming a production enum for a document would be risk with no user value.
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      additionalProperties: false
+      properties:
+        email: { type: string, format: email, maxLength: 200 }
+        password: { type: string, minLength: 8, maxLength: 200 }
+
+    CurrentUser:
+      type: object
+      required: [id, email, name, role]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        role: { $ref: '#/components/schemas/Role' }
+        avatarUrl: { type: [string, 'null'] }
+        notificationsEnabled: { type: boolean }
+
+security:
+  - sessionCookie: []

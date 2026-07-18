@@ -1,0 +1,2 @@
+/* The tokens are the single source of truth. Nothing is redefined here. */
+@import '@haizo/config/theme.css';

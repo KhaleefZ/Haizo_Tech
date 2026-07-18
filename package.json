@@ -1,0 +1,27 @@
+{
+  "name": "haizotech",
+  "private": true,
+  "version": "0.1.0",
+  "description": "HaizoTech — public site, admin dashboard and common backend",
+  "packageManager": "pnpm@11.10.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "gen": "turbo run gen",
+    "gen:check": "pnpm run gen && git diff --exit-code -- packages/types/src/generated || (echo '\\n✖ Generated types are stale. Run `pnpm gen` and commit the result.\\n' && exit 1)",
+    "spec:lint": "redocly lint server/openapi/openapi.yaml",
+    "verify": "pnpm run spec:lint && pnpm run gen:check && pnpm run typecheck && pnpm run lint && pnpm run build && pnpm run test"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.11",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

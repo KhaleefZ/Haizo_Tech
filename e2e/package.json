@@ -1,0 +1,17 @@
+{
+  "name": "@haizo/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo '(e2e: Playwright suites land in Phase 2)'",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo '(e2e: nothing to lint yet)'"
+  },
+  "devDependencies": {
+    "@haizo/config": "workspace:*",
+    "@playwright/test": "^1.49.1",
+    "typescript": "^5.7.2"
+  }
+}

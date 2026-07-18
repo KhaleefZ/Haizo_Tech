@@ -1,0 +1,27 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "stream",
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "gen": {
+      "inputs": ["../../server/openapi/**", "openapi/**"],
+      "outputs": ["src/generated/**"],
+      "cache": true
+    },
+    "build": {
+      "dependsOn": ["^build", "gen"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build", "gen"]
+    },
+    "lint": {},
+    "test": {
+      "dependsOn": ["^build", "gen"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

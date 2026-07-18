@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content — HaizoTech Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="logo" href="admin-dashboard.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <nav class="side-group" aria-label="Operations">
+      <h5>Operations</h5>
+      <a class="side-link" href="admin-dashboard.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
+      <a class="side-link" href="admin-kanban.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="18" rx="1"/><rect x="15" y="3" width="6" height="11" rx="1"/></svg>Kanban</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+      <a class="side-link" href="admin-chat.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/></svg>Chat<span class="count">4</span></a>
+    </nav>
+    <nav class="side-group" aria-label="Content">
+      <h5>Content</h5>
+      <a class="side-link" aria-current="page" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Blogs</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Work</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg>Services</a>
+      <a class="side-link" href="admin-table.html"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Testimonials</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8z"/></svg>Announcements</a>
+    </nav>
+    <nav class="side-group" aria-label="Business">
+      <h5>Business</h5>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></svg>Inquiries<span class="count">7</span></a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clients</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
+      <a class="side-link" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M20 12a8 8 0 1 1-8-8"/></svg>Settings</a>
+    </nav>
+    <div class="side-foot">
+      <div class="row">
+        <span class="pres" data-presence="online"><span class="avatar avatar--xs" style="background:rgba(255,255,255,.14);color:#fff">K</span></span>
+        <div><div style="color:#fff;font-weight:600;font-size:.875rem">Khaleef</div><div style="color:#64748B;font-size:.75rem">Super admin</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <span class="crumb">Content</span>
+      <button class="search-trigger" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>Search projects, tasks, clients…</span>
+        <kbd class="kbd">⌘K</kbd>
+      </button>
+      <button class="icon-btn" type="button" aria-label="Notifications, 3 unread">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot">3</span>
+      </button>
+      <span class="pres" data-presence="online"><span class="avatar avatar--xs">K</span></span>
+    </header>
+
+    <main class="content" id="main" data-tabs>
+
+      <div class="page-head">
+        <div>
+          <h1>Content</h1>
+          <p class="small muted" style="margin-top:4px">Everything here publishes to the public site. Changes go live in under a second.</p>
+        </div>
+        <button class="btn btn--primary btn--sm" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          New
+        </button>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Content type">
+        <button class="tab" role="tab" data-tab="blogs" aria-selected="false" type="button">Blogs</button>
+        <button class="tab" role="tab" data-tab="work" aria-selected="false" type="button">Work</button>
+        <button class="tab" role="tab" data-tab="services" aria-selected="false" type="button">Services</button>
+        <button class="tab" role="tab" data-tab="testimonials" aria-selected="true" type="button">Testimonials</button>
+        <button class="tab" role="tab" data-tab="categories" aria-selected="false" type="button">Categories</button>
+      </div>
+
+      <!-- ================================================ testimonials -->
+      <section data-panel="testimonials" role="tabpanel" aria-label="Testimonials">
+
+        <div class="mockup-note" style="margin-bottom:var(--space-5)">
+          <strong>This tab is new.</strong> Testimonials currently live nowhere — they are hardcoded in the
+          public site's markup, which is how two fabricated quotes ended up shipped. Here they become
+          real records, and the publish action is gated: <strong>Source URL</strong> and
+          <strong>Verified on</strong> are required before <code>published</code> can be set to true.
+          You cannot publish an unverifiable quote even if you want to.
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Testimonials <span class="badge badge--neutral" style="margin-left:6px">3</span></h3>
+            <div class="row">
+              <button class="btn btn--ghost btn--sm" type="button">Filter</button>
+              <button class="btn btn--primary btn--sm" type="button">Add testimonial</button>
+            </div>
+          </div>
+          <div class="panel-body panel-body--flush">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Author</th>
+                    <th scope="col">Quote</th>
+                    <th scope="col">Linked work</th>
+                    <th scope="col">Provenance</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"><span class="hp">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="row" style="gap:8px">
+                        <span class="avatar avatar--xs">N</span>
+                        <div>
+                          <div class="cell-strong">Nivethitha</div>
+                          <div class="muted" style="font-size:.75rem">Owner, Sri ASK Residency</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="max-width:280px"><span class="muted">“Haizo Tech delivered a modern platform that scaled from day one…”</span></td>
+                    <td><a href="#" style="font-weight:600">RBMS</a></td>
+                    <td><span class="badge badge--success"><span class="badge-dot"></span>Verified 12 Jun</span></td>
+                    <td><span class="badge badge--success">Published</span></td>
+                    <td><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="row" style="gap:8px">
+                        <span class="avatar avatar--xs" style="background:var(--color-bg-tint);color:var(--color-text-muted)">R</span>
+                        <div>
+                          <div class="cell-strong">Ramesh Iyer</div>
+                          <div class="muted" style="font-size:.75rem">Principal, client school</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="max-width:280px"><span class="muted">“Fee reconciliation used to take our office three days…”</span></td>
+                    <td><a href="#" style="font-weight:600">SchoolOS</a></td>
+                    <td><span class="badge badge--warning">Awaiting source URL</span></td>
+                    <td><span class="badge badge--neutral">Draft</span></td>
+                    <td><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+                  </tr>
+                  <tr style="background:rgba(220,38,38,.03)">
+                    <td>
+                      <div class="row" style="gap:8px">
+                        <span class="avatar avatar--xs" style="background:rgba(220,38,38,.1);color:var(--color-danger)">S</span>
+                        <div>
+                          <div class="cell-strong">Sarah Chen</div>
+                          <div class="muted" style="font-size:.75rem">Product Lead, FinEdge</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="max-width:280px"><span class="muted">“The AI integrations they built completely transformed…”</span></td>
+                    <td><span class="muted">—</span></td>
+                    <td><span class="badge badge--danger">Unverifiable</span></td>
+                    <td><span class="badge badge--danger">Flagged for removal</span></td>
+                    <td><button class="btn btn--danger btn--sm" type="button">Delete</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span>Showing 3 of 3</span>
+              <div class="row">
+                <button class="btn btn--ghost btn--sm" type="button" disabled>Previous</button>
+                <button class="btn btn--ghost btn--sm" type="button" disabled>Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editor, shown inline so the gating logic is visible in the mockup -->
+        <div class="panel" style="margin-top:var(--space-5)">
+          <div class="panel-head"><h3>Edit testimonial — Ramesh Iyer</h3><span class="badge badge--neutral">Draft</span></div>
+          <div class="panel-body">
+            <div class="grid grid--2" style="gap:var(--space-4)">
+              <div class="field"><label for="t-author">Author</label><input class="input" id="t-author" value="Ramesh Iyer"></div>
+              <div class="field"><label for="t-role">Role</label><input class="input" id="t-role" value="Principal"></div>
+              <div class="field"><label for="t-company">Company</label><input class="input" id="t-company" value="Client school"></div>
+              <div class="field">
+                <label for="t-work">Linked work</label>
+                <select class="select" id="t-work"><option>SchoolOS</option><option>Sri ASK Residency — RBMS</option><option>CloudUnify</option><option>— none —</option></select>
+              </div>
+            </div>
+            <div class="field" style="margin-top:var(--space-4)">
+              <label for="t-quote">Quote</label>
+              <textarea class="textarea" id="t-quote" style="min-height:90px">Fee reconciliation used to take our office three days every month. It is now under an hour.</textarea>
+            </div>
+            <div class="grid grid--2" style="gap:var(--space-4);margin-top:var(--space-4)">
+              <div class="field">
+                <label for="t-source">Source URL <span class="accent">· required to publish</span></label>
+                <input class="input" id="t-source" placeholder="https://… email thread, LinkedIn post, signed note" aria-describedby="t-source-err" style="border-color:var(--color-danger)">
+                <p class="field-error" id="t-source-err">Add where this quote came from before publishing.</p>
+              </div>
+              <div class="field">
+                <label for="t-verified">Verified on <span class="accent">· required to publish</span></label>
+                <input class="input" id="t-verified" type="date">
+                <p class="field-hint">The date someone on the team confirmed the client said this.</p>
+              </div>
+            </div>
+            <div class="row row--between" style="margin-top:var(--space-5);border-top:1px solid var(--color-border);padding-top:var(--space-4)">
+              <p class="small muted">Publishing is blocked until provenance is filled in.</p>
+              <div class="row">
+                <button class="btn btn--outline btn--sm" type="button">Save draft</button>
+                <button class="btn btn--primary btn--sm" type="button" disabled style="opacity:.45;cursor:not-allowed">Publish</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================= blogs -->
+      <section data-panel="blogs" role="tabpanel" aria-label="Blogs" hidden>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Blog posts <span class="badge badge--neutral" style="margin-left:6px">12</span></h3>
+            <button class="btn btn--primary btn--sm" type="button">New post</button>
+          </div>
+          <div class="panel-body panel-body--flush">
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th scope="col">Title</th><th scope="col">Author</th><th scope="col">Tags</th><th scope="col">Updated</th><th scope="col">Status</th><th scope="col"><span class="hp">Actions</span></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="cell-strong">Indexing Postgres for real workloads</td>
+                    <td>Khaleef</td>
+                    <td><span class="badge badge--neutral">Databases</span></td>
+                    <td class="muted">2 hours ago</td>
+                    <td><span class="badge badge--success">Published</span></td>
+                    <td><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td class="cell-strong">Why we made the OpenAPI spec the source of truth</td>
+                    <td>Khaleef</td>
+                    <td><span class="badge badge--neutral">Architecture</span></td>
+                    <td class="muted">Yesterday</td>
+                    <td><span class="badge badge--success">Published</span></td>
+                    <td><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td class="cell-strong">React Server Components, without the hype</td>
+                    <td>Sana</td>
+                    <td><span class="badge badge--neutral">Frontend</span></td>
+                    <td class="muted">3 days ago</td>
+                    <td><span class="badge badge--neutral">Draft</span></td>
+                    <td><button class="btn btn--ghost btn--sm" type="button">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-foot">
+              <span>Showing 3 of 12</span>
+              <div class="row"><button class="btn btn--ghost btn--sm" type="button" disabled>Previous</button><button class="btn btn--ghost btn--sm" type="button">Next</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== work -->
+      <section data-panel="work" role="tabpanel" aria-label="Work" hidden>
+        <div class="panel"><div class="panel-head"><h3>Case studies</h3><button class="btn btn--primary btn--sm" type="button">New case study</button></div>
+          <div class="panel-body panel-body--flush"><div class="table-wrap"><table class="table">
+            <thead><tr><th scope="col">Title</th><th scope="col">Industry</th><th scope="col">Slug</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr><td class="cell-strong">Sri ASK Residency — RBMS</td><td>Hospitality</td><td class="muted">/work/sri-ask-residency-rbms</td><td><span class="badge badge--success">Published</span></td></tr>
+              <tr><td class="cell-strong">SchoolOS</td><td>EdTech</td><td class="muted">/work/schoolos</td><td><span class="badge badge--success">Published</span></td></tr>
+              <tr><td class="cell-strong">CloudUnify</td><td>Infrastructure</td><td class="muted">/work/cloudunify</td><td><span class="badge badge--neutral">Draft</span></td></tr>
+            </tbody></table></div></div>
+        </div>
+      </section>
+
+      <!-- ==================================================== services -->
+      <section data-panel="services" role="tabpanel" aria-label="Services" hidden>
+        <div class="mockup-note" style="margin-bottom:var(--space-5)">
+          <strong>Also new.</strong> Services are currently hardcoded in the public site with no database
+          model at all — changing a service means a code deploy. They become editable records here.
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Services</h3><button class="btn btn--primary btn--sm" type="button">New service</button></div>
+          <div class="panel-body panel-body--flush"><div class="table-wrap"><table class="table">
+            <thead><tr><th scope="col">Order</th><th scope="col">Title</th><th scope="col">Slug</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr><td class="muted">1</td><td class="cell-strong">Custom software</td><td class="muted">/services/custom-software</td><td><span class="badge badge--success">Published</span></td></tr>
+              <tr><td class="muted">2</td><td class="cell-strong">AI &amp; intelligent systems</td><td class="muted">/services/ai-intelligent-systems</td><td><span class="badge badge--success">Published</span></td></tr>
+              <tr><td class="muted">3</td><td class="cell-strong">Web &amp; mobile apps</td><td class="muted">/services/web-mobile-apps</td><td><span class="badge badge--success">Published</span></td></tr>
+              <tr><td class="muted">4</td><td class="cell-strong">Infrastructure &amp; security</td><td class="muted">/services/infrastructure-security</td><td><span class="badge badge--success">Published</span></td></tr>
+            </tbody></table></div></div>
+        </div>
+      </section>
+
+      <!-- ================================================== categories -->
+      <section data-panel="categories" role="tabpanel" aria-label="Categories" hidden>
+        <div class="panel"><div class="panel-body">
+          <div class="empty">
+            <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div>
+            <h3>Work categories</h3>
+            <p class="muted small" style="margin-top:.5rem;max-width:44ch;margin-inline:auto">Reorder and rename the filters shown on the public Work page. Drag to change order.</p>
+            <button class="btn btn--primary btn--sm" type="button" style="margin-top:1.25rem">Add category</button>
+          </div>
+        </div></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

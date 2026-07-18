@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Services — HaizoTech</title>
+<meta name="description" content="Four practices: custom software, AI and intelligent systems, web and mobile apps, infrastructure and security. What we deliver, the stack, and typical timelines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html" aria-current="page">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber was written for the
+    mockup and has <em>not</em> been confirmed — figures, timelines, pricing and narrative detail.
+    Hover a highlight to see what needs checking. This page must not go live until every highlight is
+    verified and the <code>.unverified</code> class is removed.
+  </div>
+</div>
+
+
+  <!-- ========================================================== intro -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="overline">Services</p>
+        <h1>Four practices we can show you shipped</h1>
+        <p class="lead muted">
+          Each one below is something we've delivered end-to-end for a paying client,
+          not a capability we'd like to try. What you get, what we build it with, and
+          how long it usually takes — stated up front.
+        </p>
+      </div>
+      <div class="row row--wrap">
+        <a class="btn btn--primary" href="contact.html">
+          Start a Project
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--outline" href="work.html">See the work behind these</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ custom software -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
+        <div class="reveal">
+          <p class="overline">01 — Custom software</p>
+          <h2 style="margin-top:.75rem">Line-of-business systems, built around your actual process</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            Most teams outgrow spreadsheets and off-the-shelf tools in the same way:
+            the tool can't express one rule that matters, so the workaround becomes
+            the process. We build the system that holds the rule properly — with
+            roles, audit trails and reporting that match how the work really runs.
+          </p>
+          <div class="stack" style="margin-top:2rem">
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Timeline</span>
+              <p class="small"><span class="unverified" title="Unverified: invented for the mockup.">6–12 weeks</span> to a production v1, depending on how many roles and integrations are in scope.</p>
+            </div>
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Shipped</span>
+              <p class="small">Sri ASK Residency RBMS, SchoolOS, and a venue/mandapam booking SaaS.</p>
+            </div>
+          </div>
+          <p style="margin-top:1.5rem">
+            <a class="small accent" style="font-weight:600" href="service-detail.html">Read the full custom software breakdown →</a>
+          </p>
+        </div>
+
+        <div class="card reveal" data-delay="60">
+          <h3>What you get</h3>
+          <div class="prose" style="margin-top:1rem">
+            <ul>
+              <li>A written scope that says what v1 includes <em>and</em> excludes, agreed before we build.</li>
+              <li>Data model and role/permission design, reviewed with you before code.</li>
+              <li>The application itself — server-enforced access control, not UI-hidden buttons.</li>
+              <li>An admin surface for the people who run the business day to day.</li>
+              <li>Reporting and exports that finance or ops can actually use.</li>
+              <li>The repository, CI pipeline, environments and handover documentation.</li>
+            </ul>
+          </div>
+          <h3 style="margin-top:2rem">Stack</h3>
+          <div class="strip" style="margin-top:1rem">
+            <span class="badge">Next.js</span>
+            <span class="badge">React</span>
+            <span class="badge">TypeScript</span>
+            <span class="badge">Node.js</span>
+            <span class="badge">PostgreSQL</span>
+            <span class="badge">Prisma</span>
+            <span class="badge">OpenAPI</span>
+            <span class="badge">GitHub Actions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ AI & intelligent systems -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
+        <div class="reveal">
+          <p class="overline">02 — AI &amp; intelligent systems</p>
+          <h2 style="margin-top:.75rem">Retrieval and extraction wired into your real data</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            We build the unglamorous kind of AI feature: search that finds the right
+            document, extraction that turns a PDF into a row, an assistant that answers
+            from your records instead of guessing. We'll tell you where the model is
+            unreliable and what we did about it, because that's the part that decides
+            whether it survives contact with users.
+          </p>
+          <div class="stack" style="margin-top:2rem">
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Timeline</span>
+              <p class="small">2–4 weeks for a scoped pilot with an evaluation set; 8–14 weeks to production.</p>
+            </div>
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Honest limit</span>
+              <p class="small">If a rules engine or a good query would do the job better, we'll say so before you pay for a model.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reveal" data-delay="60">
+          <h3>What you get</h3>
+          <div class="prose" style="margin-top:1rem">
+            <ul>
+              <li>A retrieval pipeline over your documents or records — chunking, embeddings, and a store you own.</li>
+              <li>An evaluation set built from your real cases, so quality is measured, not asserted.</li>
+              <li>Guardrails: grounding, citations back to source, and refusal behaviour when the answer isn't there.</li>
+              <li>Cost and latency budgets per request, monitored after launch.</li>
+              <li>A fallback path for when the model is down or wrong.</li>
+              <li>Plain-English documentation of what the system can and cannot be trusted with.</li>
+            </ul>
+          </div>
+          <h3 style="margin-top:2rem">Stack</h3>
+          <div class="strip" style="margin-top:1rem">
+            <span class="badge">Python</span>
+            <span class="badge">TypeScript</span>
+            <span class="badge">pgvector</span>
+            <span class="badge">RAG</span>
+            <span class="badge">Evals</span>
+            <span class="badge">Queues</span>
+            <span class="badge">FastAPI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== web & mobile apps -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
+        <div class="reveal">
+          <p class="overline">03 — Web &amp; mobile apps</p>
+          <h2 style="margin-top:.75rem">From first screen to store release, and the release after that</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            Responsive web and cross-platform mobile from one codebase where that's the
+            right call, and native where it isn't. We treat performance and accessibility
+            as build requirements rather than a later pass — it's considerably cheaper
+            that way, and it's the difference between an app that demos well and one
+            that holds up on a mid-range Android on patchy network.
+          </p>
+          <div class="stack" style="margin-top:2rem">
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Timeline</span>
+              <p class="small">6 weeks to a usable MVP on a staging URL; 10–16 weeks to store submission.</p>
+            </div>
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Included</span>
+              <p class="small">Store listing setup, build signing, and the first two release cycles with us on hand.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reveal" data-delay="60">
+          <h3>What you get</h3>
+          <div class="prose" style="margin-top:1rem">
+            <ul>
+              <li>Clickable flows and screens before we build them, so changes stay cheap.</li>
+              <li>A component library and design tokens — one button, one input, one card.</li>
+              <li>Web build meeting Core Web Vitals on real devices, not just on a laptop.</li>
+              <li>iOS and Android builds from a shared codebase, with over-the-air update support.</li>
+              <li>Offline and poor-network behaviour designed deliberately, not left to chance.</li>
+              <li>Keyboard and screen-reader accessibility verified before launch.</li>
+            </ul>
+          </div>
+          <h3 style="margin-top:2rem">Stack</h3>
+          <div class="strip" style="margin-top:1rem">
+            <span class="badge">React</span>
+            <span class="badge">Next.js</span>
+            <span class="badge">React Native</span>
+            <span class="badge">Expo</span>
+            <span class="badge">TypeScript</span>
+            <span class="badge">Tailwind</span>
+            <span class="badge">Playwright</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================= infrastructure & security -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:start">
+        <div class="reveal">
+          <p class="overline">04 — Infrastructure &amp; security</p>
+          <h2 style="margin-top:.75rem">Set up once, properly, so releases stop being events</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            Deployments that need a specific person awake are a business risk, not an
+            engineering preference. We put in the pipeline, the environments, the
+            backups and the access control — then prove the restore works rather than
+            assuming it does. This is also the work we do on other people's codebases,
+            not only our own.
+          </p>
+          <div class="stack" style="margin-top:2rem">
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Timeline</span>
+              <p class="small"><span class="unverified" title="Unverified: invented for the mockup.">1–3 weeks</span> for a standard setup or hardening pass on an existing system.</p>
+            </div>
+            <div class="row" style="align-items:flex-start">
+              <span class="badge">Shipped</span>
+              <p class="small">CloudUnify — a multi-cloud control plane with cost and access visibility in one view.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reveal" data-delay="60">
+          <h3>What you get</h3>
+          <div class="prose" style="margin-top:1rem">
+            <ul>
+              <li>CI/CD that gates every merge on typecheck, lint, build and tests.</li>
+              <li>Separate development, staging and production environments with real secret management.</li>
+              <li>Automated database backups, with a restore we have actually run in front of you.</li>
+              <li>Role-based access and least-privilege credentials across services.</li>
+              <li>Monitoring, error tracking and alerts that reach a human.</li>
+              <li>A documented rollback path, known before the first deploy — not during the first incident.</li>
+            </ul>
+          </div>
+          <h3 style="margin-top:2rem">Stack</h3>
+          <div class="strip" style="margin-top:1rem">
+            <span class="badge">GitHub Actions</span>
+            <span class="badge">Docker</span>
+            <span class="badge">PostgreSQL</span>
+            <span class="badge">Linux VPS</span>
+            <span class="badge">Cloudflare</span>
+            <span class="badge">Terraform</span>
+            <span class="badge">Sentry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== engagement -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">How engagements run</p>
+        <h2>Same four steps, whichever practice you start with</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <h4>Scope</h4>
+          <p class="small muted" style="margin-top:.5rem">We map the problem, the users and the constraints, then write down what v1 will and won't include.</p>
+        </div>
+        <div class="step reveal" data-delay="60">
+          <h4>Design</h4>
+          <p class="small muted" style="margin-top:.5rem">Flows and screens you can click before we build them, so changes are cheap.</p>
+        </div>
+        <div class="step reveal" data-delay="120">
+          <h4>Build</h4>
+          <p class="small muted" style="margin-top:.5rem">Weekly working software on a staging URL. You see progress, not status reports.</p>
+        </div>
+        <div class="step reveal" data-delay="180">
+          <h4>Ship &amp; support</h4>
+          <p class="small muted" style="margin-top:.5rem">Deploy, monitor, hand over the keys and stay on for the settling-in period.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Not sure which of the four you need?</h2>
+        <p class="lead">Describe the problem in your own words. We'll tell you which practice fits, roughly what it costs, and whether we're the right team for it.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A product studio in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <!-- Label fixed: nav and footer both say "Work" now. -->
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
