@@ -737,6 +737,51 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/chat/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your chat conversations (DMs + project channels), most recent first */
+        get: operations["adminListConversations"];
+        put?: never;
+        /**
+         * Open (or create) a DM with a user, or a channel for a project
+         * @description Idempotent. `userId` opens the one-to-one DM between you and that user;
+         *     `projectId` opens that project's channel and joins you to it. Exactly one
+         *     must be given.
+         */
+        post: operations["adminOpenConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/chat/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Message history for a conversation (keyset, oldest→newest in the page) */
+        get: operations["adminListMessages"];
+        put?: never;
+        /**
+         * Send a message to a conversation
+         * @description `clientNonce` makes sends idempotent: re-posting after a dropped ack
+         *     returns the original message instead of creating a duplicate.
+         */
+        post: operations["adminPostMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/dashboard": {
         parameters: {
             query?: never;
@@ -1505,6 +1550,52 @@ export interface components {
             attachmentId: string;
             /** @description Public URL of the stored file */
             url: string;
+        };
+        ChatUser: {
+            id: string;
+            name: string;
+            role: string;
+            avatarUrl?: string | null;
+        };
+        ChatMessage: {
+            id: string;
+            conversationId: string;
+            body: string;
+            sender: components["schemas"]["ChatUser"];
+            clientNonce?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ChatMessagePage: {
+            data: components["schemas"]["ChatMessage"][];
+            /** @description Cursor for the next (older) page; null when at the start. */
+            nextBefore?: string | null;
+        };
+        ChatConversation: {
+            id: string;
+            /** @description dm | channel */
+            type: string;
+            /** @description Display name (channel name */
+            title: string;
+            projectId?: string | null;
+            members: components["schemas"]["ChatUser"][];
+            lastMessage?: components["schemas"]["ChatMessage"];
+            unreadCount: number;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ChatConversationList: {
+            data: components["schemas"]["ChatConversation"][];
+        };
+        OpenConversation: {
+            /** @description Open a DM with this user */
+            userId?: string;
+            /** @description Open this project's channel */
+            projectId?: string;
+        };
+        PostMessage: {
+            body: string;
+            clientNonce?: string;
         };
         RecordPageView: {
             path: string;
@@ -3366,6 +3457,118 @@ export interface operations {
             };
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListConversations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Your conversations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatConversationList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminOpenConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpenConversation"];
+            };
+        };
+        responses: {
+            /** @description The conversation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatConversation"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListMessages: {
+        parameters: {
+            query?: {
+                /** @description Return messages older than this message id (for scroll-back). */
+                before?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessagePage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminPostMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostMessage"];
+            };
+        };
+        responses: {
+            /** @description The stored message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalError"];
         };
     };

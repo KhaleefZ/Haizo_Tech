@@ -86,6 +86,14 @@ export type UpdateClient = Schemas['UpdateClient'];
 export type DashboardStats = Schemas['DashboardStats'];
 export type RecordPageView = Schemas['RecordPageView'];
 export type UploadResponse = Schemas['UploadResponse'];
+
+export type ChatUser = Schemas['ChatUser'];
+export type ChatMessage = Schemas['ChatMessage'];
+export type ChatMessagePage = Schemas['ChatMessagePage'];
+export type ChatConversation = Schemas['ChatConversation'];
+export type ChatConversationList = Schemas['ChatConversationList'];
+export type OpenConversation = Schemas['OpenConversation'];
+export type PostMessage = Schemas['PostMessage'];
 export type AnalyticsSummary = Schemas['AnalyticsSummary'];
 export type DailyViews = Schemas['DailyViews'];
 export type PathViews = Schemas['PathViews'];

@@ -58,6 +58,12 @@ import { adminGetDashboard } from '../controllers/dashboard.controller.js';
 import { adminGetAnalytics } from '../controllers/analytics.controller.js';
 import { adminUpload } from '../controllers/upload.controller.js';
 import {
+  adminListConversations,
+  adminOpenConversation,
+  adminListMessages,
+  adminPostMessage,
+} from '../controllers/chat.controller.js';
+import {
   adminListNotifications,
   adminUnreadCount,
   adminMarkNotificationRead,
@@ -106,6 +112,10 @@ const superMutate = [...superOnly, requireCsrf] as const;
 
 // Self-service: any signed-in user acting on their OWN account. No role gate.
 const selfMutate = [requireAuth, requireCsrf] as const;
+
+// Chat is for every signed-in staff member (developers included), so it's gated
+// by authentication alone — not the role-based `manage`.
+const authed = [requireAuth] as const;
 
 const router: ExpressRouter = Router();
 
@@ -222,6 +232,16 @@ router.post('/admin/uploads', ...selfMutate, adminUpload);
 
 // operationId: adminGetAnalytics
 router.get('/admin/analytics', ...manage, adminGetAnalytics);
+
+// Chat — available to all signed-in staff (authed reads, +CSRF on writes).
+// operationId: adminListConversations
+router.get('/admin/chat/conversations', ...authed, adminListConversations);
+// operationId: adminOpenConversation
+router.post('/admin/chat/conversations', ...selfMutate, adminOpenConversation);
+// operationId: adminListMessages
+router.get('/admin/chat/conversations/:id/messages', ...authed, adminListMessages);
+// operationId: adminPostMessage
+router.post('/admin/chat/conversations/:id/messages', ...selfMutate, adminPostMessage);
 
 // operationId: adminGetDashboard
 router.get('/admin/dashboard', ...manage, adminGetDashboard);

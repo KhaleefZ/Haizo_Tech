@@ -66,6 +66,10 @@ model User {
   blogs         Blog[]         @relation("BlogAuthor")
   notifications Notification[] @relation("UserNotifications")
   tasks         Task[]         @relation("TaskAssignee")
+
+  // Phase 7 (additive).
+  conversationMemberships ConversationMember[] @relation("ConversationMemberships")
+  messagesSent            Message[]            @relation("MessagesSent")
 }
 
 model Work {
@@ -121,8 +125,9 @@ model Project {
   startDate   DateTime?
   status      String    @default("Planning")
 
-  columns Column[]
-  client  Client?  @relation(fields: [clientId], references: [id])
+  columns       Column[]
+  client        Client?        @relation(fields: [clientId], references: [id])
+  conversations Conversation[] // Phase 7 (additive) — project channels
 }
 
 model Column {
@@ -288,7 +293,66 @@ model Attachment {
   uploadedById String?
   createdAt    DateTime @default(now())
 
+  // Phase 7 (additive). When set, this upload is an attachment on a chat message.
+  messageId String?
+
   @@index([status])
+  @@index([messageId])
+}
+
+// ===========================================================================
+// PHASE 7 — internal team chat. Additive.
+//
+// Two conversation kinds share one table: direct messages (2+ members, no name)
+// and project channels (named, bound to a Project). Membership is explicit so
+// room authorization is a simple "is this user a member" check on both the REST
+// and socket sides. `Message.clientNonce` is the reconnect-safety mechanism: the
+// client stamps each send with a nonce, the unique index makes a re-send after a
+// dropped ack a no-op instead of a duplicate.
+// ===========================================================================
+
+model Conversation {
+  id        String   @id @default(uuid())
+  type      String   @default("dm") // dm | channel
+  name      String? // channel name; DMs derive their title from members
+  projectId String? // set for a project channel
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  ConversationMember[]
+  messages Message[]
+  project  Project?             @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+}
+
+model ConversationMember {
+  id             String    @id @default(uuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime? // everything at/before this is "read" — drives unread counts + receipts
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation("ConversationMemberships", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  senderId       String
+  body           String
+  clientNonce    String? // idempotency key: a resend after a lost ack collides here
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, clientNonce])
+  @@index([conversationId, createdAt])
 }
 
 // ===========================================================================

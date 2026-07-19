@@ -16,7 +16,8 @@ import type { Server as HttpServer } from 'node:http';
 import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import { authenticateHandshake, SocketAuthError } from './auth.js';
-import { setIo } from './io.js';
+import { setIo, conversationRoom } from './io.js';
+import { prisma } from '../lib/prisma.js';
 import type { AuthUser } from '../middleware/auth.js';
 
 interface SocketData {
@@ -56,6 +57,16 @@ export function attachSockets(httpServer: HttpServer): Server {
     // socket ids. Disjoint from the chat/presence prefixes reserved in the plan.
     void socket.join(`user_${user.id}`);
     logger.debug({ userId: user.id, socketId: socket.id }, 'socket connected');
+
+    // Join every conversation the user belongs to, so chat messages reach them in
+    // real time. New conversations opened mid-session add the socket via
+    // joinUserToConversation().
+    prisma.conversationMember
+      .findMany({ where: { userId: user.id }, select: { conversationId: true } })
+      .then((memberships) => {
+        for (const m of memberships) void socket.join(conversationRoom(m.conversationId));
+      })
+      .catch((err: unknown) => logger.error({ err, userId: user.id }, 'chat room join failed'));
   });
 
   // Disconnect sockets whose access token has expired since the handshake.

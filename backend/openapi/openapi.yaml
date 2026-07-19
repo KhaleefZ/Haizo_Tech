@@ -1188,6 +1188,96 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/chat/conversations:
+    get:
+      operationId: adminListConversations
+      summary: Your chat conversations (DMs + project channels), most recent first
+      tags: [Chat]
+      responses:
+        '200':
+          description: Your conversations
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatConversationList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminOpenConversation
+      summary: Open (or create) a DM with a user, or a channel for a project
+      description: |
+        Idempotent. `userId` opens the one-to-one DM between you and that user;
+        `projectId` opens that project's channel and joins you to it. Exactly one
+        must be given.
+      tags: [Chat]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpenConversation' }
+      responses:
+        '200':
+          description: The conversation
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatConversation' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/chat/conversations/{id}/messages:
+    get:
+      operationId: adminListMessages
+      summary: Message history for a conversation (keyset, oldest→newest in the page)
+      tags: [Chat]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+        - name: before
+          in: query
+          required: false
+          description: Return messages older than this message id (for scroll-back).
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100, default: 30 }
+      responses:
+        '200':
+          description: A page of messages
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatMessagePage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminPostMessage
+      summary: Send a message to a conversation
+      description: |
+        `clientNonce` makes sends idempotent: re-posting after a dropped ack
+        returns the original message instead of creating a duplicate.
+      tags: [Chat]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostMessage' }
+      responses:
+        '200':
+          description: The stored message
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatMessage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/dashboard:
     get:
       operationId: adminGetDashboard
@@ -2476,6 +2566,83 @@ components:
       properties:
         attachmentId: { type: string }
         url: { type: string, description: Public URL of the stored file }
+
+    ChatUser:
+      type: object
+      required: [id, name, role]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role: { type: string }
+        avatarUrl: { type: string, nullable: true }
+
+    ChatMessage:
+      type: object
+      required: [id, conversationId, body, sender, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        conversationId: { type: string }
+        body: { type: string }
+        sender: { $ref: '#/components/schemas/ChatUser' }
+        clientNonce: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    ChatMessagePage:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ChatMessage' }
+        nextBefore:
+          type: string
+          nullable: true
+          description: Cursor for the next (older) page; null when at the start.
+
+    ChatConversation:
+      type: object
+      required: [id, type, title, members, unreadCount, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        type: { type: string, description: dm | channel }
+        title: { type: string, description: Display name (channel name, or the other member for a DM) }
+        projectId: { type: string, nullable: true }
+        members:
+          type: array
+          items: { $ref: '#/components/schemas/ChatUser' }
+        lastMessage:
+          $ref: '#/components/schemas/ChatMessage'
+          # Optional (omitted, not null) when the conversation has no messages yet.
+        unreadCount: { type: integer }
+        updatedAt: { type: string, format: date-time }
+
+    ChatConversationList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ChatConversation' }
+
+    OpenConversation:
+      type: object
+      additionalProperties: false
+      properties:
+        userId: { type: string, description: Open a DM with this user }
+        projectId: { type: string, description: Open this project's channel }
+
+    PostMessage:
+      type: object
+      required: [body]
+      additionalProperties: false
+      properties:
+        body: { type: string, minLength: 1, maxLength: 4000 }
+        clientNonce: { type: string, maxLength: 100 }
 
     RecordPageView:
       type: object
