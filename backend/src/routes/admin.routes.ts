@@ -13,6 +13,8 @@ import { Router } from 'express';
 import type { Router as ExpressRouter } from 'express';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { requireCsrf } from '../middleware/csrf.js';
+import { activityLogger } from '../middleware/activityLogger.js';
+import { adminListActivity } from '../controllers/activity.controller.js';
 import {
   adminListServices,
   adminGetService,
@@ -103,6 +105,13 @@ const superMutate = [...superOnly, requireCsrf] as const;
 const selfMutate = [requireAuth, requireCsrf] as const;
 
 const router: ExpressRouter = Router();
+
+// Records every successful admin mutation to the activity feed. Reads req.user at
+// response-finish time, after the per-route requireAuth has populated it.
+router.use(activityLogger);
+
+// operationId: adminListActivity
+router.get('/admin/activity', ...manage, adminListActivity);
 
 // operationId: adminListServices
 router.get('/admin/services', ...manage, adminListServices);

@@ -644,6 +644,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent admin activity (audit feed) */
+        get: operations["adminListActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/dashboard": {
         parameters: {
             query?: never;
@@ -1382,6 +1399,21 @@ export interface components {
         };
         UnreadCount: {
             count: number;
+        };
+        AdminActivity: {
+            id: string;
+            actorName?: string | null;
+            action: string;
+            entityType: string;
+            entityId?: string | null;
+            entityLabel?: string | null;
+            path?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdminActivityList: {
+            data: components["schemas"]["AdminActivity"][];
+            meta: components["schemas"]["PageMeta"];
         };
         DashboardStats: {
             newInquiries: number;
@@ -3081,6 +3113,32 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListActivity: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of activity events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminActivityList"];
+                };
             };
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];

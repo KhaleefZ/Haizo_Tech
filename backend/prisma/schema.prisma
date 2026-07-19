@@ -239,6 +239,23 @@ model Announcement {
   @@index([audience])
 }
 
+// Phase 5 (additive). An append-only audit trail of admin mutations, recorded by
+// a post-response middleware. `actorName`/`entityLabel` are denormalised so the
+// history survives the actor or entity being deleted — no FK to keep it durable.
+model ActivityEvent {
+  id          String   @id @default(uuid())
+  actorId     String?
+  actorName   String?
+  action      String // created | updated | deleted
+  entityType  String // service | project | task | ...
+  entityId    String?
+  entityLabel String?
+  path        String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 // ===========================================================================
 // PHASE 2 — content models.
 //

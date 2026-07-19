@@ -68,6 +68,7 @@ import type {
   DashboardStats,
   NotificationPage,
   UnreadCount,
+  AdminActivityList,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -272,6 +273,10 @@ export const api = {
   },
   dashboard: {
     get: () => request<DashboardStats>('GET', '/admin/dashboard'),
+  },
+  activity: {
+    list: (page = 1, pageSize = 50) =>
+      request<AdminActivityList>('GET', `/admin/activity?page=${page}&pageSize=${pageSize}`),
   },
   notifications: {
     list: (cursor?: string, limit = 20) => {

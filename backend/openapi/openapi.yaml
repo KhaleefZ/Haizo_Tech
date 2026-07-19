@@ -1084,6 +1084,24 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/activity:
+    get:
+      operationId: adminListActivity
+      summary: Recent admin activity (audit feed)
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of activity events
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminActivityList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/dashboard:
     get:
       operationId: adminGetDashboard
@@ -2315,6 +2333,30 @@ components:
       additionalProperties: false
       properties:
         count: { type: integer, minimum: 0 }
+
+    AdminActivity:
+      type: object
+      required: [id, action, entityType, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        actorName: { type: [string, 'null'] }
+        action: { type: string }
+        entityType: { type: string }
+        entityId: { type: [string, 'null'] }
+        entityLabel: { type: [string, 'null'] }
+        path: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+
+    AdminActivityList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminActivity' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
 
     DashboardStats:
       type: object

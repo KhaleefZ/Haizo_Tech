@@ -71,6 +71,7 @@ afterAll(async () => {
   await prisma.client.deleteMany({ where: { organization: { startsWith: 'P4bClient' } } });
   await prisma.announcement.deleteMany({ where: { title: { startsWith: 'P4bAnn' } } });
   await prisma.project.deleteMany({ where: { name: { startsWith: 'P4bProj' } } });
+  await prisma.activityEvent.deleteMany({ where: { actorName: { in: ['P4b Admin', 'P4b Dev'] } } });
   await prisma.user.deleteMany({
     where: { email: { in: [ADMIN.email, DEVU.email, 'p4c-pwtest@test.local'] } },
   });
@@ -379,6 +380,34 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('activity feed', () => {
+  it('auto-records admin mutations with actor + label; 403 for DEV', async () => {
+    expect((await request(app).get('/v1/admin/activity').set('Cookie', dev.cookie)).status).toBe(403);
+
+    const c = await request(app)
+      .post('/v1/admin/clients')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ organization: 'P4bActivity Co', contactName: 'Lee' });
+    expect(c.status).toBe(201);
+
+    // The logger records on res 'finish', fire-and-forget — give it a moment.
+    await new Promise((r) => setTimeout(r, 250));
+
+    const feed = await request(app).get('/v1/admin/activity').set('Cookie', admin.cookie);
+    expect(feed.status).toBe(200);
+    const ev = feed.body.data.find(
+      (e: { entityType: string; entityLabel: string }) =>
+        e.entityType === 'client' && e.entityLabel === 'P4bActivity Co',
+    );
+    expect(ev).toBeTruthy();
+    expect(ev.action).toBe('created');
+    expect(ev.actorName).toBe('P4b Admin');
+
+    await prisma.client.deleteMany({ where: { organization: 'P4bActivity Co' } });
   });
 });
 

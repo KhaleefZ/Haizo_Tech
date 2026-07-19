@@ -47,6 +47,9 @@ export const NAV: NavGroup[] = [
   },
   {
     heading: 'System',
-    items: [{ label: 'Settings', href: '/settings', icon: 'settings' }],
+    items: [
+      { label: 'Activity', href: '/activity', icon: 'activity', roles: ['SUPER_ADMIN', 'MANAGER'] },
+      { label: 'Settings', href: '/settings', icon: 'settings' },
+    ],
   },
 ];
