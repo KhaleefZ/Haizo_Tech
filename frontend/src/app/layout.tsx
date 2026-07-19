@@ -37,8 +37,10 @@ const organizationLd = {
   telephone: CONTACT.phoneE164,
   address: {
     '@type': 'PostalAddress',
+    streetAddress: CONTACT.street,
     addressLocality: CONTACT.city,
     addressRegion: CONTACT.region,
+    postalCode: CONTACT.postalCode,
     addressCountry: CONTACT.country,
   },
   sameAs: SOCIALS.map((s) => s.href),

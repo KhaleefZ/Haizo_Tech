@@ -9,10 +9,15 @@ export const CONTACT = {
   email: 'info@haizotech.com',
   phoneDisplay: '+91 8807341655',
   phoneE164: '+918807341655',
+  street: '3A, Udyam Nagar, Podanur',
   city: 'Coimbatore',
   region: 'Tamil Nadu',
+  postalCode: '641023',
   country: 'IN',
 } as const;
+
+/** Single-line form, for footers and meta descriptions. */
+export const ADDRESS_LINE = `${CONTACT.street}, ${CONTACT.city}, ${CONTACT.region} - ${CONTACT.postalCode}`;
 
 function LinkedInIcon() {
   return (

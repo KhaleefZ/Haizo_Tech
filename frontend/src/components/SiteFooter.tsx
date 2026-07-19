@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { CONTACT, SOCIALS } from '@/lib/contact';
+import { ADDRESS_LINE, CONTACT, SOCIALS } from '@/lib/contact';
 
 export function SiteFooter() {
   return (
@@ -64,7 +64,7 @@ export function SiteFooter() {
           <span className="flex flex-wrap gap-4">
             <a href={`mailto:${CONTACT.email}`} className="hover:text-white">{CONTACT.email}</a>
             <a href={`tel:${CONTACT.phoneE164}`} className="hover:text-white">{CONTACT.phoneDisplay}</a>
-            <span>Coimbatore, Tamil Nadu, India</span>
+            <span>{ADDRESS_LINE}</span>
           </span>
         </div>
       </div>
