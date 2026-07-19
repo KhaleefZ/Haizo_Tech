@@ -1,4 +1,5 @@
 import type {
+  ChatContactList,
   ChatConversation,
   ChatConversationList,
   ChatMessage,
@@ -48,6 +49,13 @@ function titleFor(
 }
 
 export const chatService = {
+  async listContacts(userId: string): Promise<ChatContactList> {
+    const users = await chatRepository.listContacts(userId);
+    return {
+      data: users.map((u) => ({ id: u.id, name: u.name, role: u.role, avatarUrl: u.avatarUrl })),
+    };
+  },
+
   async listConversations(userId: string): Promise<ChatConversationList> {
     const rows = await chatRepository.listForUser(userId);
     const data: ChatConversation[] = await Promise.all(

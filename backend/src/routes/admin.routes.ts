@@ -58,6 +58,7 @@ import { adminGetDashboard } from '../controllers/dashboard.controller.js';
 import { adminGetAnalytics } from '../controllers/analytics.controller.js';
 import { adminUpload } from '../controllers/upload.controller.js';
 import {
+  adminListChatContacts,
   adminListConversations,
   adminOpenConversation,
   adminListMessages,
@@ -234,6 +235,8 @@ router.post('/admin/uploads', ...selfMutate, adminUpload);
 router.get('/admin/analytics', ...manage, adminGetAnalytics);
 
 // Chat — available to all signed-in staff (authed reads, +CSRF on writes).
+// operationId: adminListChatContacts
+router.get('/admin/chat/contacts', ...authed, adminListChatContacts);
 // operationId: adminListConversations
 router.get('/admin/chat/conversations', ...authed, adminListConversations);
 // operationId: adminOpenConversation

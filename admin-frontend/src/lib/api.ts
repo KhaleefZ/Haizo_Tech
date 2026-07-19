@@ -72,6 +72,12 @@ import type {
   SearchResults,
   AnalyticsSummary,
   UploadResponse,
+  ChatConversationList,
+  ChatContactList,
+  ChatConversation,
+  ChatMessagePage,
+  ChatMessage,
+  OpenConversation,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -301,6 +307,25 @@ export const api = {
       form.append('file', file);
       return uploadRequest<UploadResponse>('/admin/uploads', form);
     },
+  },
+  chat: {
+    contacts: () => request<ChatContactList>('GET', '/admin/chat/contacts'),
+    conversations: () => request<ChatConversationList>('GET', '/admin/chat/conversations'),
+    open: (input: OpenConversation) =>
+      request<ChatConversation>('POST', '/admin/chat/conversations', input),
+    messages: (conversationId: string, before?: string, limit = 30) => {
+      const q = new URLSearchParams({ limit: String(limit) });
+      if (before) q.set('before', before);
+      return request<ChatMessagePage>(
+        'GET',
+        `/admin/chat/conversations/${conversationId}/messages?${q.toString()}`,
+      );
+    },
+    post: (conversationId: string, body: string, clientNonce: string) =>
+      request<ChatMessage>('POST', `/admin/chat/conversations/${conversationId}/messages`, {
+        body,
+        clientNonce,
+      }),
   },
   activity: {
     list: (page = 1, pageSize = 50) =>

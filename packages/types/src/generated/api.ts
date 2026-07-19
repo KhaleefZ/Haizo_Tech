@@ -760,6 +760,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/chat/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Staff you can start a direct message with (everyone but you) */
+        get: operations["adminListChatContacts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/chat/conversations/{id}/messages": {
         parameters: {
             query?: never;
@@ -1586,6 +1603,9 @@ export interface components {
         };
         ChatConversationList: {
             data: components["schemas"]["ChatConversation"][];
+        };
+        ChatContactList: {
+            data: components["schemas"]["ChatUser"][];
         };
         OpenConversation: {
             /** @description Open a DM with this user */
@@ -3507,6 +3527,28 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListChatContacts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Staff directory */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatContactList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
             500: components["responses"]["InternalError"];
         };
     };

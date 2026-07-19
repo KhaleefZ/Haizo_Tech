@@ -3,6 +3,15 @@ import { chatService } from '../services/chat.service.js';
 import type { OpenConversation, PostMessage } from '@haizo/types';
 import { unauthenticated } from '../lib/errors.js';
 
+export async function adminListChatContacts(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!req.user) throw unauthenticated();
+    res.json(await chatService.listContacts(req.user.id));
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function adminListConversations(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.user) throw unauthenticated();

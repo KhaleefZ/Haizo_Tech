@@ -1225,6 +1225,20 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/chat/contacts:
+    get:
+      operationId: adminListChatContacts
+      summary: Staff you can start a direct message with (everyone but you)
+      tags: [Chat]
+      responses:
+        '200':
+          description: Staff directory
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatContactList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/chat/conversations/{id}/messages:
     get:
       operationId: adminListMessages
@@ -2628,6 +2642,15 @@ components:
         data:
           type: array
           items: { $ref: '#/components/schemas/ChatConversation' }
+
+    ChatContactList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ChatUser' }
 
     OpenConversation:
       type: object

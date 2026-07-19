@@ -8,6 +8,15 @@ const withMembers = {
 } as const;
 
 export const chatRepository = {
+  /** Everyone but the caller — the DM target directory. */
+  listContacts(excludeUserId: string) {
+    return prisma.user.findMany({
+      where: { id: { not: excludeUserId } },
+      select: userSelect,
+      orderBy: { name: 'asc' },
+    });
+  },
+
   /** Conversations the user belongs to, most-recently-active first, with members + last message. */
   listForUser(userId: string) {
     return prisma.conversation.findMany({
