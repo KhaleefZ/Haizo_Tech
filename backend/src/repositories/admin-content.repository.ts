@@ -33,4 +33,51 @@ export const adminContentRepository = {
   deleteService(id: string) {
     return prisma.service.delete({ where: { id } });
   },
+
+  /* ---- Industries ---- */
+
+  listIndustries({ skip, take }: { skip: number; take: number }) {
+    return prisma.$transaction([
+      prisma.industry.findMany({ orderBy: [{ order: 'asc' }, { name: 'asc' }], skip, take }),
+      prisma.industry.count(),
+    ]);
+  },
+
+  findIndustryById(id: string) {
+    return prisma.industry.findUnique({ where: { id } });
+  },
+
+  createIndustry(data: Prisma.IndustryCreateInput) {
+    return prisma.industry.create({ data });
+  },
+
+  updateIndustry(id: string, data: Prisma.IndustryUpdateInput) {
+    return prisma.industry.update({ where: { id }, data });
+  },
+
+  deleteIndustry(id: string) {
+    return prisma.industry.delete({ where: { id } });
+  },
+
+  /* ---- Work categories ---- */
+
+  listWorkCategories() {
+    return prisma.workCategory.findMany({ orderBy: [{ order: 'asc' }, { name: 'asc' }] });
+  },
+
+  findWorkCategoryById(id: string) {
+    return prisma.workCategory.findUnique({ where: { id } });
+  },
+
+  createWorkCategory(data: Prisma.WorkCategoryCreateInput) {
+    return prisma.workCategory.create({ data });
+  },
+
+  updateWorkCategory(id: string, data: Prisma.WorkCategoryUpdateInput) {
+    return prisma.workCategory.update({ where: { id }, data });
+  },
+
+  deleteWorkCategory(id: string) {
+    return prisma.workCategory.delete({ where: { id } });
+  },
 };

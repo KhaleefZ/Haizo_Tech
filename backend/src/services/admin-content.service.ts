@@ -10,7 +10,20 @@
  *     constraint error into our error envelope.
  */
 import { Prisma } from '@prisma/client';
-import type { AdminService, AdminServiceList, CreateService, UpdateService } from '@haizo/types';
+import type {
+  AdminService,
+  AdminServiceList,
+  CreateService,
+  UpdateService,
+  AdminIndustry,
+  AdminIndustryList,
+  CreateIndustry,
+  UpdateIndustry,
+  AdminWorkCategory,
+  AdminWorkCategoryList,
+  CreateWorkCategory,
+  UpdateWorkCategory,
+} from '@haizo/types';
 import { adminContentRepository } from '../repositories/admin-content.repository.js';
 import { conflict, notFound } from '../lib/errors.js';
 import { revalidate, tags } from '../lib/revalidate.js';
@@ -26,6 +39,15 @@ function revalidateServices(slug?: string): void {
   const t: string[] = [tags.services, tags.home, tags.sitemap];
   if (slug) t.push(tags.service(slug));
   void revalidate('service.changed', t);
+}
+
+function revalidateIndustries(): void {
+  void revalidate('industry.changed', [tags.industries, tags.home, tags.sitemap]);
+}
+
+function revalidateWorks(): void {
+  // Categories drive the public Work filter, so a category change is a works change.
+  void revalidate('work-category.changed', [tags.works, tags.home]);
 }
 
 type ServiceRow = NonNullable<
@@ -153,4 +175,160 @@ export const adminContentService = {
       throw err;
     }
   },
+
+  /* ---- Industries ---- */
+
+  async listIndustries(page: number, pageSize: number): Promise<AdminIndustryList> {
+    const [rows, total] = await adminContentRepository.listIndustries({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      data: rows.map(toAdminIndustry),
+      meta: { page, pageSize, total, totalPages, hasNext: page < totalPages },
+    };
+  },
+
+  async getIndustry(id: string): Promise<AdminIndustry> {
+    const row = await adminContentRepository.findIndustryById(id);
+    if (!row) throw notFound('Industry');
+    return toAdminIndustry(row);
+  },
+
+  async createIndustry(input: CreateIndustry): Promise<AdminIndustry> {
+    try {
+      const row = await adminContentRepository.createIndustry({
+        slug: input.slug,
+        name: input.name,
+        capability: input.capability,
+        icon: input.icon ?? null,
+        order: input.order ?? 0,
+        published: input.published ?? true,
+      });
+      revalidateIndustries();
+      return toAdminIndustry(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('An industry with that slug already exists');
+      throw err;
+    }
+  },
+
+  async updateIndustry(id: string, input: UpdateIndustry): Promise<AdminIndustry> {
+    const existing = await adminContentRepository.findIndustryById(id);
+    if (!existing) throw notFound('Industry');
+
+    const data: Prisma.IndustryUpdateInput = {
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.capability !== undefined ? { capability: input.capability } : {}),
+      ...(input.icon !== undefined ? { icon: input.icon } : {}),
+      ...(input.order !== undefined ? { order: input.order } : {}),
+      ...(input.published !== undefined ? { published: input.published } : {}),
+    };
+
+    try {
+      const row = await adminContentRepository.updateIndustry(id, data);
+      revalidateIndustries();
+      return toAdminIndustry(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('An industry with that slug already exists');
+      throw err;
+    }
+  },
+
+  async deleteIndustry(id: string): Promise<void> {
+    try {
+      await adminContentRepository.deleteIndustry(id);
+      revalidateIndustries();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw notFound('Industry');
+      }
+      throw err;
+    }
+  },
+
+  /* ---- Work categories ---- */
+
+  async listWorkCategories(): Promise<AdminWorkCategoryList> {
+    const rows = await adminContentRepository.listWorkCategories();
+    return { data: rows.map(toAdminWorkCategory) };
+  },
+
+  async createWorkCategory(input: CreateWorkCategory): Promise<AdminWorkCategory> {
+    try {
+      const row = await adminContentRepository.createWorkCategory({
+        name: input.name,
+        order: input.order ?? 0,
+      });
+      revalidateWorks();
+      return toAdminWorkCategory(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A category with that name already exists');
+      throw err;
+    }
+  },
+
+  async updateWorkCategory(id: string, input: UpdateWorkCategory): Promise<AdminWorkCategory> {
+    const existing = await adminContentRepository.findWorkCategoryById(id);
+    if (!existing) throw notFound('Category');
+
+    const data: Prisma.WorkCategoryUpdateInput = {
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.order !== undefined ? { order: input.order } : {}),
+    };
+
+    try {
+      const row = await adminContentRepository.updateWorkCategory(id, data);
+      revalidateWorks();
+      return toAdminWorkCategory(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A category with that name already exists');
+      throw err;
+    }
+  },
+
+  async deleteWorkCategory(id: string): Promise<void> {
+    try {
+      await adminContentRepository.deleteWorkCategory(id);
+      revalidateWorks();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw notFound('Category');
+      }
+      throw err;
+    }
+  },
 };
+
+type IndustryRow = NonNullable<
+  Awaited<ReturnType<typeof adminContentRepository.findIndustryById>>
+>;
+type WorkCategoryRow = NonNullable<
+  Awaited<ReturnType<typeof adminContentRepository.findWorkCategoryById>>
+>;
+
+function toAdminIndustry(row: IndustryRow): AdminIndustry {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    capability: row.capability,
+    icon: row.icon,
+    order: row.order,
+    published: row.published,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function toAdminWorkCategory(row: WorkCategoryRow): AdminWorkCategory {
+  return {
+    id: row.id,
+    name: row.name,
+    order: row.order,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}

@@ -18,6 +18,14 @@ import type {
   AdminServiceList,
   CreateService,
   UpdateService,
+  AdminIndustry,
+  AdminIndustryList,
+  CreateIndustry,
+  UpdateIndustry,
+  AdminWorkCategory,
+  AdminWorkCategoryList,
+  CreateWorkCategory,
+  UpdateWorkCategory,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -120,5 +128,21 @@ export const api = {
     update: (id: string, input: UpdateService) =>
       request<AdminService>('PATCH', `/admin/services/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/services/${id}`),
+  },
+  industries: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminIndustryList>('GET', `/admin/industries?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateIndustry) => request<AdminIndustry>('POST', '/admin/industries', input),
+    update: (id: string, input: UpdateIndustry) =>
+      request<AdminIndustry>('PATCH', `/admin/industries/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/industries/${id}`),
+  },
+  categories: {
+    list: () => request<AdminWorkCategoryList>('GET', '/admin/work-categories'),
+    create: (input: CreateWorkCategory) =>
+      request<AdminWorkCategory>('POST', '/admin/work-categories', input),
+    update: (id: string, input: UpdateWorkCategory) =>
+      request<AdminWorkCategory>('PATCH', `/admin/work-categories/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/work-categories/${id}`),
   },
 };

@@ -6,7 +6,14 @@
  */
 import type { NextFunction, Request, Response } from 'express';
 import { adminContentService } from '../services/admin-content.service.js';
-import type { CreateService, UpdateService } from '@haizo/types';
+import type {
+  CreateService,
+  UpdateService,
+  CreateIndustry,
+  UpdateIndustry,
+  CreateWorkCategory,
+  UpdateWorkCategory,
+} from '@haizo/types';
 
 export async function adminListServices(req: Request, res: Response, next: NextFunction) {
   try {
@@ -50,6 +57,95 @@ export async function adminUpdateService(req: Request, res: Response, next: Next
 export async function adminDeleteService(req: Request, res: Response, next: NextFunction) {
   try {
     await adminContentService.deleteService(String(req.params.id));
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* ---- Industries ---- */
+
+export async function adminListIndustries(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    res.json(await adminContentService.listIndustries(page, pageSize));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminGetIndustry(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.getIndustry(String(req.params.id)));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateIndustry(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.status(201).json(await adminContentService.createIndustry(req.body as CreateIndustry));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateIndustry(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(
+      await adminContentService.updateIndustry(String(req.params.id), req.body as UpdateIndustry),
+    );
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteIndustry(req: Request, res: Response, next: NextFunction) {
+  try {
+    await adminContentService.deleteIndustry(String(req.params.id));
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* ---- Work categories ---- */
+
+export async function adminListWorkCategories(_req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.listWorkCategories());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateWorkCategory(req: Request, res: Response, next: NextFunction) {
+  try {
+    res
+      .status(201)
+      .json(await adminContentService.createWorkCategory(req.body as CreateWorkCategory));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateWorkCategory(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(
+      await adminContentService.updateWorkCategory(
+        String(req.params.id),
+        req.body as UpdateWorkCategory,
+      ),
+    );
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteWorkCategory(req: Request, res: Response, next: NextFunction) {
+  try {
+    await adminContentService.deleteWorkCategory(String(req.params.id));
     res.status(204).end();
   } catch (err) {
     next(err);

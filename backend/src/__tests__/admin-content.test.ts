@@ -62,6 +62,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await prisma.service.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
+  await prisma.industry.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
+  await prisma.workCategory.deleteMany({ where: { name: { startsWith: 'P4bCat' } } });
   await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
   await prisma.$disconnect();
 });
@@ -195,5 +197,78 @@ describe('services CRUD', () => {
       .get(`/v1/admin/services/${createdId}`)
       .set('Cookie', admin.cookie);
     expect(after.status).toBe(404);
+  });
+});
+
+describe('industries CRUD', () => {
+  it('401 unauth, 403 for DEV', async () => {
+    expect((await request(app).get('/v1/admin/industries')).status).toBe(401);
+    expect((await request(app).get('/v1/admin/industries').set('Cookie', dev.cookie)).status).toBe(403);
+  });
+
+  it('creates (published by default), rejects duplicate slug, updates, deletes', async () => {
+    const create = await request(app)
+      .post('/v1/admin/industries')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ slug: `${SLUG_PREFIX}retail`, name: 'Retail', capability: 'POS and inventory.' });
+    expect(create.status).toBe(201);
+    expect(create.body).toMatchObject({ slug: `${SLUG_PREFIX}retail`, published: true });
+    const id = create.body.id;
+
+    const dup = await request(app)
+      .post('/v1/admin/industries')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ slug: `${SLUG_PREFIX}retail`, name: 'Dup', capability: 'x'.repeat(5) });
+    expect(dup.status).toBe(409);
+
+    const upd = await request(app)
+      .patch(`/v1/admin/industries/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ published: false, order: 9 });
+    expect(upd.status).toBe(200);
+    expect(upd.body).toMatchObject({ published: false, order: 9 });
+
+    const del = await request(app)
+      .delete(`/v1/admin/industries/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf);
+    expect(del.status).toBe(204);
+  });
+});
+
+describe('work categories CRUD', () => {
+  it('creates, rejects duplicate name, updates order, deletes', async () => {
+    const create = await request(app)
+      .post('/v1/admin/work-categories')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ name: 'P4bCat Mobile', order: 3 });
+    expect(create.status).toBe(201);
+    expect(create.body).toMatchObject({ name: 'P4bCat Mobile', order: 3 });
+    const id = create.body.id;
+
+    const dup = await request(app)
+      .post('/v1/admin/work-categories')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ name: 'P4bCat Mobile' });
+    expect(dup.status).toBe(409);
+
+    const upd = await request(app)
+      .patch(`/v1/admin/work-categories/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ order: 1 });
+    expect(upd.status).toBe(200);
+    expect(upd.body.order).toBe(1);
+
+    const del = await request(app)
+      .delete(`/v1/admin/work-categories/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf);
+    expect(del.status).toBe(204);
   });
 });

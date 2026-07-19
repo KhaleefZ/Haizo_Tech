@@ -405,6 +405,169 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/industries:
+    get:
+      operationId: adminListIndustries
+      summary: List all industries, including unpublished
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of industries
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminIndustryList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateIndustry
+      summary: Create an industry
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateIndustry' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminIndustry' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/industries/{id}:
+    get:
+      operationId: adminGetIndustry
+      summary: Get one industry by id
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The industry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminIndustry' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateIndustry
+      summary: Update an industry
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateIndustry' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminIndustry' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteIndustry
+      summary: Delete an industry
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/work-categories:
+    get:
+      operationId: adminListWorkCategories
+      summary: List all work categories
+      tags: [Admin]
+      responses:
+        '200':
+          description: All categories, ordered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWorkCategoryList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateWorkCategory
+      summary: Create a work category
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateWorkCategory' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWorkCategory' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/work-categories/{id}:
+    patch:
+      operationId: adminUpdateWorkCategory
+      summary: Update a work category
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateWorkCategory' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWorkCategory' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteWorkCategory
+      summary: Delete a work category
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -829,6 +992,93 @@ components:
         published: { type: boolean }
         seoTitle: { type: [string, 'null'], maxLength: 200 }
         seoDescription: { type: [string, 'null'], maxLength: 400 }
+
+    AdminIndustry:
+      type: object
+      required: [id, slug, name, capability, order, published, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { $ref: '#/components/schemas/Slug' }
+        name: { type: string, maxLength: 80 }
+        capability: { type: string, maxLength: 300 }
+        icon: { type: [string, 'null'] }
+        order: { type: integer }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminIndustryList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminIndustry' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateIndustry:
+      type: object
+      required: [slug, name, capability]
+      additionalProperties: false
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        name: { type: string, minLength: 2, maxLength: 80 }
+        capability: { type: string, minLength: 2, maxLength: 300 }
+        icon: { type: [string, 'null'], maxLength: 60 }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+
+    UpdateIndustry:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        name: { type: string, minLength: 2, maxLength: 80 }
+        capability: { type: string, minLength: 2, maxLength: 300 }
+        icon: { type: [string, 'null'], maxLength: 60 }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+
+    AdminWorkCategory:
+      type: object
+      required: [id, name, order, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string, maxLength: 60 }
+        order: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminWorkCategoryList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminWorkCategory' }
+
+    CreateWorkCategory:
+      type: object
+      required: [name]
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 2, maxLength: 60 }
+        order: { type: integer, minimum: 0 }
+
+    UpdateWorkCategory:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 2, maxLength: 60 }
+        order: { type: integer, minimum: 0 }
 
 security:
   - sessionCookie: []

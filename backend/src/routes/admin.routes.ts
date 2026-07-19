@@ -19,6 +19,15 @@ import {
   adminCreateService,
   adminUpdateService,
   adminDeleteService,
+  adminListIndustries,
+  adminGetIndustry,
+  adminCreateIndustry,
+  adminUpdateIndustry,
+  adminDeleteIndustry,
+  adminListWorkCategories,
+  adminCreateWorkCategory,
+  adminUpdateWorkCategory,
+  adminDeleteWorkCategory,
 } from '../controllers/admin-content.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
@@ -37,5 +46,25 @@ router.get('/admin/services/:id', ...manage, adminGetService);
 router.patch('/admin/services/:id', ...mutate, adminUpdateService);
 // operationId: adminDeleteService
 router.delete('/admin/services/:id', ...mutate, adminDeleteService);
+
+// operationId: adminListIndustries
+router.get('/admin/industries', ...manage, adminListIndustries);
+// operationId: adminCreateIndustry
+router.post('/admin/industries', ...mutate, adminCreateIndustry);
+// operationId: adminGetIndustry
+router.get('/admin/industries/:id', ...manage, adminGetIndustry);
+// operationId: adminUpdateIndustry
+router.patch('/admin/industries/:id', ...mutate, adminUpdateIndustry);
+// operationId: adminDeleteIndustry
+router.delete('/admin/industries/:id', ...mutate, adminDeleteIndustry);
+
+// operationId: adminListWorkCategories
+router.get('/admin/work-categories', ...manage, adminListWorkCategories);
+// operationId: adminCreateWorkCategory
+router.post('/admin/work-categories', ...mutate, adminCreateWorkCategory);
+// operationId: adminUpdateWorkCategory
+router.patch('/admin/work-categories/:id', ...mutate, adminUpdateWorkCategory);
+// operationId: adminDeleteWorkCategory
+router.delete('/admin/work-categories/:id', ...mutate, adminDeleteWorkCategory);
 
 export default router;

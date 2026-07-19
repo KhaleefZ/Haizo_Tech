@@ -44,6 +44,16 @@ export type AdminServiceList = Schemas['AdminServiceList'];
 export type CreateService = Schemas['CreateService'];
 export type UpdateService = Schemas['UpdateService'];
 
+export type AdminIndustry = Schemas['AdminIndustry'];
+export type AdminIndustryList = Schemas['AdminIndustryList'];
+export type CreateIndustry = Schemas['CreateIndustry'];
+export type UpdateIndustry = Schemas['UpdateIndustry'];
+
+export type AdminWorkCategory = Schemas['AdminWorkCategory'];
+export type AdminWorkCategoryList = Schemas['AdminWorkCategoryList'];
+export type CreateWorkCategory = Schemas['CreateWorkCategory'];
+export type UpdateWorkCategory = Schemas['UpdateWorkCategory'];
+
 /**
  * Typed API client.
  *
