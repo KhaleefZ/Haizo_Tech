@@ -11,6 +11,8 @@ import type { Role } from '@prisma/client';
 import { notificationRepository } from '../repositories/notification.repository.js';
 import { catalogue, type NotificationType, type NotifParams } from '../lib/notifications/catalogue.js';
 import { emitToUser } from '../sockets/io.js';
+import { sendMail } from '../lib/mailer.js';
+import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 
 type NotificationRow = Awaited<ReturnType<typeof notificationRepository.create>>;
@@ -84,10 +86,17 @@ export const notificationService = {
 
         const allowed = channelAllowed(s, input.type);
         if (allowed) emitToUser(userId, 'notification:new', toNotificationDto(row));
-        if (allowed || entry.alwaysEmail) {
-          // Email transport isn't wired yet (no SMTP config); the channel decision
-          // is real, the send is a logged no-op until Phase 5's digest work.
-          logger.debug({ userId, type: input.type }, 'notification email (transport not configured)');
+
+        // Ordinary types roll up into the daily digest; only security-relevant
+        // types (alwaysEmail) email immediately, ignoring the master switch.
+        if (entry.alwaysEmail) {
+          const url = row.url ? `${config.adminUrl}${row.url}` : config.adminUrl;
+          void sendMail({
+            to: s.email,
+            subject: row.title,
+            html: `<p>${row.message}</p><p><a href="${url}">Open the dashboard</a></p>`,
+            text: `${row.message}\n${url}`,
+          });
         }
       }
     } catch (err) {

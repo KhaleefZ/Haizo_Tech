@@ -7,12 +7,20 @@ import { createApp } from './app.js';
 import { config } from './config/env.js';
 import { logger } from './lib/logger.js';
 import { prisma } from './lib/prisma.js';
+import cron from 'node-cron';
 import { attachSockets } from './sockets/index.js';
+import { runDigest } from './jobs/digest.js';
 
 const httpServer = createServer(createApp());
 
 // Socket.IO shares the HTTP server: one port, one process, one auth mechanism.
 attachSockets(httpServer);
+
+// Daily notification digest at 08:00 server time. No-ops cleanly until SMTP is
+// configured, so it's safe to schedule in every environment.
+cron.schedule('0 8 * * *', () => {
+  void runDigest();
+});
 
 httpServer.listen(config.port, () => {
   logger.info(`API listening on :${config.port} (${config.nodeEnv})`);

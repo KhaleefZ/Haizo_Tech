@@ -10,7 +10,7 @@ export const notificationRepository = {
   findRecipientSettings(userIds: string[]) {
     return prisma.user.findMany({
       where: { id: { in: userIds } },
-      select: { id: true, notificationsEnabled: true, notificationPrefs: true },
+      select: { id: true, email: true, notificationsEnabled: true, notificationPrefs: true },
     });
   },
 
@@ -44,5 +44,27 @@ export const notificationRepository = {
   /** Users in the given roles — the recipients for role-targeted notifications. */
   findUserIdsByRoles(roles: Role[]) {
     return prisma.user.findMany({ where: { role: { in: roles } }, select: { id: true } });
+  },
+
+  /* ---- Digest ---- */
+
+  /** Users eligible for a digest (master switch on). */
+  digestRecipients() {
+    return prisma.user.findMany({
+      where: { notificationsEnabled: true },
+      select: { id: true, email: true, name: true, notificationPrefs: true },
+    });
+  },
+
+  /** A user's unread notifications not yet included in any digest email. */
+  unemailedUnread(userId: string) {
+    return prisma.notification.findMany({
+      where: { userId, isRead: false, emailedAt: null },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  markEmailed(ids: string[]) {
+    return prisma.notification.updateMany({ where: { id: { in: ids } }, data: { emailedAt: new Date() } });
   },
 };

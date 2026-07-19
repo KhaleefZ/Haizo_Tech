@@ -36,6 +36,19 @@ const schema = z.object({
 
   REVALIDATE_SECRET: z.string().min(8).optional(),
   WEB_REVALIDATE_URL: z.string().url().optional(),
+
+  /**
+   * SMTP for notification emails + the daily digest. All optional: with no
+   * SMTP_PASS the mailer is a logged no-op, so the app runs fine until real
+   * credentials are supplied. Defaults are Gmail's submission endpoint.
+   */
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  MAIL_FROM: z.string().optional(),
+  /** Where deep links in emails point (the admin app). */
+  ADMIN_URL: z.string().url().default('http://localhost:3001'),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -74,6 +87,14 @@ export const config = {
     .filter(Boolean),
   revalidateSecret: raw.REVALIDATE_SECRET,
   webRevalidateUrl: raw.WEB_REVALIDATE_URL,
+
+  smtpHost: raw.SMTP_HOST,
+  smtpPort: raw.SMTP_PORT,
+  smtpUser: raw.SMTP_USER,
+  smtpPass: raw.SMTP_PASS,
+  // Fall back to the SMTP user as the From address if not set explicitly.
+  mailFrom: raw.MAIL_FROM ?? raw.SMTP_USER,
+  adminUrl: raw.ADMIN_URL,
 } as const;
 
 export type Config = typeof config;
