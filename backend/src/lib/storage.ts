@@ -1,54 +1,39 @@
 /**
- * Object storage (Cloudflare R2 / any S3-compatible endpoint).
+ * Local-disk storage for uploads.
  *
- * Uploads go DIRECT from the browser to the bucket via a short-lived presigned
- * PUT — the file never streams through this server, so a large image can't tie
- * up a request. The client then confirms, flipping the Attachment to READY.
+ * The app runs on a single VPS (Hostinger KVM) with persistent disk, so uploaded
+ * files are written under `uploadsDir` and served back as static files at
+ * `config.uploadsPublicUrl`. There is no external object store — one machine
+ * holds the app and its uploads, which is all this deployment needs.
  *
- * Fail-soft: without credentials, `isStorageConfigured()` is false and callers
- * return 503, so the app runs (with plain URL image fields) until R2 is wired.
+ * Files stream in through the API (multer, in memory) and are written straight to
+ * disk here. A 10MB cap keeps a single request from parking a large buffer.
  */
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { config } from '../config/env.js';
 
-let client: S3Client | null = null;
+/**
+ * Absolute directory where uploaded files live. Relative UPLOADS_DIR is resolved
+ * against the process cwd; an absolute value (e.g. a mounted volume) is used
+ * as-is. Created lazily on first write.
+ */
+export const uploadsDir = path.isAbsolute(config.uploadsDir)
+  ? config.uploadsDir
+  : path.resolve(process.cwd(), config.uploadsDir);
 
-export function isStorageConfigured(): boolean {
-  return Boolean(
-    config.s3Endpoint &&
-      config.s3Bucket &&
-      config.s3AccessKeyId &&
-      config.s3SecretAccessKey &&
-      config.s3PublicUrl,
-  );
+/**
+ * Write bytes for `key` (a relative path like `<uuid>/photo.png`) under the
+ * uploads directory, creating any parent folders. `key` is server-generated, so
+ * it can't traverse out of the directory.
+ */
+export async function saveFile(key: string, body: Buffer): Promise<void> {
+  const dest = path.join(uploadsDir, key);
+  await mkdir(path.dirname(dest), { recursive: true });
+  await writeFile(dest, body);
 }
 
-function getClient(): S3Client {
-  if (!client) {
-    client = new S3Client({
-      region: config.s3Region,
-      endpoint: config.s3Endpoint,
-      credentials: {
-        accessKeyId: config.s3AccessKeyId ?? '',
-        secretAccessKey: config.s3SecretAccessKey ?? '',
-      },
-      // R2 and most S3-compatibles want path-style addressing.
-      forcePathStyle: true,
-    });
-  }
-  return client;
-}
-
-/** A short-lived presigned PUT the browser uploads the file to. */
-export function presignPut(key: string, contentType: string, expiresIn = 300): Promise<string> {
-  return getSignedUrl(
-    getClient(),
-    new PutObjectCommand({ Bucket: config.s3Bucket, Key: key, ContentType: contentType }),
-    { expiresIn },
-  );
-}
-
+/** The public URL a browser loads the stored file from. */
 export function publicUrl(key: string): string {
-  return `${(config.s3PublicUrl ?? '').replace(/\/$/, '')}/${key}`;
+  return `${config.uploadsPublicUrl.replace(/\/$/, '')}/${key}`;
 }

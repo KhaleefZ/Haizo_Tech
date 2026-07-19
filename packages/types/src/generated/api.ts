@@ -698,7 +698,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/uploads/presign": {
+    "/admin/uploads": {
         parameters: {
             query?: never;
             header?: never;
@@ -708,29 +708,12 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Get a presigned URL to upload a file directly to storage
-         * @description Validates the mime type and size, records a PENDING Attachment, and returns
-         *     a short-lived PUT url. The browser uploads straight to the bucket, then calls
-         *     confirm. Returns 503 if object storage isn't configured.
+         * Upload a file
+         * @description Uploads a single file (multipart/form-data, field `file`). The server
+         *     validates the mime type and size, writes it to local disk, records a READY
+         *     Attachment, and returns its public URL. Max 10MB.
          */
-        post: operations["adminPresignUpload"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/uploads/{id}/confirm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Confirm a direct upload completed */
-        post: operations["adminConfirmUpload"];
+        post: operations["adminUpload"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1518,20 +1501,10 @@ export interface components {
             data: components["schemas"]["AdminActivity"][];
             meta: components["schemas"]["PageMeta"];
         };
-        PresignRequest: {
-            filename: string;
-            mimeType: string;
-            size: number;
-        };
-        PresignResponse: {
+        UploadResponse: {
             attachmentId: string;
-            key: string;
-            uploadUrl: string;
-            publicUrl: string;
-        };
-        ConfirmResponse: {
-            publicUrl: string;
-            status: string;
+            /** @description Public URL of the stored file */
+            url: string;
         };
         RecordPageView: {
             path: string;
@@ -3341,7 +3314,7 @@ export interface operations {
             500: components["responses"]["InternalError"];
         };
     };
-    adminPresignUpload: {
+    adminUpload: {
         parameters: {
             query?: never;
             header?: never;
@@ -3350,49 +3323,26 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PresignRequest"];
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
             };
         };
         responses: {
-            /** @description Presigned upload */
+            /** @description The stored file */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PresignResponse"];
+                    "application/json": components["schemas"]["UploadResponse"];
                 };
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
-            500: components["responses"]["InternalError"];
-            503: components["responses"]["ServiceUnavailable"];
-        };
-    };
-    adminConfirmUpload: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["parameters"]["IdParam"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The public URL of the stored file */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConfirmResponse"];
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
+            413: components["responses"]["BadRequest"];
             500: components["responses"]["InternalError"];
         };
     };

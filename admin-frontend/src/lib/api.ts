@@ -71,9 +71,7 @@ import type {
   AdminActivityList,
   SearchResults,
   AnalyticsSummary,
-  PresignRequest,
-  PresignResponse,
-  ConfirmResponse,
+  UploadResponse,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -158,6 +156,21 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     if (await refreshOnce()) res = await send(method, path, body);
   }
 
+  return toResult<T>(res);
+}
+
+// File uploads go as multipart/form-data — the browser must set the boundary,
+// so we can't reuse send()'s JSON path. Same CSRF header and one refresh-retry.
+async function sendMultipart(path: string, form: FormData): Promise<Response> {
+  const headers: Record<string, string> = { accept: 'application/json' };
+  const csrf = readCsrfCookie();
+  if (csrf) headers['x-csrf-token'] = csrf;
+  return fetch(`${BASE}${path}`, { method: 'POST', credentials: 'include', headers, body: form });
+}
+
+async function uploadRequest<T>(path: string, form: FormData): Promise<T> {
+  let res = await sendMultipart(path, form);
+  if (res.status === 401 && (await refreshOnce())) res = await sendMultipart(path, form);
   return toResult<T>(res);
 }
 
@@ -283,9 +296,11 @@ export const api = {
     get: () => request<AnalyticsSummary>('GET', '/admin/analytics'),
   },
   uploads: {
-    presign: (input: PresignRequest) =>
-      request<PresignResponse>('POST', '/admin/uploads/presign', input),
-    confirm: (id: string) => request<ConfirmResponse>('POST', `/admin/uploads/${id}/confirm`),
+    upload: (file: File) => {
+      const form = new FormData();
+      form.append('file', file);
+      return uploadRequest<UploadResponse>('/admin/uploads', form);
+    },
   },
   activity: {
     list: (page = 1, pageSize = 50) =>

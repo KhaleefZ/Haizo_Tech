@@ -5,9 +5,8 @@ import { Button } from '@haizo/ui';
 import { api, ApiError } from '../lib/api';
 
 /**
- * Direct-to-storage upload. Asks the API for a presigned PUT, uploads the file
- * straight to the bucket (never through our server), then confirms and hands the
- * public URL back to the parent. Degrades gracefully when storage isn't wired.
+ * Uploads a file to the API (which stores it on the server's disk) and hands the
+ * resulting public URL back to the parent.
  */
 export function FileUpload({
   onUploaded,
@@ -26,24 +25,12 @@ export function FileUpload({
     setBusy(true);
     setError(null);
     try {
-      const { attachmentId, uploadUrl } = await api.uploads.presign({
-        filename: file.name,
-        mimeType: file.type || 'application/octet-stream',
-        size: file.size,
-      });
-      // Straight to the bucket — no cookies, our API never sees the bytes.
-      const put = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: { 'content-type': file.type || 'application/octet-stream' },
-        body: file,
-      });
-      if (!put.ok) throw new Error('upload failed');
-      const { publicUrl } = await api.uploads.confirm(attachmentId);
-      onUploaded(publicUrl);
+      const { url } = await api.uploads.upload(file);
+      onUploaded(url);
     } catch (err) {
       setError(
-        err instanceof ApiError && err.status === 503
-          ? 'File uploads aren’t configured yet — paste a URL instead.'
+        err instanceof ApiError && (err.status === 413 || err.status === 400)
+          ? 'That file is too large or an unsupported type.'
           : 'Upload failed. Try again.',
       );
     } finally {

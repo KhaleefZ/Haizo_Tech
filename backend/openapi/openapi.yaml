@@ -1141,48 +1141,36 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
-  /admin/uploads/presign:
+  /admin/uploads:
     post:
-      operationId: adminPresignUpload
-      summary: Get a presigned URL to upload a file directly to storage
+      operationId: adminUpload
+      summary: Upload a file
       description: |
-        Validates the mime type and size, records a PENDING Attachment, and returns
-        a short-lived PUT url. The browser uploads straight to the bucket, then calls
-        confirm. Returns 503 if object storage isn't configured.
+        Uploads a single file (multipart/form-data, field `file`). The server
+        validates the mime type and size, writes it to local disk, records a READY
+        Attachment, and returns its public URL. Max 10MB.
       tags: [Admin]
       requestBody:
         required: true
         content:
-          application/json:
-            schema: { $ref: '#/components/schemas/PresignRequest' }
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
         '200':
-          description: Presigned upload
+          description: The stored file
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/PresignResponse' }
+              schema: { $ref: '#/components/schemas/UploadResponse' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
-        '503': { $ref: '#/components/responses/ServiceUnavailable' }
-        '500': { $ref: '#/components/responses/InternalError' }
-
-  /admin/uploads/{id}/confirm:
-    post:
-      operationId: adminConfirmUpload
-      summary: Confirm a direct upload completed
-      tags: [Admin]
-      parameters:
-        - $ref: '#/components/parameters/IdParam'
-      responses:
-        '200':
-          description: The public URL of the stored file
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ConfirmResponse' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
-        '404': { $ref: '#/components/responses/NotFound' }
+        '413': { $ref: '#/components/responses/BadRequest' }
         '500': { $ref: '#/components/responses/InternalError' }
 
   /admin/analytics:
@@ -2481,32 +2469,13 @@ components:
           items: { $ref: '#/components/schemas/AdminActivity' }
         meta: { $ref: '#/components/schemas/PageMeta' }
 
-    PresignRequest:
+    UploadResponse:
       type: object
-      required: [filename, mimeType, size]
-      additionalProperties: false
-      properties:
-        filename: { type: string, minLength: 1, maxLength: 255 }
-        mimeType: { type: string, minLength: 1, maxLength: 100 }
-        size: { type: integer, minimum: 1 }
-
-    PresignResponse:
-      type: object
-      required: [attachmentId, key, uploadUrl, publicUrl]
+      required: [attachmentId, url]
       additionalProperties: false
       properties:
         attachmentId: { type: string }
-        key: { type: string }
-        uploadUrl: { type: string }
-        publicUrl: { type: string }
-
-    ConfirmResponse:
-      type: object
-      required: [publicUrl, status]
-      additionalProperties: false
-      properties:
-        publicUrl: { type: string }
-        status: { type: string }
+        url: { type: string, description: Public URL of the stored file }
 
     RecordPageView:
       type: object

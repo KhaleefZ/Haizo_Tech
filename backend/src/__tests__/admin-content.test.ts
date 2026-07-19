@@ -8,9 +8,11 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import type { Express } from 'express';
+import { rm } from 'node:fs/promises';
 import { createApp } from '../app.js';
 import { prisma } from '../lib/prisma.js';
 import { hashPassword } from '../lib/auth/password.js';
+import { uploadsDir } from '../lib/storage.js';
 
 const ADMIN = { email: 'phase4b-admin@haizo.tech', password: 'Sup3rSecret!' };
 const DEVU = { email: 'phase4b-dev@haizo.tech', password: 'Sup3rSecret!' };
@@ -385,19 +387,51 @@ describe('work CRUD', () => {
   });
 });
 
-describe('uploads (object storage)', () => {
-  it('presign is 401 unauth, and 503 when storage is not configured', async () => {
-    const body = { filename: 'photo.png', mimeType: 'image/png', size: 1024 };
-    expect((await request(app).post('/v1/admin/uploads/presign').send(body)).status).toBe(401);
+describe('uploads (local disk)', () => {
+  // A 1x1 transparent PNG.
+  const PNG = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+    'base64',
+  );
 
+  afterAll(async () => {
+    // Remove only what this suite wrote.
+    await rm(uploadsDir, { recursive: true, force: true });
+  });
+
+  it('rejects an unauthenticated upload', async () => {
+    const res = await request(app).post('/v1/admin/uploads').attach('file', PNG, 'photo.png');
+    expect(res.status).toBe(401);
+  });
+
+  it('stores a file and serves it back at its public URL', async () => {
     const res = await request(app)
-      .post('/v1/admin/uploads/presign')
+      .post('/v1/admin/uploads')
       .set('Cookie', admin.cookie)
       .set('X-CSRF-Token', admin.csrf)
-      .send(body);
-    // Tests run without S3 credentials → the endpoint reports unavailable, not a crash.
-    expect(res.status).toBe(503);
-    expect(res.body.error.code).toBe('UNAVAILABLE');
+      .attach('file', PNG, 'photo.png');
+    expect(res.status).toBe(200);
+    expect(res.body.attachmentId).toBeTruthy();
+    expect(res.body.url).toMatch(/\/uploads\/.+\/photo\.png$/);
+
+    const attachment = await prisma.attachment.findUnique({ where: { id: res.body.attachmentId } });
+    expect(attachment?.status).toBe('READY');
+
+    // The returned URL is served statically off local disk by the same app.
+    const servedPath = new URL(res.body.url as string).pathname;
+    const served = await request(app).get(servedPath);
+    expect(served.status).toBe(200);
+    expect(served.headers['content-type']).toContain('image/png');
+  });
+
+  it('rejects an unsupported file type', async () => {
+    const res = await request(app)
+      .post('/v1/admin/uploads')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .attach('file', Buffer.from('#!/bin/sh\n'), { filename: 'evil.sh', contentType: 'application/x-sh' });
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('VALIDATION_FAILED');
   });
 });
 

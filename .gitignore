@@ -13,5 +13,9 @@ coverage/
 playwright-report/
 test-results/
 
+# Locally-stored uploads (served off disk in dev; the VPS keeps its own).
+backend/uploads/
+backend/.test-uploads/
+
 .DS_Store
 *.log

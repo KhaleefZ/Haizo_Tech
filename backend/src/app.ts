@@ -26,6 +26,7 @@ import { logger } from './lib/logger.js';
 import { requestId } from './middleware/requestId.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { uploadsDir } from './lib/storage.js';
 import routes from './routes/index.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -65,6 +66,15 @@ export function createApp(): Express {
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
+  // Uploaded files live on local disk and are served straight back from there —
+  // this is the "public URL" side of an upload. `nosniff` (from helmet) plus a
+  // long cache are enough; keys are uuid-prefixed so they're effectively
+  // immutable. Sits outside `/v1`, so the OpenAPI validator ignores it.
+  app.use(
+    '/uploads',
+    express.static(uploadsDir, { index: false, dotfiles: 'ignore', maxAge: '30d', immutable: true }),
+  );
+
   app.use(
     '/v1',
     rateLimit({
@@ -88,6 +98,9 @@ export function createApp(): Express {
       // working production response into a 500. It earns its keep in dev and CI.
       validateResponses: !config.isProduction,
       validateSecurity: false, // auth middleware owns this (Phase 3)
+      // Parse multipart uploads into memory (req.file/req.files) and cap the size
+      // here so an oversized file is rejected before it's fully buffered.
+      fileUploader: { limits: { fileSize: 10 * 1024 * 1024 } },
       ignorePaths: (p: string) => !p.startsWith('/v1'),
     }),
   );
