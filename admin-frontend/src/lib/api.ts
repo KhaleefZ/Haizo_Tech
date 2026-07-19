@@ -26,6 +26,10 @@ import type {
   AdminWorkCategoryList,
   CreateWorkCategory,
   UpdateWorkCategory,
+  AdminTestimonial,
+  AdminTestimonialList,
+  CreateTestimonial,
+  UpdateTestimonial,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -144,5 +148,14 @@ export const api = {
     update: (id: string, input: UpdateWorkCategory) =>
       request<AdminWorkCategory>('PATCH', `/admin/work-categories/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/work-categories/${id}`),
+  },
+  testimonials: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminTestimonialList>('GET', `/admin/testimonials?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateTestimonial) =>
+      request<AdminTestimonial>('POST', '/admin/testimonials', input),
+    update: (id: string, input: UpdateTestimonial) =>
+      request<AdminTestimonial>('PATCH', `/admin/testimonials/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/testimonials/${id}`),
   },
 };

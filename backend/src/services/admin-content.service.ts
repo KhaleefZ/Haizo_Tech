@@ -23,9 +23,13 @@ import type {
   AdminWorkCategoryList,
   CreateWorkCategory,
   UpdateWorkCategory,
+  AdminTestimonial,
+  AdminTestimonialList,
+  CreateTestimonial,
+  UpdateTestimonial,
 } from '@haizo/types';
 import { adminContentRepository } from '../repositories/admin-content.repository.js';
-import { conflict, notFound } from '../lib/errors.js';
+import { conflict, notFound, validationFailed } from '../lib/errors.js';
 import { revalidate, tags } from '../lib/revalidate.js';
 
 /**
@@ -48,6 +52,29 @@ function revalidateIndustries(): void {
 function revalidateWorks(): void {
   // Categories drive the public Work filter, so a category change is a works change.
   void revalidate('work-category.changed', [tags.works, tags.home]);
+}
+
+function revalidateTestimonials(): void {
+  void revalidate('testimonial.changed', [tags.testimonials, tags.home]);
+}
+
+/**
+ * The anti-fabrication guard, enforced in the domain layer, not the UI.
+ * A testimonial can only be published if it has BOTH a source URL and a
+ * verification timestamp — so an unverifiable quote is structurally unpublishable.
+ * This is why the "Sarah Chen"/"Michael Chang" class of fake testimonial can't
+ * recur through this API.
+ */
+function assertProvenanceForPublish(
+  published: boolean,
+  sourceUrl: string | null,
+  verifiedAt: Date | null,
+): void {
+  if (!published) return;
+  const details = [];
+  if (!sourceUrl) details.push({ path: 'sourceUrl', message: 'A source URL is required to publish' });
+  if (!verifiedAt) details.push({ path: 'verifiedAt', message: 'Verification is required to publish' });
+  if (details.length) throw validationFailed(details);
 }
 
 type ServiceRow = NonNullable<
@@ -300,7 +327,121 @@ export const adminContentService = {
       throw err;
     }
   },
+
+  /* ---- Testimonials ---- */
+
+  async listTestimonials(page: number, pageSize: number): Promise<AdminTestimonialList> {
+    const [rows, total] = await adminContentRepository.listTestimonials({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      data: rows.map(toAdminTestimonial),
+      meta: { page, pageSize, total, totalPages, hasNext: page < totalPages },
+    };
+  },
+
+  async getTestimonial(id: string): Promise<AdminTestimonial> {
+    const row = await adminContentRepository.findTestimonialById(id);
+    if (!row) throw notFound('Testimonial');
+    return toAdminTestimonial(row);
+  },
+
+  async createTestimonial(input: CreateTestimonial): Promise<AdminTestimonial> {
+    const published = input.published ?? false;
+    const sourceUrl = input.sourceUrl ?? null;
+    const verifiedAt = input.verifiedAt ? new Date(input.verifiedAt) : null;
+    assertProvenanceForPublish(published, sourceUrl, verifiedAt);
+
+    const row = await adminContentRepository.createTestimonial({
+      author: input.author,
+      role: input.role ?? null,
+      company: input.company ?? null,
+      quote: input.quote,
+      avatarUrl: input.avatarUrl ?? null,
+      sourceUrl,
+      verifiedAt,
+      order: input.order ?? 0,
+      published,
+      ...(input.serviceId ? { service: { connect: { id: input.serviceId } } } : {}),
+    });
+    revalidateTestimonials();
+    return toAdminTestimonial(row);
+  },
+
+  async updateTestimonial(id: string, input: UpdateTestimonial): Promise<AdminTestimonial> {
+    const existing = await adminContentRepository.findTestimonialById(id);
+    if (!existing) throw notFound('Testimonial');
+
+    // Evaluate the guard against the RESULTING state, so a partial update that
+    // flips `published` true without provenance is rejected just like a create.
+    const published = input.published ?? existing.published;
+    const sourceUrl = input.sourceUrl !== undefined ? input.sourceUrl : existing.sourceUrl;
+    const verifiedAt =
+      input.verifiedAt !== undefined
+        ? input.verifiedAt
+          ? new Date(input.verifiedAt)
+          : null
+        : existing.verifiedAt;
+    assertProvenanceForPublish(published, sourceUrl, verifiedAt);
+
+    const data: Prisma.TestimonialUpdateInput = {
+      ...(input.author !== undefined ? { author: input.author } : {}),
+      ...(input.role !== undefined ? { role: input.role } : {}),
+      ...(input.company !== undefined ? { company: input.company } : {}),
+      ...(input.quote !== undefined ? { quote: input.quote } : {}),
+      ...(input.avatarUrl !== undefined ? { avatarUrl: input.avatarUrl } : {}),
+      ...(input.sourceUrl !== undefined ? { sourceUrl: input.sourceUrl } : {}),
+      ...(input.verifiedAt !== undefined ? { verifiedAt } : {}),
+      ...(input.order !== undefined ? { order: input.order } : {}),
+      ...(input.published !== undefined ? { published: input.published } : {}),
+      ...(input.serviceId !== undefined
+        ? input.serviceId
+          ? { service: { connect: { id: input.serviceId } } }
+          : { service: { disconnect: true } }
+        : {}),
+    };
+
+    const row = await adminContentRepository.updateTestimonial(id, data);
+    revalidateTestimonials();
+    return toAdminTestimonial(row);
+  },
+
+  async deleteTestimonial(id: string): Promise<void> {
+    try {
+      await adminContentRepository.deleteTestimonial(id);
+      revalidateTestimonials();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw notFound('Testimonial');
+      }
+      throw err;
+    }
+  },
 };
+
+type TestimonialRow = NonNullable<
+  Awaited<ReturnType<typeof adminContentRepository.findTestimonialById>>
+>;
+
+function toAdminTestimonial(row: TestimonialRow): AdminTestimonial {
+  return {
+    id: row.id,
+    author: row.author,
+    role: row.role,
+    company: row.company,
+    quote: row.quote,
+    avatarUrl: row.avatarUrl,
+    sourceUrl: row.sourceUrl,
+    verifiedAt: row.verifiedAt ? row.verifiedAt.toISOString() : null,
+    serviceId: row.serviceId,
+    order: row.order,
+    published: row.published,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
 
 type IndustryRow = NonNullable<
   Awaited<ReturnType<typeof adminContentRepository.findIndustryById>>

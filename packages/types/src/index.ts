@@ -54,6 +54,11 @@ export type AdminWorkCategoryList = Schemas['AdminWorkCategoryList'];
 export type CreateWorkCategory = Schemas['CreateWorkCategory'];
 export type UpdateWorkCategory = Schemas['UpdateWorkCategory'];
 
+export type AdminTestimonial = Schemas['AdminTestimonial'];
+export type AdminTestimonialList = Schemas['AdminTestimonialList'];
+export type CreateTestimonial = Schemas['CreateTestimonial'];
+export type UpdateTestimonial = Schemas['UpdateTestimonial'];
+
 /**
  * Typed API client.
  *

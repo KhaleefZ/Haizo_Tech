@@ -367,6 +367,48 @@ export interface paths {
         patch: operations["adminUpdateWorkCategory"];
         trace?: never;
     };
+    "/admin/testimonials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all testimonials, including unpublished */
+        get: operations["adminListTestimonials"];
+        put?: never;
+        /**
+         * Create a testimonial
+         * @description Publishing requires provenance. A `400` is returned if `published` is true
+         *     while `sourceUrl` or `verifiedAt` is missing — the guard against fabricated
+         *     quotes, enforced server-side, not just in the UI.
+         */
+        post: operations["adminCreateTestimonial"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/testimonials/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one testimonial by id */
+        get: operations["adminGetTestimonial"];
+        put?: never;
+        post?: never;
+        /** Delete a testimonial */
+        delete: operations["adminDeleteTestimonial"];
+        options?: never;
+        head?: never;
+        /** Update a testimonial */
+        patch: operations["adminUpdateTestimonial"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -648,6 +690,59 @@ export interface components {
         UpdateWorkCategory: {
             name?: string;
             order?: number;
+        };
+        /**
+         * @description The admin view of a testimonial, including the provenance fields
+         *     (sourceUrl, verifiedAt) the public API deliberately withholds.
+         */
+        AdminTestimonial: {
+            id: string;
+            author: string;
+            role?: string | null;
+            company?: string | null;
+            quote: string;
+            avatarUrl?: string | null;
+            sourceUrl?: string | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            serviceId?: string | null;
+            order: number;
+            published: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AdminTestimonialList: {
+            data: components["schemas"]["AdminTestimonial"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        CreateTestimonial: {
+            author: string;
+            role?: string | null;
+            company?: string | null;
+            quote: string;
+            avatarUrl?: string | null;
+            sourceUrl?: string | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            serviceId?: string | null;
+            order?: number;
+            published?: boolean;
+        };
+        /** @description A partial update; at least one field must be present. */
+        UpdateTestimonial: {
+            author?: string;
+            role?: string | null;
+            company?: string | null;
+            quote?: string;
+            avatarUrl?: string | null;
+            sourceUrl?: string | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            serviceId?: string | null;
+            order?: number;
+            published?: boolean;
         };
     };
     responses: {
@@ -1414,6 +1509,141 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             409: components["responses"]["Conflict"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListTestimonials: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of testimonials */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTestimonialList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminCreateTestimonial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTestimonial"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTestimonial"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetTestimonial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The testimonial */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTestimonial"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminDeleteTestimonial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateTestimonial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTestimonial"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminTestimonial"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalError"];
         };
     };

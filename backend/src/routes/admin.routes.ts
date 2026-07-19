@@ -28,6 +28,11 @@ import {
   adminCreateWorkCategory,
   adminUpdateWorkCategory,
   adminDeleteWorkCategory,
+  adminListTestimonials,
+  adminGetTestimonial,
+  adminCreateTestimonial,
+  adminUpdateTestimonial,
+  adminDeleteTestimonial,
 } from '../controllers/admin-content.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
@@ -66,5 +71,16 @@ router.post('/admin/work-categories', ...mutate, adminCreateWorkCategory);
 router.patch('/admin/work-categories/:id', ...mutate, adminUpdateWorkCategory);
 // operationId: adminDeleteWorkCategory
 router.delete('/admin/work-categories/:id', ...mutate, adminDeleteWorkCategory);
+
+// operationId: adminListTestimonials
+router.get('/admin/testimonials', ...manage, adminListTestimonials);
+// operationId: adminCreateTestimonial
+router.post('/admin/testimonials', ...mutate, adminCreateTestimonial);
+// operationId: adminGetTestimonial
+router.get('/admin/testimonials/:id', ...manage, adminGetTestimonial);
+// operationId: adminUpdateTestimonial
+router.patch('/admin/testimonials/:id', ...mutate, adminUpdateTestimonial);
+// operationId: adminDeleteTestimonial
+router.delete('/admin/testimonials/:id', ...mutate, adminDeleteTestimonial);
 
 export default router;

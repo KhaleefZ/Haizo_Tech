@@ -80,4 +80,33 @@ export const adminContentRepository = {
   deleteWorkCategory(id: string) {
     return prisma.workCategory.delete({ where: { id } });
   },
+
+  /* ---- Testimonials ---- */
+
+  listTestimonials({ skip, take }: { skip: number; take: number }) {
+    return prisma.$transaction([
+      prisma.testimonial.findMany({
+        orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
+        skip,
+        take,
+      }),
+      prisma.testimonial.count(),
+    ]);
+  },
+
+  findTestimonialById(id: string) {
+    return prisma.testimonial.findUnique({ where: { id } });
+  },
+
+  createTestimonial(data: Prisma.TestimonialCreateInput) {
+    return prisma.testimonial.create({ data });
+  },
+
+  updateTestimonial(id: string, data: Prisma.TestimonialUpdateInput) {
+    return prisma.testimonial.update({ where: { id }, data });
+  },
+
+  deleteTestimonial(id: string) {
+    return prisma.testimonial.delete({ where: { id } });
+  },
 };

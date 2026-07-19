@@ -64,6 +64,7 @@ afterAll(async () => {
   await prisma.service.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.industry.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.workCategory.deleteMany({ where: { name: { startsWith: 'P4bCat' } } });
+  await prisma.testimonial.deleteMany({ where: { author: { startsWith: 'P4bTst' } } });
   await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
   await prisma.$disconnect();
 });
@@ -270,5 +271,67 @@ describe('work categories CRUD', () => {
       .set('Cookie', admin.cookie)
       .set('X-CSRF-Token', admin.csrf);
     expect(del.status).toBe(204);
+  });
+});
+
+describe('testimonials CRUD + provenance guard', () => {
+  const base = { author: 'P4bTst Alice', quote: 'They shipped exactly what we needed.' };
+
+  it('creates a draft without provenance', async () => {
+    const res = await request(app)
+      .post('/v1/admin/testimonials')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send(base);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchObject({ author: 'P4bTst Alice', published: false });
+    expect(res.body.verifiedAt).toBeNull();
+  });
+
+  it('REFUSES to publish without sourceUrl + verifiedAt (the anti-fabrication guard)', async () => {
+    const res = await request(app)
+      .post('/v1/admin/testimonials')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ ...base, author: 'P4bTst Bob', published: true });
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('VALIDATION_FAILED');
+    const paths = res.body.error.details.map((d: { path: string }) => d.path);
+    expect(paths).toContain('sourceUrl');
+    expect(paths).toContain('verifiedAt');
+  });
+
+  it('publishes when both sourceUrl and verifiedAt are present', async () => {
+    const res = await request(app)
+      .post('/v1/admin/testimonials')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({
+        ...base,
+        author: 'P4bTst Carol',
+        published: true,
+        sourceUrl: 'https://example.com/review/carol',
+        verifiedAt: '2026-01-15T00:00:00.000Z',
+      });
+    expect(res.status).toBe(201);
+    expect(res.body.published).toBe(true);
+    expect(res.body.sourceUrl).toBe('https://example.com/review/carol');
+  });
+
+  it('refuses to flip an existing draft to published without provenance', async () => {
+    const created = await request(app)
+      .post('/v1/admin/testimonials')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ ...base, author: 'P4bTst Dave' });
+    const id = created.body.id;
+
+    const res = await request(app)
+      .patch(`/v1/admin/testimonials/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ published: true });
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe('VALIDATION_FAILED');
   });
 });

@@ -568,6 +568,99 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/testimonials:
+    get:
+      operationId: adminListTestimonials
+      summary: List all testimonials, including unpublished
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of testimonials
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminTestimonialList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateTestimonial
+      summary: Create a testimonial
+      description: |
+        Publishing requires provenance. A `400` is returned if `published` is true
+        while `sourceUrl` or `verifiedAt` is missing — the guard against fabricated
+        quotes, enforced server-side, not just in the UI.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTestimonial' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminTestimonial' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/testimonials/{id}:
+    get:
+      operationId: adminGetTestimonial
+      summary: Get one testimonial by id
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The testimonial
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminTestimonial' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateTestimonial
+      summary: Update a testimonial
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTestimonial' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminTestimonial' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteTestimonial
+      summary: Delete a testimonial
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -1079,6 +1172,71 @@ components:
       properties:
         name: { type: string, minLength: 2, maxLength: 60 }
         order: { type: integer, minimum: 0 }
+
+    AdminTestimonial:
+      type: object
+      description: |
+        The admin view of a testimonial, including the provenance fields
+        (sourceUrl, verifiedAt) the public API deliberately withholds.
+      required: [id, author, quote, order, published, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        author: { type: string, maxLength: 120 }
+        role: { type: [string, 'null'] }
+        company: { type: [string, 'null'] }
+        quote: { type: string, maxLength: 2000 }
+        avatarUrl: { type: [string, 'null'] }
+        sourceUrl: { type: [string, 'null'] }
+        verifiedAt: { type: [string, 'null'], format: date-time }
+        serviceId: { type: [string, 'null'] }
+        order: { type: integer }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminTestimonialList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminTestimonial' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateTestimonial:
+      type: object
+      required: [author, quote]
+      additionalProperties: false
+      properties:
+        author: { type: string, minLength: 2, maxLength: 120 }
+        role: { type: [string, 'null'], maxLength: 120 }
+        company: { type: [string, 'null'], maxLength: 120 }
+        quote: { type: string, minLength: 10, maxLength: 2000 }
+        avatarUrl: { type: [string, 'null'], maxLength: 500 }
+        sourceUrl: { type: [string, 'null'], maxLength: 500 }
+        verifiedAt: { type: [string, 'null'], format: date-time }
+        serviceId: { type: [string, 'null'] }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+
+    UpdateTestimonial:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        author: { type: string, minLength: 2, maxLength: 120 }
+        role: { type: [string, 'null'], maxLength: 120 }
+        company: { type: [string, 'null'], maxLength: 120 }
+        quote: { type: string, minLength: 10, maxLength: 2000 }
+        avatarUrl: { type: [string, 'null'], maxLength: 500 }
+        sourceUrl: { type: [string, 'null'], maxLength: 500 }
+        verifiedAt: { type: [string, 'null'], format: date-time }
+        serviceId: { type: [string, 'null'] }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
 
 security:
   - sessionCookie: []

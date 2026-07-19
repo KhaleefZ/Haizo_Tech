@@ -13,6 +13,8 @@ import type {
   UpdateIndustry,
   CreateWorkCategory,
   UpdateWorkCategory,
+  CreateTestimonial,
+  UpdateTestimonial,
 } from '@haizo/types';
 
 export async function adminListServices(req: Request, res: Response, next: NextFunction) {
@@ -146,6 +148,56 @@ export async function adminUpdateWorkCategory(req: Request, res: Response, next:
 export async function adminDeleteWorkCategory(req: Request, res: Response, next: NextFunction) {
   try {
     await adminContentService.deleteWorkCategory(String(req.params.id));
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* ---- Testimonials ---- */
+
+export async function adminListTestimonials(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    res.json(await adminContentService.listTestimonials(page, pageSize));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminGetTestimonial(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.getTestimonial(String(req.params.id)));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateTestimonial(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.status(201).json(await adminContentService.createTestimonial(req.body as CreateTestimonial));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateTestimonial(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(
+      await adminContentService.updateTestimonial(
+        String(req.params.id),
+        req.body as UpdateTestimonial,
+      ),
+    );
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteTestimonial(req: Request, res: Response, next: NextFunction) {
+  try {
+    await adminContentService.deleteTestimonial(String(req.params.id));
     res.status(204).end();
   } catch (err) {
     next(err);
