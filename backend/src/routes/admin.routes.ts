@@ -33,6 +33,16 @@ import {
   adminCreateTestimonial,
   adminUpdateTestimonial,
   adminDeleteTestimonial,
+  adminListWork,
+  adminGetWork,
+  adminCreateWork,
+  adminUpdateWork,
+  adminDeleteWork,
+  adminListBlog,
+  adminGetBlog,
+  adminCreateBlog,
+  adminUpdateBlog,
+  adminDeleteBlog,
 } from '../controllers/admin-content.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
@@ -82,5 +92,27 @@ router.get('/admin/testimonials/:id', ...manage, adminGetTestimonial);
 router.patch('/admin/testimonials/:id', ...mutate, adminUpdateTestimonial);
 // operationId: adminDeleteTestimonial
 router.delete('/admin/testimonials/:id', ...mutate, adminDeleteTestimonial);
+
+// operationId: adminListWork
+router.get('/admin/work', ...manage, adminListWork);
+// operationId: adminCreateWork
+router.post('/admin/work', ...mutate, adminCreateWork);
+// operationId: adminGetWork
+router.get('/admin/work/:id', ...manage, adminGetWork);
+// operationId: adminUpdateWork
+router.patch('/admin/work/:id', ...mutate, adminUpdateWork);
+// operationId: adminDeleteWork
+router.delete('/admin/work/:id', ...mutate, adminDeleteWork);
+
+// operationId: adminListBlog
+router.get('/admin/blog', ...manage, adminListBlog);
+// operationId: adminCreateBlog
+router.post('/admin/blog', ...mutate, adminCreateBlog);
+// operationId: adminGetBlog
+router.get('/admin/blog/:id', ...manage, adminGetBlog);
+// operationId: adminUpdateBlog
+router.patch('/admin/blog/:id', ...mutate, adminUpdateBlog);
+// operationId: adminDeleteBlog
+router.delete('/admin/blog/:id', ...mutate, adminDeleteBlog);
 
 export default router;

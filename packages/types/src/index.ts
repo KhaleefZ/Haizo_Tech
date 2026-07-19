@@ -59,6 +59,16 @@ export type AdminTestimonialList = Schemas['AdminTestimonialList'];
 export type CreateTestimonial = Schemas['CreateTestimonial'];
 export type UpdateTestimonial = Schemas['UpdateTestimonial'];
 
+export type AdminWork = Schemas['AdminWork'];
+export type AdminWorkList = Schemas['AdminWorkList'];
+export type CreateWork = Schemas['CreateWork'];
+export type UpdateWork = Schemas['UpdateWork'];
+
+export type AdminBlog = Schemas['AdminBlog'];
+export type AdminBlogList = Schemas['AdminBlogList'];
+export type CreateBlog = Schemas['CreateBlog'];
+export type UpdateBlog = Schemas['UpdateBlog'];
+
 /**
  * Typed API client.
  *

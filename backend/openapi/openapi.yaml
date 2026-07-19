@@ -661,6 +661,189 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/work:
+    get:
+      operationId: adminListWork
+      summary: List all work, including drafts
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of work
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWorkList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateWork
+      summary: Create a work / case study
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateWork' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWork' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/work/{id}:
+    get:
+      operationId: adminGetWork
+      summary: Get one work by id
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The work
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWork' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateWork
+      summary: Update a work
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateWork' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminWork' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteWork
+      summary: Delete a work
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/blog:
+    get:
+      operationId: adminListBlog
+      summary: List all blog posts, including drafts
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of posts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminBlogList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateBlog
+      summary: Create a blog post
+      description: The author is the signed-in user; it is not accepted from the client.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateBlog' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminBlog' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/blog/{id}:
+    get:
+      operationId: adminGetBlog
+      summary: Get one blog post by id
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminBlog' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateBlog
+      summary: Update a blog post
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateBlog' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminBlog' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteBlog
+      summary: Delete a blog post
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -1236,6 +1419,123 @@ components:
         verifiedAt: { type: [string, 'null'], format: date-time }
         serviceId: { type: [string, 'null'] }
         order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+
+    AdminWork:
+      type: object
+      required: [id, title, category, description, imageUrls, published, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { type: [string, 'null'] }
+        title: { type: string, maxLength: 200 }
+        category: { type: string, maxLength: 80 }
+        description: { type: string }
+        imageUrls:
+          type: array
+          items: { type: string }
+        liveUrl: { type: [string, 'null'] }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminWorkList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminWork' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateWork:
+      type: object
+      required: [slug, title, category, description]
+      additionalProperties: false
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 200 }
+        category: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, minLength: 2, maxLength: 20000 }
+        imageUrls:
+          type: array
+          items: { type: string, maxLength: 500 }
+        liveUrl: { type: [string, 'null'], maxLength: 500 }
+        published: { type: boolean }
+
+    UpdateWork:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 200 }
+        category: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, minLength: 2, maxLength: 20000 }
+        imageUrls:
+          type: array
+          items: { type: string, maxLength: 500 }
+        liveUrl: { type: [string, 'null'], maxLength: 500 }
+        published: { type: boolean }
+
+    AdminBlog:
+      type: object
+      required: [id, title, content, tags, authorId, published, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { type: [string, 'null'] }
+        title: { type: string, maxLength: 250 }
+        content: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        imageUrl: { type: [string, 'null'] }
+        authorId: { type: string }
+        authorName: { type: [string, 'null'] }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminBlogList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminBlog' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateBlog:
+      type: object
+      required: [slug, title, content]
+      additionalProperties: false
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 250 }
+        content: { type: string, minLength: 2, maxLength: 100000 }
+        tags:
+          type: array
+          items: { type: string, maxLength: 40 }
+        imageUrl: { type: [string, 'null'], maxLength: 500 }
+        published: { type: boolean }
+
+    UpdateBlog:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 250 }
+        content: { type: string, minLength: 2, maxLength: 100000 }
+        tags:
+          type: array
+          items: { type: string, maxLength: 40 }
+        imageUrl: { type: [string, 'null'], maxLength: 500 }
         published: { type: boolean }
 
 security:

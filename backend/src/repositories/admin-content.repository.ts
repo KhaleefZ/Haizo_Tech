@@ -109,4 +109,66 @@ export const adminContentRepository = {
   deleteTestimonial(id: string) {
     return prisma.testimonial.delete({ where: { id } });
   },
+
+  /* ---- Work ---- */
+
+  listWork({ skip, take }: { skip: number; take: number }) {
+    return prisma.$transaction([
+      prisma.work.findMany({ orderBy: { createdAt: 'desc' }, skip, take }),
+      prisma.work.count(),
+    ]);
+  },
+
+  findWorkById(id: string) {
+    return prisma.work.findUnique({ where: { id } });
+  },
+
+  createWork(data: Prisma.WorkCreateInput) {
+    return prisma.work.create({ data });
+  },
+
+  updateWork(id: string, data: Prisma.WorkUpdateInput) {
+    return prisma.work.update({ where: { id }, data });
+  },
+
+  deleteWork(id: string) {
+    return prisma.work.delete({ where: { id } });
+  },
+
+  /* ---- Blog ---- */
+
+  listBlog({ skip, take }: { skip: number; take: number }) {
+    return prisma.$transaction([
+      prisma.blog.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+        include: { author: { select: { name: true } } },
+      }),
+      prisma.blog.count(),
+    ]);
+  },
+
+  findBlogById(id: string) {
+    return prisma.blog.findUnique({
+      where: { id },
+      include: { author: { select: { name: true } } },
+    });
+  },
+
+  createBlog(data: Prisma.BlogCreateInput) {
+    return prisma.blog.create({ data, include: { author: { select: { name: true } } } });
+  },
+
+  updateBlog(id: string, data: Prisma.BlogUpdateInput) {
+    return prisma.blog.update({
+      where: { id },
+      data,
+      include: { author: { select: { name: true } } },
+    });
+  },
+
+  deleteBlog(id: string) {
+    return prisma.blog.delete({ where: { id } });
+  },
 };

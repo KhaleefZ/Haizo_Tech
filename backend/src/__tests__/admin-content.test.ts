@@ -65,6 +65,8 @@ afterAll(async () => {
   await prisma.industry.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.workCategory.deleteMany({ where: { name: { startsWith: 'P4bCat' } } });
   await prisma.testimonial.deleteMany({ where: { author: { startsWith: 'P4bTst' } } });
+  await prisma.work.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
+  await prisma.blog.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
   await prisma.$disconnect();
 });
@@ -333,5 +335,71 @@ describe('testimonials CRUD + provenance guard', () => {
       .send({ published: true });
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe('VALIDATION_FAILED');
+  });
+});
+
+describe('work CRUD', () => {
+  it('creates, rejects duplicate slug, updates, deletes', async () => {
+    const create = await request(app)
+      .post('/v1/admin/work')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({
+        slug: `${SLUG_PREFIX}case-study`,
+        title: 'A Case Study',
+        category: 'Web',
+        description: 'What we built and the outcome.',
+        published: true,
+      });
+    expect(create.status).toBe(201);
+    expect(create.body).toMatchObject({ slug: `${SLUG_PREFIX}case-study`, published: true });
+    const id = create.body.id;
+
+    const dup = await request(app)
+      .post('/v1/admin/work')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ slug: `${SLUG_PREFIX}case-study`, title: 'Dup', category: 'Web', description: 'again' });
+    expect(dup.status).toBe(409);
+
+    const upd = await request(app)
+      .patch(`/v1/admin/work/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ title: 'A Case Study (edited)' });
+    expect(upd.status).toBe(200);
+    expect(upd.body.title).toBe('A Case Study (edited)');
+
+    expect(
+      (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+  });
+});
+
+describe('blog CRUD', () => {
+  it('creates with the signed-in user as author, lists, deletes', async () => {
+    const create = await request(app)
+      .post('/v1/admin/blog')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({
+        slug: `${SLUG_PREFIX}first-post`,
+        title: 'First Post',
+        content: 'Hello world, this is our first post.',
+        tags: ['news'],
+      });
+    expect(create.status).toBe(201);
+    // Author is derived from the session, not the request body.
+    expect(create.body.authorName).toBe('P4b Admin');
+    expect(create.body.published).toBe(false);
+    const id = create.body.id;
+
+    const list = await request(app).get('/v1/admin/blog').set('Cookie', admin.cookie);
+    expect(list.status).toBe(200);
+    expect(list.body.data.some((b: { id: string }) => b.id === id)).toBe(true);
+
+    expect(
+      (await request(app).delete(`/v1/admin/blog/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
   });
 });

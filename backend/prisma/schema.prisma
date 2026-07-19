@@ -75,6 +75,11 @@ model Work {
   updatedAt   DateTime @updatedAt
   liveUrl     String?
 
+  // Phase 4b (additive). Nullable + unique so existing rows are backfilled
+  // without a rewrite; a later migration tightens it to NOT NULL once every row
+  // has one. Postgres allows multiple NULLs under a unique index, so this is safe.
+  slug        String?  @unique
+
   @@index([published])
 }
 
@@ -175,6 +180,9 @@ model Blog {
   published Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Phase 4b (additive) — see the note on Work.slug.
+  slug      String?  @unique
 
   author User @relation("BlogAuthor", fields: [authorId], references: [id])
 

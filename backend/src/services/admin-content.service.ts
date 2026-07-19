@@ -27,6 +27,14 @@ import type {
   AdminTestimonialList,
   CreateTestimonial,
   UpdateTestimonial,
+  AdminWork,
+  AdminWorkList,
+  CreateWork,
+  UpdateWork,
+  AdminBlog,
+  AdminBlogList,
+  CreateBlog,
+  UpdateBlog,
 } from '@haizo/types';
 import { adminContentRepository } from '../repositories/admin-content.repository.js';
 import { conflict, notFound, validationFailed } from '../lib/errors.js';
@@ -56,6 +64,18 @@ function revalidateWorks(): void {
 
 function revalidateTestimonials(): void {
   void revalidate('testimonial.changed', [tags.testimonials, tags.home]);
+}
+
+function revalidateWorkItem(slug?: string | null): void {
+  const t: string[] = [tags.works, tags.home, tags.sitemap];
+  if (slug) t.push(tags.work(slug));
+  void revalidate('work.changed', t);
+}
+
+function revalidateBlogItem(slug?: string | null): void {
+  const t: string[] = [tags.blogs, tags.home, tags.sitemap];
+  if (slug) t.push(tags.blog(slug));
+  void revalidate('blog.changed', t);
 }
 
 /**
@@ -419,6 +439,156 @@ export const adminContentService = {
       throw err;
     }
   },
+
+  /* ---- Work ---- */
+
+  async listWork(page: number, pageSize: number): Promise<AdminWorkList> {
+    const [rows, total] = await adminContentRepository.listWork({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      data: rows.map(toAdminWork),
+      meta: { page, pageSize, total, totalPages, hasNext: page < totalPages },
+    };
+  },
+
+  async getWork(id: string): Promise<AdminWork> {
+    const row = await adminContentRepository.findWorkById(id);
+    if (!row) throw notFound('Work');
+    return toAdminWork(row);
+  },
+
+  async createWork(input: CreateWork): Promise<AdminWork> {
+    try {
+      const row = await adminContentRepository.createWork({
+        slug: input.slug,
+        title: input.title,
+        category: input.category,
+        description: input.description,
+        imageUrls: input.imageUrls ?? [],
+        liveUrl: input.liveUrl ?? null,
+        published: input.published ?? false,
+      });
+      revalidateWorkItem(row.slug);
+      return toAdminWork(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A work with that slug already exists');
+      throw err;
+    }
+  },
+
+  async updateWork(id: string, input: UpdateWork): Promise<AdminWork> {
+    const existing = await adminContentRepository.findWorkById(id);
+    if (!existing) throw notFound('Work');
+
+    const data: Prisma.WorkUpdateInput = {
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.category !== undefined ? { category: input.category } : {}),
+      ...(input.description !== undefined ? { description: input.description } : {}),
+      ...(input.imageUrls !== undefined ? { imageUrls: input.imageUrls } : {}),
+      ...(input.liveUrl !== undefined ? { liveUrl: input.liveUrl } : {}),
+      ...(input.published !== undefined ? { published: input.published } : {}),
+    };
+
+    try {
+      const row = await adminContentRepository.updateWork(id, data);
+      revalidateWorkItem(row.slug);
+      return toAdminWork(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A work with that slug already exists');
+      throw err;
+    }
+  },
+
+  async deleteWork(id: string): Promise<void> {
+    try {
+      await adminContentRepository.deleteWork(id);
+      revalidateWorkItem();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw notFound('Work');
+      }
+      throw err;
+    }
+  },
+
+  /* ---- Blog ---- */
+
+  async listBlog(page: number, pageSize: number): Promise<AdminBlogList> {
+    const [rows, total] = await adminContentRepository.listBlog({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      data: rows.map(toAdminBlog),
+      meta: { page, pageSize, total, totalPages, hasNext: page < totalPages },
+    };
+  },
+
+  async getBlog(id: string): Promise<AdminBlog> {
+    const row = await adminContentRepository.findBlogById(id);
+    if (!row) throw notFound('Blog post');
+    return toAdminBlog(row);
+  },
+
+  /** authorId is the signed-in user, supplied by the controller — never the client. */
+  async createBlog(input: CreateBlog, authorId: string): Promise<AdminBlog> {
+    try {
+      const row = await adminContentRepository.createBlog({
+        slug: input.slug,
+        title: input.title,
+        content: input.content,
+        tags: input.tags ?? [],
+        imageUrl: input.imageUrl ?? null,
+        published: input.published ?? false,
+        author: { connect: { id: authorId } },
+      });
+      revalidateBlogItem(row.slug);
+      return toAdminBlog(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A post with that slug already exists');
+      throw err;
+    }
+  },
+
+  async updateBlog(id: string, input: UpdateBlog): Promise<AdminBlog> {
+    const existing = await adminContentRepository.findBlogById(id);
+    if (!existing) throw notFound('Blog post');
+
+    const data: Prisma.BlogUpdateInput = {
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.content !== undefined ? { content: input.content } : {}),
+      ...(input.tags !== undefined ? { tags: input.tags } : {}),
+      ...(input.imageUrl !== undefined ? { imageUrl: input.imageUrl } : {}),
+      ...(input.published !== undefined ? { published: input.published } : {}),
+    };
+
+    try {
+      const row = await adminContentRepository.updateBlog(id, data);
+      revalidateBlogItem(row.slug);
+      return toAdminBlog(row);
+    } catch (err) {
+      if (isUniqueViolation(err)) throw conflict('A post with that slug already exists');
+      throw err;
+    }
+  },
+
+  async deleteBlog(id: string): Promise<void> {
+    try {
+      await adminContentRepository.deleteBlog(id);
+      revalidateBlogItem();
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw notFound('Blog post');
+      }
+      throw err;
+    }
+  },
 };
 
 type TestimonialRow = NonNullable<
@@ -437,6 +607,40 @@ function toAdminTestimonial(row: TestimonialRow): AdminTestimonial {
     verifiedAt: row.verifiedAt ? row.verifiedAt.toISOString() : null,
     serviceId: row.serviceId,
     order: row.order,
+    published: row.published,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+type WorkRow = NonNullable<Awaited<ReturnType<typeof adminContentRepository.findWorkById>>>;
+type BlogRow = NonNullable<Awaited<ReturnType<typeof adminContentRepository.findBlogById>>>;
+
+function toAdminWork(row: WorkRow): AdminWork {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    category: row.category,
+    description: row.description,
+    imageUrls: row.imageUrls,
+    liveUrl: row.liveUrl,
+    published: row.published,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function toAdminBlog(row: BlogRow): AdminBlog {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    content: row.content,
+    tags: row.tags,
+    imageUrl: row.imageUrl,
+    authorId: row.authorId,
+    authorName: row.author?.name ?? null,
     published: row.published,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),

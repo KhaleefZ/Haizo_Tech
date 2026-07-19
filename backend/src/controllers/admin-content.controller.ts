@@ -15,7 +15,12 @@ import type {
   UpdateWorkCategory,
   CreateTestimonial,
   UpdateTestimonial,
+  CreateWork,
+  UpdateWork,
+  CreateBlog,
+  UpdateBlog,
 } from '@haizo/types';
+import { unauthenticated } from '../lib/errors.js';
 
 export async function adminListServices(req: Request, res: Response, next: NextFunction) {
   try {
@@ -198,6 +203,98 @@ export async function adminUpdateTestimonial(req: Request, res: Response, next: 
 export async function adminDeleteTestimonial(req: Request, res: Response, next: NextFunction) {
   try {
     await adminContentService.deleteTestimonial(String(req.params.id));
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* ---- Work ---- */
+
+export async function adminListWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    res.json(await adminContentService.listWork(page, pageSize));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminGetWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.getWork(String(req.params.id)));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.status(201).json(await adminContentService.createWork(req.body as CreateWork));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.updateWork(String(req.params.id), req.body as UpdateWork));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    await adminContentService.deleteWork(String(req.params.id));
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+/* ---- Blog ---- */
+
+export async function adminListBlog(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    res.json(await adminContentService.listBlog(page, pageSize));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminGetBlog(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.getBlog(String(req.params.id)));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateBlog(req: Request, res: Response, next: NextFunction) {
+  try {
+    // The author is the signed-in user, taken from the session — never the body.
+    if (!req.user) throw unauthenticated();
+    res.status(201).json(await adminContentService.createBlog(req.body as CreateBlog, req.user.id));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateBlog(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await adminContentService.updateBlog(String(req.params.id), req.body as UpdateBlog));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteBlog(req: Request, res: Response, next: NextFunction) {
+  try {
+    await adminContentService.deleteBlog(String(req.params.id));
     res.status(204).end();
   } catch (err) {
     next(err);

@@ -30,6 +30,14 @@ import type {
   AdminTestimonialList,
   CreateTestimonial,
   UpdateTestimonial,
+  AdminWork,
+  AdminWorkList,
+  CreateWork,
+  UpdateWork,
+  AdminBlog,
+  AdminBlogList,
+  CreateBlog,
+  UpdateBlog,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -157,5 +165,19 @@ export const api = {
     update: (id: string, input: UpdateTestimonial) =>
       request<AdminTestimonial>('PATCH', `/admin/testimonials/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/testimonials/${id}`),
+  },
+  work: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminWorkList>('GET', `/admin/work?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateWork) => request<AdminWork>('POST', '/admin/work', input),
+    update: (id: string, input: UpdateWork) => request<AdminWork>('PATCH', `/admin/work/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/work/${id}`),
+  },
+  blog: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminBlogList>('GET', `/admin/blog?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateBlog) => request<AdminBlog>('POST', '/admin/blog', input),
+    update: (id: string, input: UpdateBlog) => request<AdminBlog>('PATCH', `/admin/blog/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/blog/${id}`),
   },
 };
