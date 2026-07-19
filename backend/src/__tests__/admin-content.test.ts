@@ -72,6 +72,8 @@ afterAll(async () => {
   await prisma.announcement.deleteMany({ where: { title: { startsWith: 'P4bAnn' } } });
   await prisma.project.deleteMany({ where: { name: { startsWith: 'P4bProj' } } });
   await prisma.activityEvent.deleteMany({ where: { actorName: { in: ['P4b Admin', 'P4b Dev'] } } });
+  await prisma.pageView.deleteMany({ where: { path: '/p6-test' } });
+  await prisma.metricDaily.deleteMany({});
   await prisma.user.deleteMany({
     where: { email: { in: [ADMIN.email, DEVU.email, 'p4c-pwtest@test.local'] } },
   });
@@ -380,6 +382,31 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('analytics', () => {
+  it('collects page views (public) and aggregates them for the dashboard', async () => {
+    for (let i = 0; i < 3; i++) {
+      const r = await request(app)
+        .post('/v1/analytics/pageview')
+        .send({ path: '/p6-test', referrer: 'https://google.com' });
+      expect(r.status).toBe(204);
+    }
+
+    expect((await request(app).get('/v1/admin/analytics').set('Cookie', dev.cookie)).status).toBe(403);
+
+    const a = await request(app).get('/v1/admin/analytics').set('Cookie', admin.cookie);
+    expect(a.status).toBe(200);
+    expect(a.body.daily).toHaveLength(14);
+    expect(a.body.totalViews).toBeGreaterThanOrEqual(3);
+
+    const top = a.body.topPaths.find((p: { path: string }) => p.path === '/p6-test');
+    expect(top?.views).toBeGreaterThanOrEqual(3);
+
+    const today = new Date().toISOString().slice(0, 10);
+    const bucket = a.body.daily.find((d: { date: string }) => d.date === today);
+    expect(bucket.views).toBeGreaterThanOrEqual(3);
   });
 });
 

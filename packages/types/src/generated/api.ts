@@ -99,6 +99,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/analytics/pageview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record a first-party page view (from the marketing site)
+         * @description Public, rate-limited, no PII. The site beacons a path on navigation.
+         */
+        post: operations["recordPageView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -670,6 +690,23 @@ export interface paths {
         };
         /** Recent admin activity (audit feed) */
         get: operations["adminListActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Traffic analytics (daily views + top pages) */
+        get: operations["adminGetAnalytics"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1442,6 +1479,24 @@ export interface components {
             data: components["schemas"]["AdminActivity"][];
             meta: components["schemas"]["PageMeta"];
         };
+        RecordPageView: {
+            path: string;
+            referrer?: string | null;
+        };
+        DailyViews: {
+            /** Format: date */
+            date: string;
+            views: number;
+        };
+        PathViews: {
+            path: string;
+            views: number;
+        };
+        AnalyticsSummary: {
+            totalViews: number;
+            daily: components["schemas"]["DailyViews"][];
+            topPaths: components["schemas"]["PathViews"][];
+        };
         DashboardStats: {
             newInquiries: number;
             openProjects: number;
@@ -1799,6 +1854,31 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["InquiryReceipt"];
                 };
+            };
+            400: components["responses"]["BadRequest"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    recordPageView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordPageView"];
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             400: components["responses"]["BadRequest"];
             429: components["responses"]["TooManyRequests"];
@@ -3191,6 +3271,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminActivityList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetAnalytics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Analytics summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalyticsSummary"];
                 };
             };
             401: components["responses"]["Unauthorized"];

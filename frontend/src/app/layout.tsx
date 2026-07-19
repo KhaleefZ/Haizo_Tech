@@ -3,6 +3,7 @@ import { Sora, Inter } from 'next/font/google';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PageTransition } from '@/components/PageTransition';
+import { Analytics } from '@/components/Analytics';
 import { CONTACT, SOCIALS } from '@/lib/contact';
 import { SITE_URL } from '@/lib/api';
 import './globals.css';
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <PageTransition>{children}</PageTransition>
         <SiteFooter />
+        <Analytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}

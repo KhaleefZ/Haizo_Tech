@@ -11,6 +11,7 @@ import {
   listWork,
   listWorkCategories,
 } from '../controllers/content.controller.js';
+import { recordPageView } from '../controllers/analytics.controller.js';
 
 /**
  * Tight limit on the public write endpoint, separate from the global one.
@@ -48,5 +49,17 @@ router.get('/work', listWork);
 router.get('/blog', listBlogPosts);
 // operationId: createInquiry
 router.post('/inquiries', inquiryLimiter, createInquiry);
+
+// Page-view beacon from the marketing site. Loose limit — a normal browsing
+// session fires many, but this caps a single IP flooding the events table.
+const pageViewLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  limit: 300,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: (_req, res) => res.status(429).json({ error: { code: 'RATE_LIMITED', message: 'Slow down.' } }),
+});
+// operationId: recordPageView
+router.post('/analytics/pageview', pageViewLimiter, recordPageView);
 
 export default router;

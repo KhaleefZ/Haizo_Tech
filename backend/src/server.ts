@@ -10,6 +10,7 @@ import { prisma } from './lib/prisma.js';
 import cron from 'node-cron';
 import { attachSockets } from './sockets/index.js';
 import { runDigest } from './jobs/digest.js';
+import { analyticsService } from './services/analytics.service.js';
 
 const httpServer = createServer(createApp());
 
@@ -20,6 +21,11 @@ attachSockets(httpServer);
 // configured, so it's safe to schedule in every environment.
 cron.schedule('0 8 * * *', () => {
   void runDigest();
+});
+
+// Nightly analytics rollup at 00:15 — finalise yesterday, refresh today.
+cron.schedule('15 0 * * *', () => {
+  void analyticsService.nightlyRollup();
 });
 
 httpServer.listen(config.port, () => {

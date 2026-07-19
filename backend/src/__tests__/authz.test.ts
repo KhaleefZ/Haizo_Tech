@@ -80,6 +80,7 @@ const PUBLIC_ROUTES = new Set([
   'GET /work',
   'GET /blog',
   'POST /inquiries',
+  'POST /analytics/pageview',
   'POST /auth/login',
 ]);
 

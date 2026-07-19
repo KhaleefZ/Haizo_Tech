@@ -256,6 +256,25 @@ model ActivityEvent {
   @@index([createdAt])
 }
 
+// Phase 6 (additive). First-party analytics: raw page-view events rolled up
+// nightly into a per-day metric so the dashboard reads a small table, not the
+// full event stream.
+model PageView {
+  id        String   @id @default(uuid())
+  path      String
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+}
+
+model MetricDaily {
+  // One row per calendar day (date-only PK).
+  date  DateTime @id @db.Date
+  views Int      @default(0)
+}
+
 // ===========================================================================
 // PHASE 2 — content models.
 //

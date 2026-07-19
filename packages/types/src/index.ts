@@ -84,6 +84,10 @@ export type CreateClient = Schemas['CreateClient'];
 export type UpdateClient = Schemas['UpdateClient'];
 
 export type DashboardStats = Schemas['DashboardStats'];
+export type RecordPageView = Schemas['RecordPageView'];
+export type AnalyticsSummary = Schemas['AnalyticsSummary'];
+export type DailyViews = Schemas['DailyViews'];
+export type PathViews = Schemas['PathViews'];
 export type AdminActivity = Schemas['AdminActivity'];
 export type AdminActivityList = Schemas['AdminActivityList'];
 export type SearchResult = Schemas['SearchResult'];

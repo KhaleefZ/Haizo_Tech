@@ -55,6 +55,7 @@ import {
 } from '../controllers/inquiry.controller.js';
 import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
 import { adminGetDashboard } from '../controllers/dashboard.controller.js';
+import { adminGetAnalytics } from '../controllers/analytics.controller.js';
 import {
   adminListNotifications,
   adminUnreadCount,
@@ -212,6 +213,9 @@ router.post('/admin/notifications/read-all', ...selfMutate, adminMarkAllNotifica
 router.post('/admin/notifications/:id/read', ...selfMutate, adminMarkNotificationRead);
 // operationId: adminDeleteNotification
 router.delete('/admin/notifications/:id', ...selfMutate, adminDeleteNotification);
+
+// operationId: adminGetAnalytics
+router.get('/admin/analytics', ...manage, adminGetAnalytics);
 
 // operationId: adminGetDashboard
 router.get('/admin/dashboard', ...manage, adminGetDashboard);

@@ -13,10 +13,38 @@ function StatusBadge({ status }: { status: InquiryStatus }) {
   return <Badge variant="neutral">Read</Badge>;
 }
 
+function TrafficChart({ daily }: { daily: { date: string; views: number }[] }) {
+  const max = Math.max(1, ...daily.map((d) => d.views));
+  return (
+    <div>
+      <div className="flex h-36 items-end gap-1.5" role="img" aria-label="Page views over the last 14 days">
+        {daily.map((d) => {
+          const pct = (d.views / max) * 100;
+          const label = new Date(`${d.date}T00:00:00Z`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+          return (
+            <div key={d.date} className="group flex flex-1 items-end" style={{ height: '100%' }}>
+              <div
+                className="w-full rounded-t bg-brand-blue/75 transition-colors group-hover:bg-brand-blue"
+                style={{ height: `${Math.max(pct, 2)}%` }}
+                title={`${label}: ${d.views} view${d.views === 1 ? '' : 's'}`}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-2 flex justify-between text-[11px] text-text-muted">
+        <span>{daily[0] ? new Date(`${daily[0].date}T00:00:00Z`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''}</span>
+        <span>Today</span>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const firstName = user?.name.split(/\s+/)[0] ?? 'there';
   const { data, isLoading, isError } = useQuery({ queryKey: ['admin', 'dashboard'], queryFn: () => api.dashboard.get() });
+  const analytics = useQuery({ queryKey: ['admin', 'analytics'], queryFn: () => api.analytics.get() });
 
   const stats = [
     { label: 'New inquiries', value: data?.newInquiries, hint: 'awaiting triage', href: '/inquiries' },
@@ -46,6 +74,46 @@ export default function DashboardPage() {
             </Card>
           </Link>
         ))}
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <div className="flex items-baseline justify-between">
+            <p className="text-sm font-semibold text-text-strong">Traffic</p>
+            <p className="text-xs text-text-muted">
+              {analytics.data ? `${analytics.data.totalViews} views · last 14 days` : 'last 14 days'}
+            </p>
+          </div>
+          <div className="mt-4">
+            {analytics.isLoading ? (
+              <Skeleton className="h-36 w-full" />
+            ) : analytics.isError ? (
+              <p className="py-12 text-center text-sm text-text-muted">Couldn’t load traffic.</p>
+            ) : (
+              <TrafficChart daily={analytics.data!.daily} />
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <p className="text-sm font-semibold text-text-strong">Top pages</p>
+          <div className="mt-4">
+            {analytics.isLoading ? (
+              <div className="space-y-2">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-6 w-full" />)}</div>
+            ) : (analytics.data?.topPaths.length ?? 0) === 0 ? (
+              <p className="py-6 text-sm text-text-muted">No visits yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {analytics.data!.topPaths.map((p) => (
+                  <li key={p.path} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="truncate font-mono text-xs text-text">{p.path}</span>
+                    <span className="shrink-0 tabular-nums text-text-muted">{p.views}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </Card>
       </div>
 
       <Card className="mt-4 !p-0">

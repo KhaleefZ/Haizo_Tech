@@ -138,6 +138,24 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /analytics/pageview:
+    post:
+      operationId: recordPageView
+      summary: Record a first-party page view (from the marketing site)
+      description: Public, rate-limited, no PII. The site beacons a path on navigation.
+      tags: [Content]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RecordPageView' }
+      responses:
+        '204': { description: Recorded }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /auth/login:
     post:
       operationId: login
@@ -1119,6 +1137,21 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/AdminActivityList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/analytics:
+    get:
+      operationId: adminGetAnalytics
+      summary: Traffic analytics (daily views + top pages)
+      tags: [Admin]
+      responses:
+        '200':
+          description: Analytics summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AnalyticsSummary' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
@@ -2398,6 +2431,43 @@ components:
           type: array
           items: { $ref: '#/components/schemas/AdminActivity' }
         meta: { $ref: '#/components/schemas/PageMeta' }
+
+    RecordPageView:
+      type: object
+      required: [path]
+      additionalProperties: false
+      properties:
+        path: { type: string, minLength: 1, maxLength: 500 }
+        referrer: { type: [string, 'null'], maxLength: 500 }
+
+    DailyViews:
+      type: object
+      required: [date, views]
+      additionalProperties: false
+      properties:
+        date: { type: string, format: date }
+        views: { type: integer, minimum: 0 }
+
+    PathViews:
+      type: object
+      required: [path, views]
+      additionalProperties: false
+      properties:
+        path: { type: string }
+        views: { type: integer, minimum: 0 }
+
+    AnalyticsSummary:
+      type: object
+      required: [totalViews, daily, topPaths]
+      additionalProperties: false
+      properties:
+        totalViews: { type: integer, minimum: 0 }
+        daily:
+          type: array
+          items: { $ref: '#/components/schemas/DailyViews' }
+        topPaths:
+          type: array
+          items: { $ref: '#/components/schemas/PathViews' }
 
     DashboardStats:
       type: object
