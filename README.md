@@ -92,8 +92,8 @@ was testable.
 |---|---|---|
 | 0 | Design prototype | ✅ approved — see [`design/`](design/README.md) |
 | 1 | Monorepo, tokens, component library, contract spine | ✅ |
-| 2 | Public site + instant content revalidation | 🔨 API + revalidation done; Next pages remain |
-| 3 | Backend hardening, cookie auth, full contract | — |
+| 2 | Public site + instant content revalidation | ✅ 16/16 e2e green; revalidation measured at 149ms |
+| 3 | Backend hardening, cookie auth, full contract | ⬅ next |
 | 4 | Admin rebuild (full ops suite, light theme) | — |
 | 5 | Notifications, activity feed, Cmd-K, digests | — |
 | 6 | Attachments to S3/R2, analytics | — |
