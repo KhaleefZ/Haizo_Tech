@@ -63,6 +63,7 @@ import {
   adminOpenConversation,
   adminListMessages,
   adminPostMessage,
+  adminMarkConversationRead,
 } from '../controllers/chat.controller.js';
 import {
   adminListNotifications,
@@ -245,6 +246,8 @@ router.post('/admin/chat/conversations', ...selfMutate, adminOpenConversation);
 router.get('/admin/chat/conversations/:id/messages', ...authed, adminListMessages);
 // operationId: adminPostMessage
 router.post('/admin/chat/conversations/:id/messages', ...selfMutate, adminPostMessage);
+// operationId: adminMarkConversationRead
+router.post('/admin/chat/conversations/:id/read', ...selfMutate, adminMarkConversationRead);
 
 // operationId: adminGetDashboard
 router.get('/admin/dashboard', ...manage, adminGetDashboard);

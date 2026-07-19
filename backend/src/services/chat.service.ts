@@ -4,6 +4,7 @@ import type {
   ChatConversationList,
   ChatMessage,
   ChatMessagePage,
+  ChatRead,
   OpenConversation,
 } from '@haizo/types';
 import { Prisma } from '@prisma/client';
@@ -12,7 +13,13 @@ import { prisma } from '../lib/prisma.js';
 import { forbidden, notFound, validationFailed } from '../lib/errors.js';
 import { emitToConversation, joinUserToConversation } from '../sockets/io.js';
 
-type MemberWithUser = { user: { id: string; name: string; role: string; avatarUrl: string | null } };
+type MemberWithUser = {
+  lastReadAt: Date | null;
+  user: { id: string; name: string; role: string; avatarUrl: string | null };
+};
+
+const toReads = (members: MemberWithUser[]): ChatRead[] =>
+  members.map((m) => ({ userId: m.user.id, lastReadAt: m.lastReadAt?.toISOString() ?? null }));
 type MessageRow = {
   id: string;
   conversationId: string;
@@ -74,6 +81,7 @@ export const chatService = {
             role: m.user.role,
             avatarUrl: m.user.avatarUrl,
           })),
+          reads: toReads(c.members),
           unreadCount,
           updatedAt: c.updatedAt.toISOString(),
         };
@@ -127,9 +135,19 @@ export const chatService = {
         role: m.user.role,
         avatarUrl: m.user.avatarUrl,
       })),
+      reads: toReads(conv.members),
       unreadCount: 0,
       updatedAt: conv.updatedAt.toISOString(),
     };
+  },
+
+  async markRead(conversationId: string, userId: string): Promise<ChatRead> {
+    await this.assertMember(conversationId, userId);
+    const member = await chatRepository.markRead(conversationId, userId);
+    const receipt: ChatRead = { userId, lastReadAt: member.lastReadAt?.toISOString() ?? null };
+    // Let the other members' clients advance their read receipts.
+    emitToConversation(conversationId, 'chat:read', { conversationId, ...receipt });
+    return receipt;
   },
 
   /** Confirms membership, then throws 403 if the caller isn't in the conversation. */

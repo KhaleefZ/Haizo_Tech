@@ -141,6 +141,13 @@ export const chatRepository = {
     return message;
   },
 
+  markRead(conversationId: string, userId: string) {
+    return prisma.conversationMember.update({
+      where: { conversationId_userId: { conversationId, userId } },
+      data: { lastReadAt: new Date() },
+    });
+  },
+
   /** Messages in the conversation the user hasn't seen (after lastReadAt, not their own). */
   countUnread(conversationId: string, userId: string, lastReadAt: Date | null) {
     return prisma.message.count({

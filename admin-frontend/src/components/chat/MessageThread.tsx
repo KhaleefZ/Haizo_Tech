@@ -46,11 +46,29 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
   const [sending, setSending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [typing, setTyping] = React.useState<Record<string, string>>({});
+  // Each member's read marker (userId → ISO time), seeded from the server and
+  // advanced by chat:read events. Drives the sender's read receipts.
+  const [reads, setReads] = React.useState<Record<string, string | null>>(() =>
+    Object.fromEntries((conversation.reads ?? []).map((r) => [r.userId, r.lastReadAt ?? null])),
+  );
   const bottomRef = React.useRef<HTMLDivElement>(null);
   const bodyRef = React.useRef<HTMLDivElement>(null);
   const typingTimers = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const stopTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTypingSent = React.useRef(0);
+  const markReadTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /** Mark the conversation read (debounced) so the unread badge clears and the
+   *  other members see a receipt. */
+  const scheduleMarkRead = React.useCallback(() => {
+    if (markReadTimer.current) clearTimeout(markReadTimer.current);
+    markReadTimer.current = setTimeout(() => {
+      api.chat
+        .markRead(convId)
+        .then(() => qc.invalidateQueries({ queryKey: ['chat', 'conversations'] }))
+        .catch(() => {});
+    }, 600);
+  }, [convId, qc]);
 
   // The other member of a DM — drives the header presence dot + status line.
   const other = conversation.type === 'dm' ? conversation.members.find((m) => m.id !== meId) : undefined;
@@ -72,6 +90,7 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
     return () => {
       Object.values(timers).forEach(clearTimeout);
       if (stopTimer.current) clearTimeout(stopTimer.current);
+      if (markReadTimer.current) clearTimeout(markReadTimer.current);
     };
   }, []);
 
@@ -99,8 +118,25 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
         const { [msg.sender.id]: _drop, ...rest } = t;
         return rest;
       });
+      // We're looking at this conversation, so a message from someone else is
+      // immediately read.
+      if (msg.sender.id !== meId) scheduleMarkRead();
     }
   });
+
+  // Advance other members' read markers as their clients report reading.
+  useSocketEvent<{ conversationId: string; userId: string; lastReadAt: string | null }>(
+    'chat:read',
+    (e) => {
+      if (e.conversationId === convId) setReads((r) => ({ ...r, [e.userId]: e.lastReadAt }));
+    },
+  );
+
+  // Opening the conversation marks it read once its history has loaded.
+  // scheduleMarkRead is stable per conversation, so it re-runs when either changes.
+  React.useEffect(() => {
+    if (history.isSuccess) scheduleMarkRead();
+  }, [history.isSuccess, scheduleMarkRead]);
 
   // Someone in this conversation is typing — show it, and auto-clear if their
   // stop event is lost.
@@ -174,6 +210,19 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
       : otherOnline
         ? 'Online'
         : 'Offline';
+
+  // Read receipts: show a status only on the sender's latest message.
+  const otherIds = conversation.members.filter((m) => m.id !== meId).map((m) => m.id);
+  const lastMineId = React.useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) if (messages[i]!.sender.id === meId) return messages[i]!.id;
+    return null;
+  }, [messages, meId]);
+  const readReceipt = (createdAt: string): string | null => {
+    // ISO-8601 UTC strings compare correctly lexicographically.
+    const k = otherIds.reduce((n, id) => n + (reads[id] && reads[id]! >= createdAt ? 1 : 0), 0);
+    if (k === 0) return null;
+    return conversation.type === 'dm' ? 'Read' : `Read by ${k}`;
+  };
 
   const typingNames = Object.values(typing);
   const typingLabel =
@@ -258,7 +307,12 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
                         >
                           {m.body}
                         </div>
-                        <p className="mt-0.5 text-[0.6875rem] text-text-muted">{clock(m.createdAt)}</p>
+                        <p className="mt-0.5 text-[0.6875rem] text-text-muted">
+                          {clock(m.createdAt)}
+                          {mine && m.id === lastMineId && readReceipt(m.createdAt)
+                            ? ` · ${readReceipt(m.createdAt)}`
+                            : null}
+                        </p>
                       </div>
                     </div>
                   </React.Fragment>

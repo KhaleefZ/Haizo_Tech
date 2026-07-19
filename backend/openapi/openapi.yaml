@@ -1292,6 +1292,28 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/chat/conversations/{id}/read:
+    post:
+      operationId: adminMarkConversationRead
+      summary: Mark a conversation read up to now
+      description: |
+        Sets your read marker to the present, clearing the unread count and letting
+        other members' clients show a read receipt. Broadcasts the new marker to the
+        conversation.
+      tags: [Chat]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Your updated read marker
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatRead' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/dashboard:
     get:
       operationId: adminGetDashboard
@@ -2616,9 +2638,17 @@ components:
           nullable: true
           description: Cursor for the next (older) page; null when at the start.
 
+    ChatRead:
+      type: object
+      required: [userId]
+      additionalProperties: false
+      properties:
+        userId: { type: string }
+        lastReadAt: { type: string, format: date-time, nullable: true }
+
     ChatConversation:
       type: object
-      required: [id, type, title, members, unreadCount, updatedAt]
+      required: [id, type, title, members, reads, unreadCount, updatedAt]
       additionalProperties: false
       properties:
         id: { type: string }
@@ -2628,6 +2658,10 @@ components:
         members:
           type: array
           items: { $ref: '#/components/schemas/ChatUser' }
+        reads:
+          type: array
+          description: Each member's read marker, for receipts.
+          items: { $ref: '#/components/schemas/ChatRead' }
         lastMessage:
           $ref: '#/components/schemas/ChatMessage'
           # Optional (omitted, not null) when the conversation has no messages yet.

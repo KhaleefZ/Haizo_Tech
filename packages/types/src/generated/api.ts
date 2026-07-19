@@ -799,6 +799,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/chat/conversations/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a conversation read up to now
+         * @description Sets your read marker to the present, clearing the unread count and letting
+         *     other members' clients show a read receipt. Broadcasts the new marker to the
+         *     conversation.
+         */
+        post: operations["adminMarkConversationRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/dashboard": {
         parameters: {
             query?: never;
@@ -1588,6 +1610,11 @@ export interface components {
             /** @description Cursor for the next (older) page; null when at the start. */
             nextBefore?: string | null;
         };
+        ChatRead: {
+            userId: string;
+            /** Format: date-time */
+            lastReadAt?: string | null;
+        };
         ChatConversation: {
             id: string;
             /** @description dm | channel */
@@ -1596,6 +1623,8 @@ export interface components {
             title: string;
             projectId?: string | null;
             members: components["schemas"]["ChatUser"][];
+            /** @description Each member's read marker, for receipts. */
+            reads: components["schemas"]["ChatRead"][];
             lastMessage?: components["schemas"]["ChatMessage"];
             unreadCount: number;
             /** Format: date-time */
@@ -3608,6 +3637,32 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminMarkConversationRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Your updated read marker */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatRead"];
+                };
+            };
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];

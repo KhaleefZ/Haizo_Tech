@@ -77,6 +77,7 @@ import type {
   ChatConversation,
   ChatMessagePage,
   ChatMessage,
+  ChatRead,
   OpenConversation,
 } from '@haizo/types';
 
@@ -326,6 +327,8 @@ export const api = {
         body,
         clientNonce,
       }),
+    markRead: (conversationId: string) =>
+      request<ChatRead>('POST', `/admin/chat/conversations/${conversationId}/read`),
   },
   activity: {
     list: (page = 1, pageSize = 50) =>

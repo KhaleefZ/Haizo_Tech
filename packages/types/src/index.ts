@@ -93,6 +93,7 @@ export type ChatMessagePage = Schemas['ChatMessagePage'];
 export type ChatConversation = Schemas['ChatConversation'];
 export type ChatConversationList = Schemas['ChatConversationList'];
 export type ChatContactList = Schemas['ChatContactList'];
+export type ChatRead = Schemas['ChatRead'];
 export type OpenConversation = Schemas['OpenConversation'];
 export type PostMessage = Schemas['PostMessage'];
 export type AnalyticsSummary = Schemas['AnalyticsSummary'];

@@ -6,6 +6,7 @@ import { cn } from '@haizo/ui';
 import type { CurrentUser } from '@haizo/types';
 import { NAV } from '../lib/nav';
 import { Icon } from '../lib/icons';
+import { ChatNavBadge } from './ChatNavBadge';
 
 function isActive(pathname: string, href: string): boolean {
   // '/' must match exactly, or it lights up on every page.
@@ -54,6 +55,7 @@ export function Sidebar({ user }: { user: CurrentUser }) {
                       >
                         <Icon name={item.icon} className="size-[18px] shrink-0" />
                         {item.label}
+                        {item.href === '/chat' ? <ChatNavBadge /> : null}
                       </Link>
                     </li>
                   );

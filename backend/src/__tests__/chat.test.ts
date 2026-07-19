@@ -151,6 +151,41 @@ describe('chat REST', () => {
     expect((await request(app).get(`/v1/admin/chat/conversations/${convId}/messages`)).status).toBe(401);
   });
 
+  it('tracks unread count and clears it on read', async () => {
+    const open = await request(app)
+      .post('/v1/admin/chat/conversations')
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ userId: userB.id });
+    const convId = open.body.id as string;
+    convIds.add(convId);
+
+    // A sends two messages B hasn't seen.
+    for (const body of ['unread one', 'unread two']) {
+      await request(app)
+        .post(`/v1/admin/chat/conversations/${convId}/messages`)
+        .set('Cookie', a.cookie)
+        .set('X-CSRF-Token', a.csrf)
+        .send({ body });
+    }
+
+    const before = await request(app).get('/v1/admin/chat/conversations').set('Cookie', b.cookie);
+    const convBefore = before.body.data.find((c: { id: string }) => c.id === convId);
+    expect(convBefore.unreadCount).toBeGreaterThanOrEqual(2);
+
+    const read = await request(app)
+      .post(`/v1/admin/chat/conversations/${convId}/read`)
+      .set('Cookie', b.cookie)
+      .set('X-CSRF-Token', b.csrf);
+    expect(read.status).toBe(200);
+    expect(read.body.userId).toBe(userB.id);
+    expect(read.body.lastReadAt).toBeTruthy();
+
+    const after = await request(app).get('/v1/admin/chat/conversations').set('Cookie', b.cookie);
+    const convAfter = after.body.data.find((c: { id: string }) => c.id === convId);
+    expect(convAfter.unreadCount).toBe(0);
+  });
+
   it('dedupes resent messages by clientNonce', async () => {
     const open = await request(app)
       .post('/v1/admin/chat/conversations')

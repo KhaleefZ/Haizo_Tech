@@ -41,6 +41,15 @@ export async function adminListMessages(req: Request, res: Response, next: NextF
   }
 }
 
+export async function adminMarkConversationRead(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!req.user) throw unauthenticated();
+    res.json(await chatService.markRead(String(req.params.id), req.user.id));
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function adminPostMessage(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.user) throw unauthenticated();
