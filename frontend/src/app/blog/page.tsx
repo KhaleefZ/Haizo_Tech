@@ -34,7 +34,7 @@ export default async function BlogPage() {
                 <Reveal key={p.id} delay={(i % 3) * 60}>
                   <Link
                     href={`/blog/${slugify(p.title)}`}
-                    className="group flex h-full flex-col rounded-token border border-border bg-card p-6 shadow-card transition-[transform,box-shadow,border-color] hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
+                    className="group flex h-full flex-col rounded-token border border-border bg-card p-6 shadow-card transition-[translate,transform,box-shadow,border-color] hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
                   >
                     {p.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">

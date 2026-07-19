@@ -60,7 +60,7 @@ export function EngineeringCulture() {
         <div className="mt-10 grid items-stretch gap-5 md:grid-cols-3">
           {PILLARS.map((p, i) => (
             <Reveal key={p.title} delay={i * 110} className="h-full">
-              <article className="group h-full rounded-token border border-border bg-card p-6 shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift">
+              <article className="group h-full rounded-token border border-border bg-card p-6 shadow-card transition-[translate,transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift">
                 <span className="grid h-11 w-11 place-items-center rounded-[10px] bg-bg-tint-2 text-brand-blue transition-transform duration-300 ease-out-soft group-hover:-translate-y-0.5 group-hover:scale-105">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     {p.icon}

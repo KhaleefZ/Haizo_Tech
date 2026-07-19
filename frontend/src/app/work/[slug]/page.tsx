@@ -662,7 +662,7 @@ export default async function WorkDetail({ params }: Props) {
             <Reveal>
               <Link
                 href={`/work/${slugify(next.title)}`}
-                className="group block overflow-hidden rounded-token border border-border bg-card shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
+                className="group block overflow-hidden rounded-token border border-border bg-card shadow-card transition-[translate,transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
               >
                 <div className="grid items-stretch md:grid-cols-2">
                   <div className="grid min-h-[220px] place-items-center bg-bg-tint-2 text-brand-sky">

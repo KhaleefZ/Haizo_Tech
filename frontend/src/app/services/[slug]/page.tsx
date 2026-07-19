@@ -665,7 +665,7 @@ export default async function ServiceDetail({ params }: Props) {
                 <Reveal key={w.id} delay={i * 60} className="min-w-0">
                   <Link
                     href={`/work/${slugify(w.title)}`}
-                    className="group block h-full overflow-hidden rounded-token border border-border bg-card shadow-card transition-[transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
+                    className="group block h-full overflow-hidden rounded-token border border-border bg-card shadow-card transition-[translate,transform,box-shadow,border-color] duration-300 ease-out-soft hover:-translate-y-1 hover:border-brand-blue hover:shadow-lift"
                   >
                     <div className="grid aspect-[16/10] place-items-center bg-bg-tint-2 text-brand-sky">
                       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">

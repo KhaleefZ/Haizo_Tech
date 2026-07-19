@@ -39,10 +39,10 @@ export function IndustryBand({ industries }: { industries: Industry[] }) {
             <article
               key={`${ind.id}-${i}`}
               aria-hidden={i >= industries.length}
-              className="group relative flex h-[230px] w-[300px] flex-none flex-col justify-end overflow-hidden rounded-2xl border border-border bg-bg-tint shadow-card transition-[transform,box-shadow] duration-300 ease-out-soft hover:-translate-y-2 hover:border-brand-blue hover:shadow-lift"
+              className="group relative flex h-[230px] w-[300px] flex-none flex-col justify-end overflow-hidden rounded-2xl border border-border bg-bg-tint shadow-card transition-[translate,transform,box-shadow] duration-300 ease-out-soft hover:-translate-y-2 hover:border-brand-blue hover:shadow-lift"
             >
               <span
-                className="absolute inset-0 bg-cover bg-center opacity-[0.94] transition-[opacity,transform] duration-500 ease-out-soft group-hover:scale-105 group-hover:opacity-100"
+                className="absolute inset-0 bg-cover bg-center opacity-[0.94] transition-[opacity,translate,transform] duration-500 ease-out-soft group-hover:scale-105 group-hover:opacity-100"
                 style={{ backgroundImage: `url('${ART[ind.slug] ?? ART.healthcare}')` }}
                 aria-hidden="true"
               />

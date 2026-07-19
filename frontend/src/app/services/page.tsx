@@ -115,7 +115,7 @@ export default async function ServicesPage() {
               </Reveal>
 
               <Reveal delay={80} className="min-w-0">
-                <figure className="group overflow-hidden rounded-token border border-border bg-bg-tint shadow-card transition-[transform,box-shadow] duration-300 ease-out-soft hover:-translate-y-1 hover:shadow-lift">
+                <figure className="group overflow-hidden rounded-token border border-border bg-bg-tint shadow-card transition-[translate,transform,box-shadow] duration-300 ease-out-soft hover:-translate-y-1 hover:shadow-lift">
                   <img
                     src={p.art}
                     alt=""
