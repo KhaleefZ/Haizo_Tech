@@ -5,32 +5,9 @@
  */
 import type { NextFunction, Request, Response } from 'express';
 import { authService, toCurrentUser } from '../services/auth.service.js';
-import type { SessionTokens } from '../services/auth.service.js';
-import { cookieNames, cookieOptions } from '../config/domains.js';
+import { cookieNames } from '../config/domains.js';
+import { setSessionCookies, clearSessionCookies } from '../lib/auth/cookies.js';
 import { unauthenticated } from '../lib/errors.js';
-
-function setSessionCookies(res: Response, tokens: SessionTokens): void {
-  res.cookie(cookieNames.access, tokens.access, cookieOptions.access);
-  res.cookie(cookieNames.refresh, tokens.refresh, cookieOptions.refresh);
-  // The CSRF cookie must outlive the access token so it is still present when the
-  // client calls /auth/refresh — give it the refresh lifetime.
-  res.cookie(cookieNames.csrf, tokens.csrf, {
-    ...cookieOptions.csrf,
-    maxAge: cookieOptions.refresh.maxAge,
-  });
-}
-
-function clearSessionCookies(res: Response): void {
-  // clearCookie only clears if domain+path match how the cookie was set, so reuse
-  // the same options — but strip maxAge. In Express 4 a maxAge passed to
-  // clearCookie is still applied, which sets a FUTURE expiry and leaves the cookie
-  // in place. Dropping it lets clearCookie set its own past expiry.
-  const { maxAge: _a, ...access } = cookieOptions.access;
-  const { maxAge: _r, ...refresh } = cookieOptions.refresh;
-  res.clearCookie(cookieNames.access, access);
-  res.clearCookie(cookieNames.refresh, refresh);
-  res.clearCookie(cookieNames.csrf, cookieOptions.csrf);
-}
 
 export async function login(req: Request, res: Response, next: NextFunction) {
   try {

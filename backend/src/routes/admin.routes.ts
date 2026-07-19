@@ -58,6 +58,17 @@ import {
   adminUpdateClient,
   adminDeleteClient,
 } from '../controllers/client.controller.js';
+import {
+  adminListAnnouncements,
+  adminCreateAnnouncement,
+  adminUpdateAnnouncement,
+  adminDeleteAnnouncement,
+} from '../controllers/announcement.controller.js';
+import {
+  adminGetProfile,
+  adminUpdateProfile,
+  adminChangePassword,
+} from '../controllers/profile.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
 const manage = [requireAuth, requireRole('SUPER_ADMIN', 'MANAGER')] as const;
@@ -66,6 +77,9 @@ const mutate = [...manage, requireCsrf] as const;
 // User/team management is the top privilege — super-admin only.
 const superOnly = [requireAuth, requireRole('SUPER_ADMIN')] as const;
 const superMutate = [...superOnly, requireCsrf] as const;
+
+// Self-service: any signed-in user acting on their OWN account. No role gate.
+const selfMutate = [requireAuth, requireCsrf] as const;
 
 const router: ExpressRouter = Router();
 
@@ -152,6 +166,23 @@ router.get('/admin/clients/:id', ...manage, adminGetClient);
 router.patch('/admin/clients/:id', ...mutate, adminUpdateClient);
 // operationId: adminDeleteClient
 router.delete('/admin/clients/:id', ...mutate, adminDeleteClient);
+
+// operationId: adminListAnnouncements
+router.get('/admin/announcements', ...manage, adminListAnnouncements);
+// operationId: adminCreateAnnouncement
+router.post('/admin/announcements', ...mutate, adminCreateAnnouncement);
+// operationId: adminUpdateAnnouncement
+router.patch('/admin/announcements/:id', ...mutate, adminUpdateAnnouncement);
+// operationId: adminDeleteAnnouncement
+router.delete('/admin/announcements/:id', ...mutate, adminDeleteAnnouncement);
+
+// Self-service profile — any signed-in user, their own account.
+// operationId: adminGetProfile
+router.get('/admin/me', requireAuth, adminGetProfile);
+// operationId: adminUpdateProfile
+router.patch('/admin/me', ...selfMutate, adminUpdateProfile);
+// operationId: adminChangePassword
+router.post('/admin/me/password', ...selfMutate, adminChangePassword);
 
 // operationId: adminListUsers
 router.get('/admin/users', ...superOnly, adminListUsers);

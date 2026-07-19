@@ -31,7 +31,7 @@ export interface SessionTokens {
 // the same time — no user enumeration via response latency.
 const DUMMY_HASH = '$2b$10$CwTycUXWue0Thq9StjUM0uJ8.Pr6Vb8xGxD3zqz3n4yV5w1bqk1a';
 
-function issueSession(user: AuthUser): SessionTokens {
+export function issueSession(user: AuthUser): SessionTokens {
   return {
     access: signAccessToken({ sub: user.id, role: user.role, tv: user.tokenVersion }),
     refresh: signRefreshToken({ sub: user.id, tv: user.tokenVersion }),

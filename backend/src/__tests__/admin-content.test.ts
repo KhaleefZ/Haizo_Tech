@@ -69,7 +69,10 @@ afterAll(async () => {
   await prisma.blog.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.inquiry.deleteMany({ where: { email: 'p4c-inquiry@test.local' } });
   await prisma.client.deleteMany({ where: { organization: { startsWith: 'P4bClient' } } });
-  await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
+  await prisma.announcement.deleteMany({ where: { title: { startsWith: 'P4bAnn' } } });
+  await prisma.user.deleteMany({
+    where: { email: { in: [ADMIN.email, DEVU.email, 'p4c-pwtest@test.local'] } },
+  });
   await prisma.$disconnect();
 });
 
@@ -375,6 +378,77 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('announcements CRUD', () => {
+  it('creates (author = signed-in user), lists, updates, deletes', async () => {
+    const create = await request(app)
+      .post('/v1/admin/announcements')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ title: 'P4bAnn Kickoff', content: 'We start Monday.', audience: 'MANAGER' });
+    expect(create.status).toBe(201);
+    expect(create.body).toMatchObject({ title: 'P4bAnn Kickoff', audience: 'MANAGER', authorName: 'P4b Admin' });
+    const id = create.body.id;
+
+    const upd = await request(app)
+      .patch(`/v1/admin/announcements/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ content: 'We start Tuesday.' });
+    expect(upd.status).toBe(200);
+    expect(upd.body.content).toBe('We start Tuesday.');
+
+    expect(
+      (await request(app).delete(`/v1/admin/announcements/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+  });
+});
+
+describe('self-service profile + password', () => {
+  it('lets any signed-in user edit their own profile', async () => {
+    // dev (DEV role) can edit their OWN profile even though they can't manage content.
+    const res = await request(app)
+      .patch('/v1/admin/me')
+      .set('Cookie', dev.cookie)
+      .set('X-CSRF-Token', dev.csrf)
+      .send({ bio: 'Backend developer.', notificationsEnabled: false });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ bio: 'Backend developer.', notificationsEnabled: false });
+    await prisma.user.update({ where: { email: DEVU.email }, data: { bio: null, notificationsEnabled: true } });
+  });
+
+  it('changes a password: wrong current → 401, correct → 204 + rotated cookies', async () => {
+    const password = await hashPassword('OldPassw0rd!');
+    await prisma.user.upsert({
+      where: { email: 'p4c-pwtest@test.local' },
+      update: { password, tokenVersion: 0, role: 'DEV', name: 'PW Test' },
+      create: { email: 'p4c-pwtest@test.local', password, name: 'PW Test', role: 'DEV' },
+    });
+    const login = await request(app)
+      .post('/v1/auth/login')
+      .send({ email: 'p4c-pwtest@test.local', password: 'OldPassw0rd!' });
+    const jar = jarFromLogin(login.headers['set-cookie'] as unknown as string[]);
+    const cookie = `hz_at=${jar.hz_at}; hz_csrf=${jar.hz_csrf}`;
+    const csrf = jar.hz_csrf!;
+
+    const wrong = await request(app)
+      .post('/v1/admin/me/password')
+      .set('Cookie', cookie)
+      .set('X-CSRF-Token', csrf)
+      .send({ currentPassword: 'not-the-password', newPassword: 'BrandNew1!' });
+    expect(wrong.status).toBe(401);
+
+    const ok = await request(app)
+      .post('/v1/admin/me/password')
+      .set('Cookie', cookie)
+      .set('X-CSRF-Token', csrf)
+      .send({ currentPassword: 'OldPassw0rd!', newPassword: 'BrandNew1!' });
+    expect(ok.status).toBe(204);
+    // A fresh access cookie is issued so the change doesn't log the user out.
+    const setCookie = (ok.headers['set-cookie'] as unknown as string[]) ?? [];
+    expect(setCookie.some((c) => c.startsWith('hz_at='))).toBe(true);
   });
 });
 

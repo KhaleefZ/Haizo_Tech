@@ -48,6 +48,13 @@ import type {
   AdminClientList,
   CreateClient,
   UpdateClient,
+  AdminAnnouncement,
+  AdminAnnouncementList,
+  CreateAnnouncement,
+  UpdateAnnouncement,
+  AdminProfile,
+  UpdateProfile,
+  ChangePassword,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -212,5 +219,19 @@ export const api = {
     update: (id: string, input: UpdateClient) =>
       request<AdminClient>('PATCH', `/admin/clients/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/clients/${id}`),
+  },
+  announcements: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminAnnouncementList>('GET', `/admin/announcements?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateAnnouncement) =>
+      request<AdminAnnouncement>('POST', '/admin/announcements', input),
+    update: (id: string, input: UpdateAnnouncement) =>
+      request<AdminAnnouncement>('PATCH', `/admin/announcements/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/announcements/${id}`),
+  },
+  me: {
+    get: () => request<AdminProfile>('GET', '/admin/me'),
+    update: (input: UpdateProfile) => request<AdminProfile>('PATCH', '/admin/me', input),
+    changePassword: (input: ChangePassword) => request<void>('POST', '/admin/me/password', input),
   },
 };

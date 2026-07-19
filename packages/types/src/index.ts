@@ -83,6 +83,16 @@ export type AdminClientList = Schemas['AdminClientList'];
 export type CreateClient = Schemas['CreateClient'];
 export type UpdateClient = Schemas['UpdateClient'];
 
+export type AnnouncementAudience = Schemas['AnnouncementAudience'];
+export type AdminAnnouncement = Schemas['AdminAnnouncement'];
+export type AdminAnnouncementList = Schemas['AdminAnnouncementList'];
+export type CreateAnnouncement = Schemas['CreateAnnouncement'];
+export type UpdateAnnouncement = Schemas['UpdateAnnouncement'];
+
+export type AdminProfile = Schemas['AdminProfile'];
+export type UpdateProfile = Schemas['UpdateProfile'];
+export type ChangePassword = Schemas['ChangePassword'];
+
 /**
  * Typed API client.
  *

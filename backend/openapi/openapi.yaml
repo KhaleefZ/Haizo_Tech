@@ -1009,6 +1009,140 @@ paths:
         '409': { $ref: '#/components/responses/Conflict' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/announcements:
+    get:
+      operationId: adminListAnnouncements
+      summary: List announcements
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of announcements
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminAnnouncementList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateAnnouncement
+      summary: Post an announcement
+      description: The author is the signed-in user.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateAnnouncement' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminAnnouncement' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/announcements/{id}:
+    patch:
+      operationId: adminUpdateAnnouncement
+      summary: Update an announcement
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateAnnouncement' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminAnnouncement' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteAnnouncement
+      summary: Delete an announcement
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/me:
+    get:
+      operationId: adminGetProfile
+      summary: Your own full profile
+      description: Like /auth/me but includes the editable `bio` the session view omits.
+      tags: [Admin]
+      responses:
+        '200':
+          description: Your profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProfile' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateProfile
+      summary: Update your own profile
+      description: Self-service — any signed-in user can edit their own name, bio, avatar and notification preference.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateProfile' }
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProfile' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/me/password:
+    post:
+      operationId: adminChangePassword
+      summary: Change your own password
+      description: |
+        Verifies the current password, stores the new hash, and rotates the
+        session so the change takes effect immediately without logging you out.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChangePassword' }
+      responses:
+        '204':
+          description: Password changed; session cookies rotated
+          headers:
+            Set-Cookie:
+              description: rotated hz_at, hz_rt and hz_csrf
+              schema: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/users:
     get:
       operationId: adminListUsers
@@ -1850,6 +1984,85 @@ components:
         organization: { type: string, minLength: 1, maxLength: 200 }
         contactName: { type: string, minLength: 1, maxLength: 200 }
         email: { type: [string, 'null'], maxLength: 200 }
+
+    AnnouncementAudience:
+      type: string
+      enum: [ALL, SUPER_ADMIN, MANAGER, DEV]
+
+    AdminAnnouncement:
+      type: object
+      required: [id, title, content, audience, authorId, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        title: { type: string, maxLength: 200 }
+        content: { type: string }
+        audience: { $ref: '#/components/schemas/AnnouncementAudience' }
+        authorId: { type: string }
+        authorName: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminAnnouncementList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminAnnouncement' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateAnnouncement:
+      type: object
+      required: [title, content]
+      additionalProperties: false
+      properties:
+        title: { type: string, minLength: 2, maxLength: 200 }
+        content: { type: string, minLength: 2, maxLength: 20000 }
+        audience: { $ref: '#/components/schemas/AnnouncementAudience' }
+
+    UpdateAnnouncement:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        title: { type: string, minLength: 2, maxLength: 200 }
+        content: { type: string, minLength: 2, maxLength: 20000 }
+        audience: { $ref: '#/components/schemas/AnnouncementAudience' }
+
+    AdminProfile:
+      type: object
+      required: [id, email, name, role, notificationsEnabled]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        role: { $ref: '#/components/schemas/Role' }
+        bio: { type: [string, 'null'] }
+        avatarUrl: { type: [string, 'null'] }
+        notificationsEnabled: { type: boolean }
+
+    UpdateProfile:
+      type: object
+      description: A partial update of your own profile; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        bio: { type: [string, 'null'], maxLength: 2000 }
+        avatarUrl: { type: [string, 'null'], maxLength: 500 }
+        notificationsEnabled: { type: boolean }
+
+    ChangePassword:
+      type: object
+      required: [currentPassword, newPassword]
+      additionalProperties: false
+      properties:
+        currentPassword: { type: string, minLength: 8, maxLength: 200 }
+        newPassword: { type: string, minLength: 8, maxLength: 200 }
 
 security:
   - sessionCookie: []

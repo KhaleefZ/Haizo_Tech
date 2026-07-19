@@ -559,6 +559,90 @@ export interface paths {
         patch: operations["adminUpdateClient"];
         trace?: never;
     };
+    "/admin/announcements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List announcements */
+        get: operations["adminListAnnouncements"];
+        put?: never;
+        /**
+         * Post an announcement
+         * @description The author is the signed-in user.
+         */
+        post: operations["adminCreateAnnouncement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/announcements/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an announcement */
+        delete: operations["adminDeleteAnnouncement"];
+        options?: never;
+        head?: never;
+        /** Update an announcement */
+        patch: operations["adminUpdateAnnouncement"];
+        trace?: never;
+    };
+    "/admin/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your own full profile
+         * @description Like /auth/me but includes the editable `bio` the session view omits.
+         */
+        get: operations["adminGetProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update your own profile
+         * @description Self-service — any signed-in user can edit their own name, bio, avatar and notification preference.
+         */
+        patch: operations["adminUpdateProfile"];
+        trace?: never;
+    };
+    "/admin/me/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change your own password
+         * @description Verifies the current password, stores the new hash, and rotates the
+         *     session so the change takes effect immediately without logging you out.
+         */
+        post: operations["adminChangePassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/users": {
         parameters: {
             query?: never;
@@ -1068,6 +1152,56 @@ export interface components {
             organization?: string;
             contactName?: string;
             email?: string | null;
+        };
+        /** @enum {string} */
+        AnnouncementAudience: "ALL" | "SUPER_ADMIN" | "MANAGER" | "DEV";
+        AdminAnnouncement: {
+            id: string;
+            title: string;
+            content: string;
+            audience: components["schemas"]["AnnouncementAudience"];
+            authorId: string;
+            authorName?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AdminAnnouncementList: {
+            data: components["schemas"]["AdminAnnouncement"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        CreateAnnouncement: {
+            title: string;
+            content: string;
+            audience?: components["schemas"]["AnnouncementAudience"];
+        };
+        /** @description A partial update; at least one field must be present. */
+        UpdateAnnouncement: {
+            title?: string;
+            content?: string;
+            audience?: components["schemas"]["AnnouncementAudience"];
+        };
+        AdminProfile: {
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            role: components["schemas"]["Role"];
+            bio?: string | null;
+            avatarUrl?: string | null;
+            notificationsEnabled: boolean;
+        };
+        /** @description A partial update of your own profile; at least one field must be present. */
+        UpdateProfile: {
+            name?: string;
+            bio?: string | null;
+            avatarUrl?: string | null;
+            notificationsEnabled?: boolean;
+        };
+        ChangePassword: {
+            currentPassword: string;
+            newPassword: string;
         };
     };
     responses: {
@@ -2488,6 +2622,193 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListAnnouncements: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of announcements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAnnouncementList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminCreateAnnouncement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAnnouncement"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAnnouncement"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminDeleteAnnouncement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateAnnouncement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAnnouncement"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAnnouncement"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Your profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProfile"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfile"];
+            };
+        };
+        responses: {
+            /** @description Updated profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProfile"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminChangePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePassword"];
+            };
+        };
+        responses: {
+            /** @description Password changed; session cookies rotated */
+            204: {
+                headers: {
+                    /** @description rotated hz_at, hz_rt and hz_csrf */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalError"];
         };
     };
