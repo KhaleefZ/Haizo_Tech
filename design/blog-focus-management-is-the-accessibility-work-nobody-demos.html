@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Focus management is the accessibility work nobody demos — HaizoTech</title>
+<meta name="description" content="Modals, route changes and async lists all move focus somewhere. Where it should go, how to test it in five minutes, and why retrofitting it later is so expensive.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<article>
+
+  <!-- ==================================================== article head -->
+  <section class="section" style="padding-bottom:var(--space-6)">
+    <div class="container container--narrow">
+
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="blog.html">Blog</a> <span aria-hidden="true">/</span>
+        Focus management is the accessibility work nobody demos
+      </p>
+
+      <div class="row row--wrap" style="margin-bottom:1.25rem">
+        <span class="badge badge--neutral">Frontend</span>
+        <span class="badge badge--neutral">Accessibility</span>
+      </div>
+
+      <h1>Focus management is the accessibility work nobody demos</h1>
+
+      <p class="lead muted" style="margin-top:var(--space-5)">
+        Modals, route changes and async lists all move focus somewhere — and if you have not decided
+        where, the browser decides for you, usually badly. Getting it right is unglamorous, nearly
+        free while you are building the component, and painful to retrofit across a finished
+        application.
+      </p>
+
+      <div class="row row--wrap" style="margin-top:var(--space-6)">
+        <div class="avatar" aria-hidden="true">KZ</div>
+        <div>
+          <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+          <div class="small muted">
+            Co-founder <span aria-hidden="true">·</span>
+            <time datetime="2026-02-26">26 February 2026</time>
+            <span aria-hidden="true">·</span> 7 min read
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== cover art -->
+      <div class="panel-art reveal" style="margin-top:var(--space-7);aspect-ratio:16/9">
+        <svg class="panel-art__glyph" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="14" rx="2"/>
+          <rect x="6.5" y="7.5" width="8" height="3.4" rx="1"/>
+          <path d="M7 21h10"/>
+        </svg>
+        <p class="panel-art__caption">
+          Placeholder cover art. Real article imagery — a focus ring traversing a dialog — drops in here.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================= body -->
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+
+      <div class="rail" style="position:sticky;top:72px;z-index:30;margin-bottom:var(--space-7)" aria-hidden="true">
+        <span class="rail__fill"></span>
+      </div>
+
+      <div class="prose">
+
+        <p>
+          Focus is the browser's cursor: the single element that receives keystrokes, and the place a
+          screen reader considers "here". For anyone navigating by keyboard — permanently, or
+          temporarily because they are using a trackpad-less laptop, or because a hand is occupied —
+          focus position is the entire interface. It is the equivalent of where a sighted mouse user
+          is looking.
+        </p>
+
+        <p>
+          The reason it gets missed is that it is invisible to the way most software is reviewed.
+          Nobody demos focus. A stakeholder walks through a feature with a mouse, everything looks
+          right, and the fact that opening a dialog dropped focus to the top of the document is
+          simply not part of what anyone observed.
+        </p>
+
+        <h2>The three places focus goes wrong</h2>
+
+        <h3>Opening and closing dialogs</h3>
+
+        <p>
+          When a dialog opens, focus must move into it. If it does not, a keyboard user is still
+          tabbing through the page behind — which is often still interactive, and which they can no
+          longer see clearly. A screen reader user gets no announcement that anything happened at
+          all.
+        </p>
+
+        <p>
+          Three things have to be true for the lifetime of the dialog:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Focus moves in on open</strong> — to the dialog container, its heading, or the
+            first meaningful control. Prefer the container or heading, so the accessible name is
+            announced before the controls.
+          </li>
+          <li>
+            <strong>Focus is trapped while it is open</strong> — tabbing past the last element wraps
+            to the first, not out into the page behind. Content behind must also be inert, so it is
+            not reachable by any means.
+          </li>
+          <li>
+            <strong>Focus returns on close</strong> — to the element that opened it. Not the top of
+            the page. Users close a dialog expecting to be back where they were, and being teleported
+            to the document start means re-navigating the entire page.
+          </li>
+        </ul>
+
+        <p>
+          The native <code>&lt;dialog&gt;</code> element does most of this for you, and is worth
+          preferring over a hand-built one. If you are building it yourself, the return step is the
+          one most often forgotten, because it only shows up when you actually close the thing with a
+          keyboard.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-text-muted)">// Capture the opener BEFORE moving focus, restore it after.
+// document.activeElement is already the dialog by the time
+// most cleanup functions run, so capturing late captures nothing.</span>
+<span style="color:var(--color-brand-blue)">useEffect</span>(() =&gt; {
+  <span style="color:var(--color-brand-blue)">if</span> (!open) <span style="color:var(--color-brand-blue)">return</span>;
+
+  <span style="color:var(--color-brand-blue)">const</span> opener = document.activeElement;
+  panelRef.current?.focus();
+
+  <span style="color:var(--color-brand-blue)">return</span> () =&gt; {
+    <span style="color:var(--color-text-muted)">// The opener may have unmounted while the dialog was open —
+    // deleting a row from its own confirm dialog, for example.
+    // Fall back to a stable landmark rather than losing focus.</span>
+    <span style="color:var(--color-brand-blue)">const</span> target = opener?.isConnected
+      ? opener
+      : document.getElementById(<span style="color:var(--color-success)">'main'</span>);
+    target?.focus();
+  };
+}, [open]);</pre>
+        </div>
+
+        <p>
+          Note the container needs <code>tabIndex={-1}</code> to be focusable programmatically
+          without being in the tab order. That single attribute is the difference between
+          <code>.focus()</code> working and silently doing nothing.
+        </p>
+
+        <h3>Client-side route changes</h3>
+
+        <p>
+          A full page load resets focus to the top of the new document and screen readers announce
+          the new page. A client-side route change does neither: the URL changes, the content
+          changes, and focus stays exactly where it was — on a link that no longer exists, which
+          means focus falls back to <code>&lt;body&gt;</code>.
+        </p>
+
+        <p>
+          The user's next Tab starts from the very beginning of the document. Navigate three levels
+          deep in a client-rendered app and you have tabbed through the header three times. Nothing
+          announces that the page changed, so a screen reader user may not know navigation happened.
+        </p>
+
+        <p>
+          The fix is to move focus deliberately on navigation — to the new page's <code>h1</code>, or
+          to the main landmark, with <code>tabIndex={-1}</code> so it can receive focus. Pair it with
+          a live region announcing the new page title if you want the change spoken explicitly. This
+          is roughly ten lines in a router-level effect, and it fixes every route at once, which
+          makes it one of the highest-value accessibility changes available in a single-page app.
+        </p>
+
+        <h3>Content that appears, disappears or reorders</h3>
+
+        <p>
+          The subtlest category. Focus is attached to a DOM element, so if that element is removed,
+          focus is lost — silently.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Deleting a list item</strong> while its own delete button has focus. Focus falls
+            to <code>body</code>. Move it to the next item, or to the previous one if it was last, or
+            to the list container if it is now empty.
+          </li>
+          <li>
+            <strong>Replacing content with a loading skeleton.</strong> The focused element vanishes
+            mid-interaction. Prefer keeping the trigger mounted and disabled over unmounting the
+            region around it.
+          </li>
+          <li>
+            <strong>Async results arriving.</strong> Do not steal focus to new results — that
+            interrupts someone mid-typing. Announce them in a polite live region instead, and let the
+            user choose to move.
+          </li>
+          <li>
+            <strong>Expanding accordions and disclosures.</strong> Focus stays on the trigger, which
+            is correct. What matters is that <code>aria-expanded</code> updates so the state change
+            is announced.
+          </li>
+          <li>
+            <strong>Infinite scroll.</strong> Appending content below is fine; prepending or
+            reordering above the focused element moves the viewport under the user.
+          </li>
+        </ul>
+
+        <div class="mockup-note" style="margin-top:var(--space-6)">
+          <strong>Never remove the focus indicator.</strong> <code>outline: none</code> with no
+          replacement is the most common accessibility defect on the web, and it is almost always
+          applied deliberately because a designer found the default ring ugly. The correct response is
+          to design a better one. Use <code>:focus-visible</code> so the ring appears for keyboard
+          users without showing on mouse clicks — that gets you the clean visual people actually
+          wanted, without removing the only way keyboard users can tell where they are.
+        </div>
+
+        <h2>Testing it takes five minutes</h2>
+
+        <p>
+          You do not need a screen reader or an audit tool for the majority of these. Put the mouse
+          down and use the feature with the keyboard alone:
+        </p>
+
+        <ul>
+          <li>Can you reach every interactive element with Tab, and can you always see where you are?</li>
+          <li>Does Tab order follow the visual order? A mismatch usually means CSS reordered something the DOM did not.</li>
+          <li>Open a dialog: does focus go in, stay in, and come back to the trigger on Escape?</li>
+          <li>Navigate to another route: where does the next Tab start?</li>
+          <li>Delete an item from a list: is focus somewhere sensible afterwards?</li>
+          <li>Is there anything you can reach but not activate, or activate but not escape?</li>
+        </ul>
+
+        <p>
+          Automated tooling is genuinely useful and genuinely limited here. It reliably catches
+          missing labels, contrast failures and invalid ARIA. It cannot tell you that focus landed in
+          a reasonable place after an interaction, because "reasonable" is a judgement about intent.
+          That part needs a person, for five minutes, per feature.
+        </p>
+
+        <h2>Why retrofitting is expensive</h2>
+
+        <p>
+          Handled while building a component, focus management is a few lines inside a component you
+          already have open, with the interaction fresh in your mind.
+        </p>
+
+        <p>
+          Handled afterwards, it is an audit of every interactive component in the application, by
+          someone who did not write most of them, working out what each one intended. The fixes
+          themselves are still small — but finding them, verifying them, and regression-testing a
+          hundred components is a different size of job entirely. And because the fixes touch focus
+          and mounting behaviour, they land in exactly the code most likely to have subtle
+          dependencies on the current behaviour.
+        </p>
+
+        <h2>What to take away</h2>
+
+        <ul>
+          <li>
+            Focus is where the keyboard user is. Every interaction that changes the DOM should have a
+            deliberate answer for where focus ends up.
+          </li>
+          <li>
+            Dialogs: focus in, trapped while open, returned to the opener on close. Capture the
+            opener before you move focus.
+          </li>
+          <li>
+            Client-side navigation: move focus to the new page's heading or main landmark. One
+            router-level fix covers the whole app.
+          </li>
+          <li>
+            Removing focused elements loses focus silently. Decide where it goes before you unmount
+            them.
+          </li>
+          <li>
+            Keep a visible focus indicator. Style it with <code>:focus-visible</code>; never delete
+            it.
+          </li>
+          <li>
+            Test with the keyboard, per feature, while building. It is five minutes then and a
+            project later.
+          </li>
+        </ul>
+
+        <p>
+          None of this is difficult, and none of it will ever be pointed at in a demo. It is simply
+          the difference between an application some people can use and an application everyone can
+          use, and it is decided by whether anyone thought about it while the component was being
+          written.
+        </p>
+
+      </div>
+
+      <!-- ================================================ author card -->
+      <div class="card reveal" style="margin-top:var(--space-8)">
+        <div class="row row--wrap">
+          <div class="avatar avatar--lg" aria-hidden="true">KZ</div>
+          <div>
+            <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+            <div class="small muted">Co-founder, HaizoTech</div>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-4)">
+          Spends most of his time on the frontend and on the seam between it and the API, which is
+          where the interesting bugs live. <a href="about.html">More about the team</a>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</article>
+
+  <!-- ================================================= related posts -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal" style="margin-bottom:var(--space-6)">
+        <h2>Related reading</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link reveal" href="blog-react-server-components-one-year-in.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">React</span>
+            <span class="badge badge--neutral">Next.js</span>
+          </div>
+          <h3 style="margin-top:1rem">React Server Components, one year in: where we use them and where we don't</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Genuinely better for data-heavy pages; a poor trade for anything with dense client
+            interaction.
+          </p>
+        </a>
+
+        <a class="card card--link reveal" data-delay="60" href="blog-treating-the-openapi-spec-as-the-contract.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">OpenAPI</span>
+            <span class="badge badge--neutral">Process</span>
+          </div>
+          <h3 style="margin-top:1rem">Treating the OpenAPI spec as the contract, not the documentation</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Generating client types from the spec and failing CI when the implementation drifts.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Want this kind of thinking on your project?</h2>
+        <p class="lead">The decisions we write about here are the ones we'll be making on your build.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h2 class="footer-head">Services</h2>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Company</h2>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Legal</h2>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

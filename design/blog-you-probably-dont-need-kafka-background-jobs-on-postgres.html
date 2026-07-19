@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You probably don't need Kafka: background jobs on Postgres — HaizoTech</title>
+<meta name="description" content="SELECT … FOR UPDATE SKIP LOCKED gives you a correct, concurrent job queue inside the database you already run. How it works, where the ceiling is, and when to move on.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber is a throughput
+    figure presented as something we measured, written for the mockup and <em>not</em> confirmed.
+    Hover a highlight to see what needs checking. Nothing here goes live until every highlight is
+    verified against a real benchmark and the <code>.unverified</code> class is removed. Numbers
+    used purely as worked examples are stated as hypothetical in the prose and are not highlighted.
+  </div>
+</div>
+
+<article>
+
+  <!-- ==================================================== article head -->
+  <section class="section" style="padding-bottom:var(--space-6)">
+    <div class="container container--narrow">
+
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="blog.html">Blog</a> <span aria-hidden="true">/</span>
+        You probably don't need Kafka: background jobs on Postgres
+      </p>
+
+      <div class="row row--wrap" style="margin-bottom:1.25rem">
+        <span class="badge badge--neutral">Architecture</span>
+        <span class="badge badge--neutral">Queues</span>
+      </div>
+
+      <h1>You probably don't need Kafka: background jobs on Postgres</h1>
+
+      <p class="lead muted" style="margin-top:var(--space-5)">
+        A correct, concurrent, durable job queue is about forty lines of SQL in a database you are
+        already running, already backing up and already monitoring. The reason to reach for
+        dedicated infrastructure is a specific requirement, not a vague sense that a table is not a
+        serious enough place to keep jobs.
+      </p>
+
+      <div class="row row--wrap" style="margin-top:var(--space-6)">
+        <div class="avatar" aria-hidden="true">GS</div>
+        <div>
+          <div class="strong" style="font-weight:600">Gokul S</div>
+          <div class="small muted">
+            Co-founder <span aria-hidden="true">·</span>
+            <time datetime="2026-04-09">9 April 2026</time>
+            <span aria-hidden="true">·</span> 9 min read
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== cover art -->
+      <div class="panel-art reveal" style="margin-top:var(--space-7);aspect-ratio:16/9">
+        <svg class="panel-art__glyph" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="5" rx="1.5"/>
+          <rect x="2" y="12" width="20" height="5" rx="1.5"/>
+          <path d="M6 20h12"/>
+        </svg>
+        <p class="panel-art__caption">
+          Placeholder cover art. Real article imagery — a queue depth graph under load — drops in here.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================= body -->
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+
+      <div class="rail" style="position:sticky;top:72px;z-index:30;margin-bottom:var(--space-7)" aria-hidden="true">
+        <span class="rail__fill"></span>
+      </div>
+
+      <div class="prose">
+
+        <p>
+          The usual objection to a database-backed queue is that multiple workers polling one table
+          will collide: two of them read the same row, both think they own it, and the welcome email
+          goes out twice. That objection was correct for a long time, and it is the reason a
+          generation of developers learned that queues belong in dedicated infrastructure.
+        </p>
+
+        <p>
+          Postgres 9.5 added <code>SKIP LOCKED</code>, and the objection stopped being true. It is
+          worth understanding exactly what it does, because it is the whole mechanism.
+        </p>
+
+        <h2>How SKIP LOCKED makes the naive queue correct</h2>
+
+        <p>
+          Normally, if a transaction tries to lock a row another transaction already holds, it waits.
+          For a job queue that is the worst possible behaviour: every worker queues up behind the
+          first one and you have accidentally built a single-threaded system with extra steps.
+        </p>
+
+        <p>
+          <code>SKIP LOCKED</code> tells Postgres to ignore rows it cannot immediately lock and move
+          on to the next candidate. Each worker therefore gets a different row, with no coordination,
+          no advisory locks, and no polling-and-retrying.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-brand-blue)">CREATE TABLE</span> jobs (
+  id           bigserial <span style="color:var(--color-brand-blue)">PRIMARY KEY</span>,
+  kind         text        <span style="color:var(--color-brand-blue)">NOT NULL</span>,
+  payload      jsonb       <span style="color:var(--color-brand-blue)">NOT NULL</span>,
+  run_at       timestamptz <span style="color:var(--color-brand-blue)">NOT NULL DEFAULT</span> now(),
+  attempts     int         <span style="color:var(--color-brand-blue)">NOT NULL DEFAULT</span> 0,
+  max_attempts int         <span style="color:var(--color-brand-blue)">NOT NULL DEFAULT</span> 20,
+  locked_at    timestamptz,
+  last_error   text
+);
+
+<span style="color:var(--color-text-muted)">-- Partial index: only rows a worker could actually claim.
+-- Finished jobs are deleted, so this index stays small even
+-- if the table has churned through millions of rows.</span>
+<span style="color:var(--color-brand-blue)">CREATE INDEX</span> jobs_ready_idx <span style="color:var(--color-brand-blue)">ON</span> jobs (run_at, id)
+  <span style="color:var(--color-brand-blue)">WHERE</span> locked_at <span style="color:var(--color-brand-blue)">IS NULL</span>;</pre>
+        </div>
+
+        <p>
+          The claim is a single statement. One round trip, atomic, and it hands back the job the
+          worker now owns:
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-brand-blue)">UPDATE</span> jobs
+   <span style="color:var(--color-brand-blue)">SET</span> locked_at = now(),
+       attempts  = attempts + 1
+ <span style="color:var(--color-brand-blue)">WHERE</span> id = (
+   <span style="color:var(--color-brand-blue)">SELECT</span> id <span style="color:var(--color-brand-blue)">FROM</span> jobs
+    <span style="color:var(--color-brand-blue)">WHERE</span> locked_at <span style="color:var(--color-brand-blue)">IS NULL</span>
+      <span style="color:var(--color-brand-blue)">AND</span> run_at &lt;= now()
+    <span style="color:var(--color-brand-blue)">ORDER BY</span> run_at, id
+    <span style="color:var(--color-brand-blue)">FOR UPDATE</span> <span style="color:var(--color-warning)">SKIP LOCKED</span>
+    <span style="color:var(--color-brand-blue)">LIMIT</span> 1
+ )
+ <span style="color:var(--color-brand-blue)">RETURNING</span> id, kind, payload, attempts;</pre>
+        </div>
+
+        <p>
+          Run twenty workers against this and each gets a distinct job. Kill a worker mid-job and its
+          transaction aborts, the lock is released, and the row becomes claimable again — durability
+          you get from the database rather than from your own reconciliation code.
+        </p>
+
+        <h3>Delivery semantics, stated plainly</h3>
+
+        <p>
+          This gives you <strong>at-least-once</strong> delivery. A worker can complete a job's side
+          effect and then die before marking it done, and the job will run again. That is not a flaw
+          in the design; it is the honest guarantee of every queue that survives worker failure.
+          Systems claiming exactly-once are almost always providing at-least-once plus deduplication
+          somewhere.
+        </p>
+
+        <p>
+          The consequence is that <strong>handlers must be idempotent</strong>, and this is the part
+          teams skip. Practically: use an idempotency key on outbound API calls, use
+          <code>INSERT … ON CONFLICT DO NOTHING</code> for inserts, and check whether the effect has
+          already happened before performing it. This is required with any queue technology; it is
+          just more visible here.
+        </p>
+
+        <h2>Where the ceiling actually is</h2>
+
+        <p>
+          The honest answer is that the ceiling is high enough that most applications will never
+          approach it, and the specific number depends entirely on your hardware, job duration, and
+          how much work each job does in the same database.
+        </p>
+
+        <p>
+          On a modest managed instance we have seen this pattern sustain
+          <span class="unverified" title="Invented for the mockup — re-run the benchmark and confirm the figure and its conditions before publishing">a few thousand claims per second</span>
+          with the claim query itself staying in single-digit milliseconds. For context: a
+          hypothetical application sending 50,000 notifications a day averages well under one job per
+          second. Even a very spiky workload that compresses a day into one hour is nowhere near this
+          ceiling.
+        </p>
+
+        <p>
+          What actually degrades first, in our experience, is rarely the claim query:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Table bloat from completed jobs.</strong> If finished jobs are marked
+            <code>done</code> rather than deleted, the table grows without bound and autovacuum falls
+            behind. Delete on success and move failures to a separate <code>dead_jobs</code> table.
+          </li>
+          <li>
+            <strong>Polling cost at idle.</strong> Twenty workers polling every 100ms is 200 queries
+            per second against an empty queue, forever. Use <code>LISTEN</code>/<code>NOTIFY</code>
+            to wake workers on new jobs, with a slow poll as a safety net.
+          </li>
+          <li>
+            <strong>Connection count.</strong> Each worker holds a connection. This is usually the
+            real limit on a managed Postgres, and it is a pooling problem, not a queue problem.
+          </li>
+          <li>
+            <strong>Long transactions.</strong> If a handler does its work inside the claiming
+            transaction, a slow job holds a transaction open for its whole duration, which blocks
+            vacuum across the database. Claim in a short transaction, then work outside it.
+          </li>
+          <li>
+            <strong>Jobs competing with user traffic.</strong> The queue shares CPU and I/O with the
+            application. This is a genuine downside of colocating them, and the reason the answer
+            changes at scale.
+          </li>
+        </ul>
+
+        <div class="mockup-note" style="margin-top:var(--space-6)">
+          <strong>Delete completed jobs; don't mark them.</strong> This one decision accounts for
+          most of the difference between a Postgres queue that stays fast for years and one that
+          becomes a support burden after six months. If you need the history, write a row to an
+          append-only <code>job_history</code> table and delete from <code>jobs</code> — a hot,
+          small, high-churn table and a large, cold, append-only one have completely different
+          maintenance profiles, and combining them gives you the worst of each.
+        </div>
+
+        <h2>When to actually reach for something else</h2>
+
+        <p>
+          There are real reasons to run dedicated infrastructure. Kafka in particular is not a job
+          queue at all — it is a durable, replayable, ordered log, and the cases where you want one
+          are specific:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Multiple independent consumers of the same stream.</strong> A queue consumes a
+            job once. A log lets five unrelated services each read every event at their own pace, and
+            lets a sixth be added next year and replay history from the beginning.
+          </li>
+          <li>
+            <strong>Retention and replay as a product requirement.</strong> If "re-process the last
+            thirty days through a fixed consumer" must work, you need a log.
+          </li>
+          <li>
+            <strong>Throughput genuinely beyond one database.</strong> Real, measured, sustained — not
+            projected from a growth deck.
+          </li>
+          <li>
+            <strong>Strict per-key ordering across partitions.</strong> Achievable in Postgres, but
+            it stops being forty lines of SQL.
+          </li>
+          <li>
+            <strong>Isolation from the primary database.</strong> A legitimate reason on its own: you
+            may simply not want batch work sharing resources with user requests.
+          </li>
+        </ul>
+
+        <p>
+          None of those are "we might get big". If the requirement is not one you can state in a
+          sentence today, the operational cost of a second stateful system — its own failure modes,
+          backups, upgrades, monitoring and on-call knowledge — is being paid for a benefit that does
+          not exist yet.
+        </p>
+
+        <h2>What to take away</h2>
+
+        <ul>
+          <li>
+            <code>FOR UPDATE SKIP LOCKED</code> makes a table into a correct concurrent queue. The
+            old objection about workers colliding no longer applies.
+          </li>
+          <li>
+            You get at-least-once delivery, so handlers must be idempotent. That is true of every
+            queue; here it is at least explicit.
+          </li>
+          <li>
+            Claim in a short transaction and do the work outside it. Never hold a transaction open
+            for the duration of a job.
+          </li>
+          <li>
+            Delete completed jobs. Index partially on claimable rows. Wake workers with
+            <code>NOTIFY</code> instead of tight polling.
+          </li>
+          <li>
+            Move to dedicated infrastructure for a requirement you can name — fan-out, replay,
+            measured throughput, isolation — not for a feeling about seriousness.
+          </li>
+        </ul>
+
+        <p>
+          The strongest argument for the boring option is not performance. It is that jobs live in
+          the same transaction as the data that created them. Enqueue a welcome email in the same
+          transaction that creates the user, and it is impossible to have a user without a queued
+          email, or an email for a user whose creation rolled back. That guarantee is free here, and
+          expensive to reconstruct across two systems.
+        </p>
+
+      </div>
+
+      <!-- ================================================ author card -->
+      <div class="card reveal" style="margin-top:var(--space-8)">
+        <div class="row row--wrap">
+          <div class="avatar avatar--lg" aria-hidden="true">GS</div>
+          <div>
+            <div class="strong" style="font-weight:600">Gokul S</div>
+            <div class="small muted">Co-founder, HaizoTech</div>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-4)">
+          Works mostly on data models, query performance and the backend contracts that keep the
+          rest of the system honest. <a href="about.html">More about the team</a>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</article>
+
+  <!-- ================================================= related posts -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal" style="margin-bottom:var(--space-6)">
+        <h2>Related reading</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link reveal" href="blog-the-index-you-didnt-add-is-the-query-you-cant-explain.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">PostgreSQL</span>
+            <span class="badge badge--neutral">Performance</span>
+          </div>
+          <h3 style="margin-top:1rem">The index you didn't add is the query you can't explain</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            How we read the query plan, why the obvious composite index made it worse, and the
+            partial index that actually fixed it.
+          </p>
+        </a>
+
+        <a class="card card--link reveal" data-delay="60" href="blog-writing-the-evaluation-set-before-the-rag-pipeline.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">AI</span>
+            <span class="badge badge--neutral">Evals</span>
+          </div>
+          <h3 style="margin-top:1rem">Writing the evaluation set before writing the RAG pipeline</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Real questions with known answers turn an unfalsifiable demo into something you can
+            improve on purpose.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Want this kind of thinking on your project?</h2>
+        <p class="lead">The decisions we write about here are the ones we'll be making on your build.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h2 class="footer-head">Services</h2>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Company</h2>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Legal</h2>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
