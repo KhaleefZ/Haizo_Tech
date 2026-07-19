@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { RotatingHeadline } from '@/components/RotatingHeadline';
-import { Marquee } from '@/components/Marquee';
 import { IndustryBand } from '@/components/IndustryBand';
 import { ProcessTimeline } from '@/components/ProcessTimeline';
 import { EngineeringCulture } from '@/components/EngineeringCulture';
@@ -41,8 +40,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      <Marquee items={serviceNames} />
 
       <IndustryBand industries={industries?.data ?? []} />
 

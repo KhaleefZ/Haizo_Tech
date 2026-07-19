@@ -356,34 +356,6 @@ a:hover { color: var(--color-brand-blue-600); }
   100%       { transform: translateY(-100%); }
 }
 
-/* ------------------------------------------------------------- marquee
-   The "running text" strip of what we do. Duplicated track = seamless loop.
-   Paused on hover so it can actually be read. */
-
-.marquee {
-  overflow: hidden;
-  border-block: 1px solid var(--color-border);
-  background: var(--color-bg);
-  padding-block: var(--space-4);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-.marquee-track {
-  display: flex; align-items: center; gap: var(--space-6);
-  width: max-content;
-  animation: marquee 34s linear infinite;
-}
-.marquee:hover .marquee-track { animation-play-state: paused; }
-.marquee-item {
-  display: flex; align-items: center; gap: 10px;
-  font-family: var(--font-display); font-weight: 600;
-  font-size: 1.125rem; color: var(--color-text-strong);
-  white-space: nowrap;
-}
-.marquee-item svg { color: var(--color-brand-sky); flex: none; }
-.marquee-sep { width: 5px; height: 5px; border-radius: 999px; background: var(--color-brand-sky); flex: none; opacity: .5; }
-@keyframes marquee { to { transform: translateX(-50%); } }
-
 /* ------------------------------------------------------- flowing industries
    A slow drift on each tile plus a travelling sheen, so the grid feels alive
    without any of the orb/glow vocabulary we're removing. */

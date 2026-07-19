@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Sora, Inter } from 'next/font/google';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
+import { PageTransition } from '@/components/PageTransition';
 import { CONTACT, SOCIALS } from '@/lib/contact';
 import { SITE_URL } from '@/lib/api';
 import './globals.css';
@@ -57,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <SiteHeader />
-        {children}
+        <PageTransition>{children}</PageTransition>
         <SiteFooter />
         <script
           type="application/ld+json"
