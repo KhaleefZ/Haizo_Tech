@@ -28,7 +28,7 @@ body.admin {
 .sidebar .logo { color: #fff; font-size: 1.0625rem; padding: var(--space-2) var(--space-2) var(--space-5); }
 
 .side-group { margin-top: var(--space-4); }
-.side-group h5 {
+.side-group .side-head {
   font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .09em;
   color: #64748B; font-weight: 600; margin: 0 0 var(--space-2); padding-inline: var(--space-2);
 }
@@ -115,7 +115,7 @@ body.admin {
 
 .panel { background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-card); }
 .panel-head { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
-.panel-head h3 { font-size: 1rem; }
+.panel-head h2, .panel-head h3 { font-size: 1rem; }
 .panel-body { padding: var(--space-5); }
 .panel-body--flush { padding: 0; }
 
@@ -152,7 +152,7 @@ body.admin {
 .board { display: grid; grid-auto-flow: column; grid-auto-columns: 300px; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-4); align-items: start; }
 .col { background: var(--color-bg-tint-2); border: 1px solid var(--color-border); border-radius: var(--radius); padding: var(--space-3); }
 .col-head { display: flex; align-items: center; gap: 8px; padding: 4px 4px var(--space-3); }
-.col-head h4 { font-size: var(--text-small); text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-muted); }
+.col-head h2 { font-size: var(--text-small); text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-muted); }
 .col-head .n { font-size: .75rem; font-weight: 700; color: var(--color-text-muted); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 999px; padding: 0 7px; }
 .col-body { display: flex; flex-direction: column; gap: var(--space-3); min-height: 40px; }
 
@@ -162,7 +162,7 @@ body.admin {
   cursor: grab; transition: box-shadow var(--dur-base), transform var(--dur-base), border-color var(--dur-base);
 }
 .tcard:hover { box-shadow: var(--shadow-lift); border-color: var(--color-brand-blue); transform: translateY(-2px); }
-.tcard h5 { margin: 0 0 8px; font-size: .9375rem; font-weight: 600; color: var(--color-text-strong); line-height: 1.35; font-family: var(--font-body); }
+.tcard h3 { margin: 0 0 8px; font-size: .9375rem; font-weight: 600; color: var(--color-text-strong); line-height: 1.35; font-family: var(--font-body); }
 .tcard-meta { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .tcard--ghost { border-style: dashed; box-shadow: none; background: transparent; opacity: .8; }
 
