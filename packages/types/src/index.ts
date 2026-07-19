@@ -83,6 +83,19 @@ export type AdminClientList = Schemas['AdminClientList'];
 export type CreateClient = Schemas['CreateClient'];
 export type UpdateClient = Schemas['UpdateClient'];
 
+export type TaskPriority = Schemas['TaskPriority'];
+export type AdminProjectListItem = Schemas['AdminProjectListItem'];
+export type AdminProjectList = Schemas['AdminProjectList'];
+export type AdminProjectDetail = Schemas['AdminProjectDetail'];
+export type BoardColumn = Schemas['BoardColumn'];
+export type BoardTask = Schemas['BoardTask'];
+export type CreateProject = Schemas['CreateProject'];
+export type UpdateProject = Schemas['UpdateProject'];
+export type CreateColumn = Schemas['CreateColumn'];
+export type UpdateColumn = Schemas['UpdateColumn'];
+export type CreateTask = Schemas['CreateTask'];
+export type UpdateTask = Schemas['UpdateTask'];
+
 export type AnnouncementAudience = Schemas['AnnouncementAudience'];
 export type AdminAnnouncement = Schemas['AdminAnnouncement'];
 export type AdminAnnouncementList = Schemas['AdminAnnouncementList'];

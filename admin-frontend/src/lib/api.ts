@@ -55,6 +55,16 @@ import type {
   AdminProfile,
   UpdateProfile,
   ChangePassword,
+  AdminProjectList,
+  AdminProjectDetail,
+  CreateProject,
+  UpdateProject,
+  BoardColumn,
+  CreateColumn,
+  UpdateColumn,
+  BoardTask,
+  CreateTask,
+  UpdateTask,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -233,5 +243,28 @@ export const api = {
     get: () => request<AdminProfile>('GET', '/admin/me'),
     update: (input: UpdateProfile) => request<AdminProfile>('PATCH', '/admin/me', input),
     changePassword: (input: ChangePassword) => request<void>('POST', '/admin/me/password', input),
+  },
+  projects: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminProjectList>('GET', `/admin/projects?page=${page}&pageSize=${pageSize}`),
+    get: (id: string) => request<AdminProjectDetail>('GET', `/admin/projects/${id}`),
+    create: (input: CreateProject) => request<AdminProjectDetail>('POST', '/admin/projects', input),
+    update: (id: string, input: UpdateProject) =>
+      request<AdminProjectDetail>('PATCH', `/admin/projects/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/projects/${id}`),
+  },
+  columns: {
+    create: (projectId: string, input: CreateColumn) =>
+      request<BoardColumn>('POST', `/admin/projects/${projectId}/columns`, input),
+    update: (id: string, input: UpdateColumn) =>
+      request<BoardColumn>('PATCH', `/admin/columns/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/columns/${id}`),
+  },
+  tasks: {
+    create: (columnId: string, input: CreateTask) =>
+      request<BoardTask>('POST', `/admin/columns/${columnId}/tasks`, input),
+    update: (id: string, input: UpdateTask) =>
+      request<BoardTask>('PATCH', `/admin/tasks/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/tasks/${id}`),
   },
 };

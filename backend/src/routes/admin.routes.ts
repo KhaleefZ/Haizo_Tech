@@ -69,6 +69,19 @@ import {
   adminUpdateProfile,
   adminChangePassword,
 } from '../controllers/profile.controller.js';
+import {
+  adminListProjects,
+  adminGetProject,
+  adminCreateProject,
+  adminUpdateProject,
+  adminDeleteProject,
+  adminCreateColumn,
+  adminUpdateColumn,
+  adminDeleteColumn,
+  adminCreateTask,
+  adminUpdateTask,
+  adminDeleteTask,
+} from '../controllers/project.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
 const manage = [requireAuth, requireRole('SUPER_ADMIN', 'MANAGER')] as const;
@@ -167,6 +180,30 @@ router.patch('/admin/clients/:id', ...mutate, adminUpdateClient);
 // operationId: adminDeleteClient
 router.delete('/admin/clients/:id', ...mutate, adminDeleteClient);
 
+// --- Projects + kanban board ---
+// operationId: adminListProjects
+router.get('/admin/projects', ...manage, adminListProjects);
+// operationId: adminCreateProject
+router.post('/admin/projects', ...mutate, adminCreateProject);
+// operationId: adminGetProject
+router.get('/admin/projects/:id', ...manage, adminGetProject);
+// operationId: adminUpdateProject
+router.patch('/admin/projects/:id', ...mutate, adminUpdateProject);
+// operationId: adminDeleteProject
+router.delete('/admin/projects/:id', ...mutate, adminDeleteProject);
+// operationId: adminCreateColumn
+router.post('/admin/projects/:id/columns', ...mutate, adminCreateColumn);
+// operationId: adminUpdateColumn
+router.patch('/admin/columns/:id', ...mutate, adminUpdateColumn);
+// operationId: adminDeleteColumn
+router.delete('/admin/columns/:id', ...mutate, adminDeleteColumn);
+// operationId: adminCreateTask
+router.post('/admin/columns/:id/tasks', ...mutate, adminCreateTask);
+// operationId: adminUpdateTask
+router.patch('/admin/tasks/:id', ...mutate, adminUpdateTask);
+// operationId: adminDeleteTask
+router.delete('/admin/tasks/:id', ...mutate, adminDeleteTask);
+
 // operationId: adminListAnnouncements
 router.get('/admin/announcements', ...manage, adminListAnnouncements);
 // operationId: adminCreateAnnouncement
@@ -184,8 +221,10 @@ router.patch('/admin/me', ...selfMutate, adminUpdateProfile);
 // operationId: adminChangePassword
 router.post('/admin/me/password', ...selfMutate, adminChangePassword);
 
+// Listing teammates is allowed for managers too (needed for task assignment);
+// only changing roles is super-admin-only.
 // operationId: adminListUsers
-router.get('/admin/users', ...superOnly, adminListUsers);
+router.get('/admin/users', ...manage, adminListUsers);
 // operationId: adminUpdateUserRole
 router.patch('/admin/users/:id', ...superMutate, adminUpdateUserRole);
 

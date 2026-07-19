@@ -1009,6 +1009,216 @@ paths:
         '409': { $ref: '#/components/responses/Conflict' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/projects:
+    get:
+      operationId: adminListProjects
+      summary: List projects
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of projects
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProjectList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateProject
+      summary: Create a project
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateProject' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProjectDetail' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/projects/{id}:
+    get:
+      operationId: adminGetProject
+      summary: Get a project with its kanban board
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The project and board
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProjectDetail' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateProject
+      summary: Update a project
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateProject' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminProjectDetail' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteProject
+      summary: Delete a project and its board
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/projects/{id}/columns:
+    post:
+      operationId: adminCreateColumn
+      summary: Add a column to a project's board
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateColumn' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BoardColumn' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/columns/{id}:
+    patch:
+      operationId: adminUpdateColumn
+      summary: Rename or reorder a column
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateColumn' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BoardColumn' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteColumn
+      summary: Delete a column and its tasks
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/columns/{id}/tasks:
+    post:
+      operationId: adminCreateTask
+      summary: Add a task to a column
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTask' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BoardTask' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/tasks/{id}:
+    patch:
+      operationId: adminUpdateTask
+      summary: Update or move a task
+      description: Setting `columnId` (and optionally `order`) moves the task on the board.
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTask' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BoardTask' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteTask
+      summary: Delete a task
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/announcements:
     get:
       operationId: adminListAnnouncements
@@ -1147,7 +1357,7 @@ paths:
     get:
       operationId: adminListUsers
       summary: List team members
-      description: Super-admin only. Managing users is the top privilege in the role matrix.
+      description: Available to managers and above (used for task assignment). Changing roles is super-admin only.
       tags: [Admin]
       responses:
         '200':
@@ -1984,6 +2194,151 @@ components:
         organization: { type: string, minLength: 1, maxLength: 200 }
         contactName: { type: string, minLength: 1, maxLength: 200 }
         email: { type: [string, 'null'], maxLength: 200 }
+
+    TaskPriority:
+      type: string
+      enum: [Low, Medium, High]
+
+    AdminProjectListItem:
+      type: object
+      required: [id, name, status, progress, taskCount, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+        status: { type: string }
+        progress: { type: integer }
+        clientId: { type: [string, 'null'] }
+        clientName: { type: [string, 'null'] }
+        taskCount: { type: integer, minimum: 0 }
+        createdAt: { type: string, format: date-time }
+
+    AdminProjectList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminProjectListItem' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    BoardTask:
+      type: object
+      required: [id, columnId, title, priority, isCompleted, order]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        columnId: { type: string }
+        title: { type: string }
+        description: { type: [string, 'null'] }
+        priority: { $ref: '#/components/schemas/TaskPriority' }
+        assigneeId: { type: [string, 'null'] }
+        assigneeName: { type: [string, 'null'] }
+        dueDate: { type: [string, 'null'], format: date-time }
+        isCompleted: { type: boolean }
+        order: { type: integer }
+
+    BoardColumn:
+      type: object
+      required: [id, name, order, tasks]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+        order: { type: integer }
+        tasks:
+          type: array
+          items: { $ref: '#/components/schemas/BoardTask' }
+
+    AdminProjectDetail:
+      type: object
+      required: [id, name, status, progress, columns, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: [string, 'null'] }
+        clientId: { type: [string, 'null'] }
+        clientName: { type: [string, 'null'] }
+        status: { type: string }
+        progress: { type: integer }
+        budget: { type: [string, 'null'] }
+        startDate: { type: [string, 'null'], format: date-time }
+        endDate: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        columns:
+          type: array
+          items: { $ref: '#/components/schemas/BoardColumn' }
+
+    CreateProject:
+      type: object
+      required: [name]
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        clientId: { type: [string, 'null'] }
+        status: { type: string, maxLength: 40 }
+        budget: { type: [string, 'null'], maxLength: 60 }
+        startDate: { type: [string, 'null'], format: date-time }
+        endDate: { type: [string, 'null'], format: date-time }
+
+    UpdateProject:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        clientId: { type: [string, 'null'] }
+        status: { type: string, maxLength: 40 }
+        progress: { type: integer, minimum: 0, maximum: 100 }
+        budget: { type: [string, 'null'], maxLength: 60 }
+        startDate: { type: [string, 'null'], format: date-time }
+        endDate: { type: [string, 'null'], format: date-time }
+
+    CreateColumn:
+      type: object
+      required: [name]
+      additionalProperties: false
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+
+    UpdateColumn:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+        order: { type: integer, minimum: 0 }
+
+    CreateTask:
+      type: object
+      required: [title]
+      additionalProperties: false
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        priority: { $ref: '#/components/schemas/TaskPriority' }
+        assigneeId: { type: [string, 'null'] }
+        dueDate: { type: [string, 'null'], format: date-time }
+
+    UpdateTask:
+      type: object
+      description: A partial update; at least one field must be present. Set columnId to move.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        priority: { $ref: '#/components/schemas/TaskPriority' }
+        assigneeId: { type: [string, 'null'] }
+        dueDate: { type: [string, 'null'], format: date-time }
+        isCompleted: { type: boolean }
+        columnId: { type: string }
+        order: { type: integer, minimum: 0 }
 
     AnnouncementAudience:
       type: string

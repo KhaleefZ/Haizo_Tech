@@ -70,6 +70,7 @@ afterAll(async () => {
   await prisma.inquiry.deleteMany({ where: { email: 'p4c-inquiry@test.local' } });
   await prisma.client.deleteMany({ where: { organization: { startsWith: 'P4bClient' } } });
   await prisma.announcement.deleteMany({ where: { title: { startsWith: 'P4bAnn' } } });
+  await prisma.project.deleteMany({ where: { name: { startsWith: 'P4bProj' } } });
   await prisma.user.deleteMany({
     where: { email: { in: [ADMIN.email, DEVU.email, 'p4c-pwtest@test.local'] } },
   });
@@ -378,6 +379,51 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('projects + kanban board', () => {
+  it('creates a project with default columns, adds and moves a task, then deletes', async () => {
+    expect((await request(app).get('/v1/admin/projects').set('Cookie', dev.cookie)).status).toBe(403);
+
+    const create = await request(app)
+      .post('/v1/admin/projects')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ name: 'P4bProj Website', status: 'Active' });
+    expect(create.status).toBe(201);
+    // A new project starts with a usable board.
+    expect(create.body.columns.map((c: { name: string }) => c.name)).toEqual(['To Do', 'In Progress', 'Done']);
+    const projectId = create.body.id;
+    const [todo, inProgress] = create.body.columns;
+
+    const task = await request(app)
+      .post(`/v1/admin/columns/${todo.id}/tasks`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ title: 'Design the hero', priority: 'High' });
+    expect(task.status).toBe(201);
+    expect(task.body).toMatchObject({ title: 'Design the hero', priority: 'High', columnId: todo.id });
+
+    // Move it to In Progress.
+    const moved = await request(app)
+      .patch(`/v1/admin/tasks/${task.body.id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ columnId: inProgress.id });
+    expect(moved.status).toBe(200);
+    expect(moved.body.columnId).toBe(inProgress.id);
+
+    // The board reflects the move.
+    const board = await request(app).get(`/v1/admin/projects/${projectId}`).set('Cookie', admin.cookie);
+    const ip = board.body.columns.find((c: { id: string }) => c.id === inProgress.id);
+    expect(ip.tasks.some((t: { id: string }) => t.id === task.body.id)).toBe(true);
+
+    // Deleting the project cascades the board.
+    expect(
+      (await request(app).delete(`/v1/admin/projects/${projectId}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+    expect((await request(app).get(`/v1/admin/projects/${projectId}`).set('Cookie', admin.cookie)).status).toBe(404);
   });
 });
 
