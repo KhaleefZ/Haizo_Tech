@@ -16,6 +16,7 @@ import type { Server as HttpServer } from 'node:http';
 import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import { authenticateHandshake, SocketAuthError } from './auth.js';
+import { setIo } from './io.js';
 import type { AuthUser } from '../middleware/auth.js';
 
 interface SocketData {
@@ -29,6 +30,8 @@ export function attachSockets(httpServer: HttpServer): Server {
   const io = new Server(httpServer, {
     cors: { origin: config.corsOrigins, credentials: true },
   });
+  // Expose it to the service layer for real-time notification pushes.
+  setIo(io);
 
   io.use((socket, next) => {
     authenticateHandshake(socket.handshake)

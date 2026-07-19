@@ -1009,6 +1009,81 @@ paths:
         '409': { $ref: '#/components/responses/Conflict' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/notifications:
+    get:
+      operationId: adminListNotifications
+      summary: Your notifications (cursor-paginated, newest first)
+      tags: [Admin]
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+      responses:
+        '200':
+          description: A page of notifications
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/notifications/unread-count:
+    get:
+      operationId: adminUnreadCount
+      summary: Your unread notification count
+      tags: [Admin]
+      responses:
+        '200':
+          description: The count
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnreadCount' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/notifications/read-all:
+    post:
+      operationId: adminMarkAllNotificationsRead
+      summary: Mark all your notifications read
+      tags: [Admin]
+      responses:
+        '204': { description: Marked }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/notifications/{id}/read:
+    post:
+      operationId: adminMarkNotificationRead
+      summary: Mark one notification read
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Marked }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/notifications/{id}:
+    delete:
+      operationId: adminDeleteNotification
+      summary: Delete one notification
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/dashboard:
     get:
       operationId: adminGetDashboard
@@ -2209,6 +2284,37 @@ components:
         organization: { type: string, minLength: 1, maxLength: 200 }
         contactName: { type: string, minLength: 1, maxLength: 200 }
         email: { type: [string, 'null'], maxLength: 200 }
+
+    Notification:
+      type: object
+      required: [id, type, title, message, isRead, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        type: { type: string }
+        title: { type: string }
+        message: { type: string }
+        url: { type: [string, 'null'] }
+        isRead: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    NotificationPage:
+      type: object
+      required: [data, unreadCount]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Notification' }
+        nextCursor: { type: [string, 'null'] }
+        unreadCount: { type: integer, minimum: 0 }
+
+    UnreadCount:
+      type: object
+      required: [count]
+      additionalProperties: false
+      properties:
+        count: { type: integer, minimum: 0 }
 
     DashboardStats:
       type: object

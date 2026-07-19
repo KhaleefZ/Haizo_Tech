@@ -58,6 +58,10 @@ model User {
   // work without a token blocklist. Defaulted, so existing rows need no backfill.
   tokenVersion         Int            @default(0)
 
+  // Phase 5 (additive). Per-type notification opt-outs, e.g. {"task.assigned":false}.
+  // The master switch stays `notificationsEnabled`; this refines it per type.
+  notificationPrefs    Json?
+
   announcements Announcement[] @relation("AnnouncementAuthor")
   blogs         Blog[]         @relation("BlogAuthor")
   notifications Notification[] @relation("UserNotifications")
@@ -204,9 +208,21 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
+  // Phase 5 (additive). `type` stays a String rather than converting to a Postgres
+  // enum: the old backend still writes this column during cutover, and an enum
+  // conversion would reject its values. The NotificationType UNION in
+  // lib/notifications/catalogue.ts is the real source of truth, validated in code.
+  actorId    String? // who caused it (null for system events)
+  entityType String? // e.g. "inquiry", "task" — what it's about
+  entityId   String?
+  url        String? // precomputed deep link so the bell is a dumb <Link>
+  groupKey   String? // collapse related notifications
+  emailedAt  DateTime? // digest/eligibility bookkeeping
+
   user User @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead, createdAt])
+  @@index([userId, createdAt])
 }
 
 model Announcement {

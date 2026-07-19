@@ -14,7 +14,29 @@ import type {
   UpdateTask,
 } from '@haizo/types';
 import { projectRepository } from '../repositories/project.repository.js';
+import { notificationService } from './notification.service.js';
 import { notFound } from '../lib/errors.js';
+
+interface Actor {
+  id: string;
+  name: string;
+}
+
+/** Notify a newly-assigned user (but never notify someone assigning to themselves). */
+function notifyAssignment(taskRow: TaskRow, actor: Actor | undefined): void {
+  if (!taskRow.assigneeId || taskRow.assigneeId === actor?.id) return;
+  void notificationService.emit({
+    type: 'task.assigned',
+    recipientIds: [taskRow.assigneeId],
+    actorId: actor?.id ?? null,
+    entity: { type: 'task', id: taskRow.id },
+    params: {
+      actorName: actor?.name,
+      taskTitle: taskRow.title,
+      projectId: taskRow.column.projectId,
+    },
+  });
+}
 
 type DetailRow = NonNullable<Awaited<ReturnType<typeof projectRepository.findProjectDetail>>>;
 type ColumnRow = NonNullable<Awaited<ReturnType<typeof projectRepository.updateColumn>>>;
@@ -182,7 +204,7 @@ export const projectService = {
 
   /* ---- Tasks ---- */
 
-  async createTask(columnId: string, input: CreateTask): Promise<BoardTask> {
+  async createTask(columnId: string, input: CreateTask, actor?: Actor): Promise<BoardTask> {
     const column = await projectRepository.findColumnById(columnId);
     if (!column) throw notFound('Column');
     const order = (await projectRepository.maxTaskOrder(columnId)) + 1;
@@ -195,10 +217,11 @@ export const projectService = {
       column: { connect: { id: columnId } },
       ...(input.assigneeId ? { assignee: { connect: { id: input.assigneeId } } } : {}),
     });
+    notifyAssignment(row, actor);
     return toBoardTask(row);
   },
 
-  async updateTask(id: string, input: UpdateTask): Promise<BoardTask> {
+  async updateTask(id: string, input: UpdateTask, actor?: Actor): Promise<BoardTask> {
     const existing = await projectRepository.findTaskById(id);
     if (!existing) throw notFound('Task');
 
@@ -229,6 +252,10 @@ export const projectService = {
     }
 
     const row = await projectRepository.updateTask(id, data);
+    // Notify only when the task is (re)assigned to someone new.
+    if (input.assigneeId !== undefined && input.assigneeId && input.assigneeId !== existing.assigneeId) {
+      notifyAssignment(row, actor);
+    }
     return toBoardTask(row);
   },
 

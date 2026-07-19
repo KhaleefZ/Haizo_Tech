@@ -84,6 +84,9 @@ export type CreateClient = Schemas['CreateClient'];
 export type UpdateClient = Schemas['UpdateClient'];
 
 export type DashboardStats = Schemas['DashboardStats'];
+export type Notification = Schemas['Notification'];
+export type NotificationPage = Schemas['NotificationPage'];
+export type UnreadCount = Schemas['UnreadCount'];
 export type TaskPriority = Schemas['TaskPriority'];
 export type AdminProjectListItem = Schemas['AdminProjectListItem'];
 export type AdminProjectList = Schemas['AdminProjectList'];

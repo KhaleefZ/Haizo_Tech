@@ -67,7 +67,7 @@ afterAll(async () => {
   await prisma.testimonial.deleteMany({ where: { author: { startsWith: 'P4bTst' } } });
   await prisma.work.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.blog.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
-  await prisma.inquiry.deleteMany({ where: { email: 'p4c-inquiry@test.local' } });
+  await prisma.inquiry.deleteMany({ where: { email: { in: ['p4c-inquiry@test.local', 'p5-notif@test.local', 'p5-notif2@test.local'] } } });
   await prisma.client.deleteMany({ where: { organization: { startsWith: 'P4bClient' } } });
   await prisma.announcement.deleteMany({ where: { title: { startsWith: 'P4bAnn' } } });
   await prisma.project.deleteMany({ where: { name: { startsWith: 'P4bProj' } } });
@@ -379,6 +379,55 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('notifications', () => {
+  it('an inquiry notifies managers; list / read / count / delete work', async () => {
+    const inq = await request(app).post('/v1/inquiries').send({
+      name: 'Notify Test',
+      email: 'p5-notif@test.local',
+      message: 'Hello, please build us a thing.',
+      consent: true,
+    });
+    expect(inq.status).toBe(201);
+
+    // createInquiry awaits the emit, so the row is persisted by the time 201 returns.
+    const list = await request(app).get('/v1/admin/notifications').set('Cookie', admin.cookie);
+    expect(list.status).toBe(200);
+    const notif = list.body.data.find((n: { type: string }) => n.type === 'inquiry.received');
+    expect(notif).toBeTruthy();
+    expect(notif.url).toBe('/inquiries'); // catalogue computed the deep link
+    expect(list.body.unreadCount).toBeGreaterThan(0);
+
+    expect(
+      (await request(app).post(`/v1/admin/notifications/${notif.id}/read`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+
+    expect(
+      (await request(app).post('/v1/admin/notifications/read-all').set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+    const count = await request(app).get('/v1/admin/notifications/unread-count').set('Cookie', admin.cookie);
+    expect(count.body.count).toBe(0);
+
+    expect(
+      (await request(app).delete(`/v1/admin/notifications/${notif.id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+  });
+
+  it('still persists a notification when the recipient has notifications disabled', async () => {
+    await prisma.user.update({ where: { email: ADMIN.email }, data: { notificationsEnabled: false } });
+    const inq = await request(app).post('/v1/inquiries').send({
+      name: 'Off Test',
+      email: 'p5-notif2@test.local',
+      message: 'Another lead, please build it.',
+      consent: true,
+    });
+    expect(inq.status).toBe(201);
+    // In-app history is not opt-out-able: the row exists even with the master switch off.
+    const list = await request(app).get('/v1/admin/notifications').set('Cookie', admin.cookie);
+    expect(list.body.data.some((n: { type: string }) => n.type === 'inquiry.received')).toBe(true);
+    await prisma.user.update({ where: { email: ADMIN.email }, data: { notificationsEnabled: true } });
   });
 });
 

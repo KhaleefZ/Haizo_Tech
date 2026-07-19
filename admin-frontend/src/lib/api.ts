@@ -66,6 +66,8 @@ import type {
   CreateTask,
   UpdateTask,
   DashboardStats,
+  NotificationPage,
+  UnreadCount,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -270,5 +272,16 @@ export const api = {
   },
   dashboard: {
     get: () => request<DashboardStats>('GET', '/admin/dashboard'),
+  },
+  notifications: {
+    list: (cursor?: string, limit = 20) => {
+      const q = new URLSearchParams({ limit: String(limit) });
+      if (cursor) q.set('cursor', cursor);
+      return request<NotificationPage>('GET', `/admin/notifications?${q.toString()}`);
+    },
+    unreadCount: () => request<UnreadCount>('GET', '/admin/notifications/unread-count'),
+    markRead: (id: string) => request<void>('POST', `/admin/notifications/${id}/read`),
+    markAllRead: () => request<void>('POST', '/admin/notifications/read-all'),
+    remove: (id: string) => request<void>('DELETE', `/admin/notifications/${id}`),
   },
 };

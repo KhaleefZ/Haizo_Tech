@@ -53,6 +53,13 @@ import {
 import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
 import { adminGetDashboard } from '../controllers/dashboard.controller.js';
 import {
+  adminListNotifications,
+  adminUnreadCount,
+  adminMarkNotificationRead,
+  adminMarkAllNotificationsRead,
+  adminDeleteNotification,
+} from '../controllers/notification.controller.js';
+import {
   adminListClients,
   adminGetClient,
   adminCreateClient,
@@ -180,6 +187,18 @@ router.get('/admin/clients/:id', ...manage, adminGetClient);
 router.patch('/admin/clients/:id', ...mutate, adminUpdateClient);
 // operationId: adminDeleteClient
 router.delete('/admin/clients/:id', ...mutate, adminDeleteClient);
+
+// --- Notifications (self-service: your own) ---
+// operationId: adminListNotifications
+router.get('/admin/notifications', requireAuth, adminListNotifications);
+// operationId: adminUnreadCount
+router.get('/admin/notifications/unread-count', requireAuth, adminUnreadCount);
+// operationId: adminMarkAllNotificationsRead
+router.post('/admin/notifications/read-all', ...selfMutate, adminMarkAllNotificationsRead);
+// operationId: adminMarkNotificationRead
+router.post('/admin/notifications/:id/read', ...selfMutate, adminMarkNotificationRead);
+// operationId: adminDeleteNotification
+router.delete('/admin/notifications/:id', ...selfMutate, adminDeleteNotification);
 
 // operationId: adminGetDashboard
 router.get('/admin/dashboard', ...manage, adminGetDashboard);

@@ -37,6 +37,7 @@ import type {
   UpdateBlog,
 } from '@haizo/types';
 import { adminContentRepository } from '../repositories/admin-content.repository.js';
+import { notificationService } from './notification.service.js';
 import { conflict, notFound, validationFailed } from '../lib/errors.js';
 import { revalidate, tags } from '../lib/revalidate.js';
 
@@ -76,6 +77,21 @@ function revalidateBlogItem(slug?: string | null): void {
   const t: string[] = [tags.blogs, tags.home, tags.sitemap];
   if (slug) t.push(tags.blog(slug));
   void revalidate('blog.changed', t);
+}
+
+/** Tell managers a piece of content went live. Fire-and-forget; emit never throws. */
+function notifyPublished(
+  kind: 'blog' | 'work',
+  entityId: string,
+  title: string,
+  authorId?: string,
+): void {
+  void notificationService.emitToRoles(['SUPER_ADMIN', 'MANAGER'], {
+    type: kind === 'blog' ? 'blog.published' : 'work.published',
+    ...(authorId ? { actorId: authorId, excludeUserId: authorId } : {}),
+    entity: { type: kind, id: entityId },
+    params: kind === 'blog' ? { postTitle: title } : { workTitle: title },
+  });
 }
 
 /**
@@ -472,6 +488,7 @@ export const adminContentService = {
         published: input.published ?? false,
       });
       revalidateWorkItem(row.slug);
+      if (row.published) notifyPublished('work', row.id, row.title);
       return toAdminWork(row);
     } catch (err) {
       if (isUniqueViolation(err)) throw conflict('A work with that slug already exists');
@@ -496,6 +513,9 @@ export const adminContentService = {
     try {
       const row = await adminContentRepository.updateWork(id, data);
       revalidateWorkItem(row.slug);
+      if (input.published === true && !existing.published) {
+        notifyPublished('work', row.id, row.title);
+      }
       return toAdminWork(row);
     } catch (err) {
       if (isUniqueViolation(err)) throw conflict('A work with that slug already exists');
@@ -548,6 +568,7 @@ export const adminContentService = {
         author: { connect: { id: authorId } },
       });
       revalidateBlogItem(row.slug);
+      if (row.published) notifyPublished('blog', row.id, row.title, authorId);
       return toAdminBlog(row);
     } catch (err) {
       if (isUniqueViolation(err)) throw conflict('A post with that slug already exists');
@@ -571,6 +592,10 @@ export const adminContentService = {
     try {
       const row = await adminContentRepository.updateBlog(id, data);
       revalidateBlogItem(row.slug);
+      // Only when it crosses from draft to published.
+      if (input.published === true && !existing.published) {
+        notifyPublished('blog', row.id, row.title, row.authorId);
+      }
       return toAdminBlog(row);
     } catch (err) {
       if (isUniqueViolation(err)) throw conflict('A post with that slug already exists');

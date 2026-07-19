@@ -14,6 +14,7 @@ import type {
   WorkList,
 } from '@haizo/types';
 import { contentRepository } from '../repositories/content.repository.js';
+import { notificationService } from './notification.service.js';
 import { notFound } from '../lib/errors.js';
 import { logger } from '../lib/logger.js';
 import { randomUUID } from 'node:crypto';
@@ -186,6 +187,13 @@ export const contentService = {
       message: input.message.trim(),
       phone: input.phone ?? null,
       service: input.projectType ?? null,
+    });
+
+    // Tell the team a lead came in. Best-effort — emit never throws.
+    await notificationService.emitToRoles(['SUPER_ADMIN', 'MANAGER'], {
+      type: 'inquiry.received',
+      entity: { type: 'inquiry', id: row.id },
+      params: { name: row.name },
     });
 
     return { id: row.id, receivedAt: row.submissionDate.toISOString() };

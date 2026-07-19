@@ -6,6 +6,7 @@ import { Badge, Button, useToast } from '@haizo/ui';
 import type { CurrentUser, Role } from '@haizo/types';
 import { useAuth } from '../lib/auth';
 import { Icon } from '../lib/icons';
+import { NotificationBell } from './NotificationBell';
 
 const ROLE_LABEL: Record<Role, string> = {
   SUPER_ADMIN: 'Super admin',
@@ -39,7 +40,9 @@ export function Header({ user }: { user: CurrentUser }) {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-end gap-4 border-b border-border bg-card px-6">
+    <header className="flex h-14 shrink-0 items-center justify-end gap-2 border-b border-border bg-card px-6">
+      <NotificationBell />
+      <div className="mx-1 h-6 w-px bg-border" />
       <div className="flex items-center gap-3">
         <div className="grid size-8 place-items-center rounded-full bg-brand-blue text-xs font-semibold text-white">
           {initials(user.name)}

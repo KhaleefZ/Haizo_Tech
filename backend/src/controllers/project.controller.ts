@@ -85,7 +85,10 @@ export async function adminDeleteColumn(req: Request, res: Response, next: NextF
 
 export async function adminCreateTask(req: Request, res: Response, next: NextFunction) {
   try {
-    res.status(201).json(await projectService.createTask(String(req.params.id), req.body as CreateTask));
+    const actor = req.user ? { id: req.user.id, name: req.user.name } : undefined;
+    res
+      .status(201)
+      .json(await projectService.createTask(String(req.params.id), req.body as CreateTask, actor));
   } catch (err) {
     next(err);
   }
@@ -93,7 +96,8 @@ export async function adminCreateTask(req: Request, res: Response, next: NextFun
 
 export async function adminUpdateTask(req: Request, res: Response, next: NextFunction) {
   try {
-    res.json(await projectService.updateTask(String(req.params.id), req.body as UpdateTask));
+    const actor = req.user ? { id: req.user.id, name: req.user.name } : undefined;
+    res.json(await projectService.updateTask(String(req.params.id), req.body as UpdateTask, actor));
   } catch (err) {
     next(err);
   }

@@ -6,8 +6,12 @@ import type {
   CreateAnnouncement,
   UpdateAnnouncement,
 } from '@haizo/types';
+import type { Role } from '@prisma/client';
 import { announcementRepository } from '../repositories/announcement.repository.js';
+import { notificationService } from './notification.service.js';
 import { notFound } from '../lib/errors.js';
+
+const ALL_ROLES: Role[] = ['SUPER_ADMIN', 'MANAGER', 'DEV'];
 
 type AnnouncementRow = NonNullable<Awaited<ReturnType<typeof announcementRepository.findById>>>;
 
@@ -39,12 +43,24 @@ export const announcementService = {
   },
 
   async create(input: CreateAnnouncement, authorId: string): Promise<AdminAnnouncement> {
+    const audience = input.audience ?? 'ALL';
     const row = await announcementRepository.create({
       title: input.title,
       content: input.content,
-      audience: input.audience ?? 'ALL',
+      audience,
       author: { connect: { id: authorId } },
     });
+
+    // Fan out to the audience, minus the author who wrote it.
+    const roles = audience === 'ALL' ? ALL_ROLES : [audience as Role];
+    await notificationService.emitToRoles(roles, {
+      type: 'announcement.published',
+      actorId: authorId,
+      excludeUserId: authorId,
+      entity: { type: 'announcement', id: row.id },
+      params: { announcementTitle: input.title },
+    });
+
     return toAdminAnnouncement(row);
   },
 
