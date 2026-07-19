@@ -4,7 +4,7 @@
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "gen": {
-      "inputs": ["../../server/openapi/**", "openapi/**"],
+      "inputs": ["../../backend/openapi/**", "openapi/**"],
       "outputs": ["src/generated/**"],
       "cache": true
     },

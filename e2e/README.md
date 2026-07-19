@@ -1,6 +1,6 @@
 # End-to-end tests
 
-Playwright, driving `apps/web` and `apps/admin` against a production-like build.
+Playwright, driving `frontend` and `admin-frontend` against a production-like build.
 
 The suite that matters most lands in Phase 2: **publish a blog via the admin API, poll
 the public page, assert the new content appears within 2 seconds.** That test is the exit

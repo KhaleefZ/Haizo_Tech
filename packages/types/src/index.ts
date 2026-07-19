@@ -1,7 +1,7 @@
 /**
  * Public surface of the generated API contract.
  *
- * Everything here derives from server/openapi/openapi.yaml. Do not hand-write a
+ * Everything here derives from backend/openapi/openapi.yaml. Do not hand-write a
  * request or response type — add it to the spec and run `pnpm gen`. CI fails if
  * regenerating produces a diff, so drift cannot be merged.
  */

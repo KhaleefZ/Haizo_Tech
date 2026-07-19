@@ -1,7 +1,11 @@
 packages:
-  - 'apps/*'
+  # Three deployable applications, named to match the existing repo.
+  - 'frontend'        # public marketing site -> haizotech.com
+  - 'admin-frontend'  # internal dashboard    -> admin.haizotech.com
+  - 'backend'         # common API            -> api.haizotech.com
+  # Shared code. Both frontends import these, so they cannot live inside
+  # either one without duplicating the design system.
   - 'packages/*'
-  - 'server'
   - 'e2e'
 
 # pnpm blocks postinstall scripts by default — a good default, since a postinstall is
