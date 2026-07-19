@@ -168,14 +168,17 @@ export function Dialog({
         aria-describedby={descriptionId}
         tabIndex={-1}
         className={cn(
-          'relative z-10 w-full bg-card border border-border rounded-token shadow-lift',
+          'relative z-10 flex w-full flex-col bg-card border border-border rounded-token shadow-lift',
+          // Never exceed the viewport — a tall form scrolls its own body rather
+          // than pushing the header and footer off-screen.
+          'max-h-[90vh]',
           'transition-[opacity,transform] duration-200 ease-[var(--ease-out-soft)]',
           entered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2',
           sizeClasses[size],
           className,
         )}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
+        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-5 py-4">
           <div className="min-w-0">
             <h2 id={titleId} className="text-h4">
               {title}
@@ -208,10 +211,10 @@ export function Dialog({
           </button>
         </div>
 
-        {children ? <div className="px-5 py-5">{children}</div> : null}
+        {children ? <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div> : null}
 
         {footer ? (
-          <div className="flex flex-wrap justify-end gap-3 border-t border-border px-5 py-4">
+          <div className="flex shrink-0 flex-wrap justify-end gap-3 border-t border-border px-5 py-4">
             {footer}
           </div>
         ) : null}

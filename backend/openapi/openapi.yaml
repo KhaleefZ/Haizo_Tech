@@ -33,6 +33,8 @@ tags:
     description: Public read endpoints backing the marketing site.
   - name: Inquiries
   - name: Auth
+  - name: Admin
+    description: Authenticated content management. Requires a staff session and role.
 
 paths:
   /health:
@@ -311,6 +313,98 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /admin/services:
+    get:
+      operationId: adminListServices
+      summary: List all services, including drafts
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of services
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminServiceList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateService
+      summary: Create a service
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateService' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminService' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/services/{id}:
+    get:
+      operationId: adminGetService
+      summary: Get one service by id
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The service
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminService' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateService
+      summary: Update a service
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateService' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminService' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteService
+      summary: Delete a service
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Deleted
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -334,6 +428,11 @@ components:
       in: path
       required: true
       schema: { $ref: '#/components/schemas/Slug' }
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 40 }
 
   responses:
     BadRequest:
@@ -353,6 +452,11 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
     NotFound:
       description: No such resource
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Conflicts with existing data (e.g. a duplicate slug)
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
@@ -644,6 +748,87 @@ components:
         role: { $ref: '#/components/schemas/Role' }
         avatarUrl: { type: [string, 'null'] }
         notificationsEnabled: { type: boolean }
+
+    AdminService:
+      type: object
+      description: |
+        The full service row as the admin sees it — including drafts and the
+        internal fields (publish state, timestamps) the public Service omits.
+      required:
+        [id, slug, title, summary, stack, deliverables, order, published, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, maxLength: 120 }
+        summary: { type: string, maxLength: 400 }
+        body: { type: [string, 'null'] }
+        icon: { type: [string, 'null'] }
+        stack: { type: array, items: { type: string } }
+        deliverables: { type: array, items: { type: string } }
+        timeline: { type: [string, 'null'] }
+        order: { type: integer }
+        published: { type: boolean }
+        publishedAt: { type: [string, 'null'], format: date-time }
+        seoTitle: { type: [string, 'null'] }
+        seoDescription: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminServiceList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminService' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateService:
+      type: object
+      required: [slug, title, summary]
+      additionalProperties: false
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 120 }
+        summary: { type: string, minLength: 2, maxLength: 400 }
+        body: { type: [string, 'null'], maxLength: 20000 }
+        icon: { type: [string, 'null'], maxLength: 60 }
+        stack:
+          type: array
+          items: { type: string, maxLength: 60 }
+        deliverables:
+          type: array
+          items: { type: string, maxLength: 200 }
+        timeline: { type: [string, 'null'], maxLength: 120 }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+        seoTitle: { type: [string, 'null'], maxLength: 200 }
+        seoDescription: { type: [string, 'null'], maxLength: 400 }
+
+    UpdateService:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        slug: { $ref: '#/components/schemas/Slug' }
+        title: { type: string, minLength: 2, maxLength: 120 }
+        summary: { type: string, minLength: 2, maxLength: 400 }
+        body: { type: [string, 'null'], maxLength: 20000 }
+        icon: { type: [string, 'null'], maxLength: 60 }
+        stack:
+          type: array
+          items: { type: string, maxLength: 60 }
+        deliverables:
+          type: array
+          items: { type: string, maxLength: 200 }
+        timeline: { type: [string, 'null'], maxLength: 120 }
+        order: { type: integer, minimum: 0 }
+        published: { type: boolean }
+        seoTitle: { type: [string, 'null'], maxLength: 200 }
+        seoDescription: { type: [string, 'null'], maxLength: 400 }
 
 security:
   - sessionCookie: []

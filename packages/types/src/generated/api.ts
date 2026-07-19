@@ -257,6 +257,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all services, including drafts */
+        get: operations["adminListServices"];
+        put?: never;
+        /** Create a service */
+        post: operations["adminCreateService"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/services/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one service by id */
+        get: operations["adminGetService"];
+        put?: never;
+        post?: never;
+        /** Delete a service */
+        delete: operations["adminDeleteService"];
+        options?: never;
+        head?: never;
+        /** Update a service */
+        patch: operations["adminUpdateService"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -426,6 +463,64 @@ export interface components {
             avatarUrl?: string | null;
             notificationsEnabled?: boolean;
         };
+        /**
+         * @description The full service row as the admin sees it — including drafts and the
+         *     internal fields (publish state, timestamps) the public Service omits.
+         */
+        AdminService: {
+            id: string;
+            slug: components["schemas"]["Slug"];
+            title: string;
+            summary: string;
+            body?: string | null;
+            icon?: string | null;
+            stack: string[];
+            deliverables: string[];
+            timeline?: string | null;
+            order: number;
+            published: boolean;
+            /** Format: date-time */
+            publishedAt?: string | null;
+            seoTitle?: string | null;
+            seoDescription?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AdminServiceList: {
+            data: components["schemas"]["AdminService"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        CreateService: {
+            slug: components["schemas"]["Slug"];
+            title: string;
+            summary: string;
+            body?: string | null;
+            icon?: string | null;
+            stack?: string[];
+            deliverables?: string[];
+            timeline?: string | null;
+            order?: number;
+            published?: boolean;
+            seoTitle?: string | null;
+            seoDescription?: string | null;
+        };
+        /** @description A partial update; at least one field must be present. */
+        UpdateService: {
+            slug?: components["schemas"]["Slug"];
+            title?: string;
+            summary?: string;
+            body?: string | null;
+            icon?: string | null;
+            stack?: string[];
+            deliverables?: string[];
+            timeline?: string | null;
+            order?: number;
+            published?: boolean;
+            seoTitle?: string | null;
+            seoDescription?: string | null;
+        };
     };
     responses: {
         /** @description Request failed validation */
@@ -464,6 +559,15 @@ export interface components {
                 "application/json": components["schemas"]["Error"];
             };
         };
+        /** @description Conflicts with existing data (e.g. a duplicate slug) */
+        Conflict: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
         /** @description Rate limit exceeded */
         TooManyRequests: {
             headers: {
@@ -487,6 +591,7 @@ export interface components {
         Page: number;
         PageSize: number;
         Slug: components["schemas"]["Slug"];
+        IdParam: string;
     };
     requestBodies: never;
     headers: never;
@@ -799,6 +904,143 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListServices: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of services */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminServiceList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminCreateService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateService"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminService"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The service */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminService"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminDeleteService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateService"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminService"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
             500: components["responses"]["InternalError"];
         };
     };

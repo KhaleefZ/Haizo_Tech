@@ -12,7 +12,13 @@
  *   • A 401 transparently tries ONE refresh and retries, so a user mid-session
  *     never sees a spurious logout when their 15-minute access token lapses.
  */
-import type { CurrentUser } from '@haizo/types';
+import type {
+  CurrentUser,
+  AdminService,
+  AdminServiceList,
+  CreateService,
+  UpdateService,
+} from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
 const BASE = `${API}/v1`;
@@ -105,5 +111,14 @@ export const api = {
     login: (email: string, password: string) =>
       request<CurrentUser>('POST', '/auth/login', { email, password }),
     logout: () => request<void>('POST', '/auth/logout'),
+  },
+  services: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminServiceList>('GET', `/admin/services?page=${page}&pageSize=${pageSize}`),
+    get: (id: string) => request<AdminService>('GET', `/admin/services/${id}`),
+    create: (input: CreateService) => request<AdminService>('POST', '/admin/services', input),
+    update: (id: string, input: UpdateService) =>
+      request<AdminService>('PATCH', `/admin/services/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/services/${id}`),
   },
 };

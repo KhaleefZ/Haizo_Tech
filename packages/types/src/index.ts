@@ -38,6 +38,12 @@ export type Role = Schemas['Role'];
 export type LoginRequest = Schemas['LoginRequest'];
 export type CurrentUser = Schemas['CurrentUser'];
 
+/* ---- Admin content management ---- */
+export type AdminService = Schemas['AdminService'];
+export type AdminServiceList = Schemas['AdminServiceList'];
+export type CreateService = Schemas['CreateService'];
+export type UpdateService = Schemas['UpdateService'];
+
 /**
  * Typed API client.
  *
