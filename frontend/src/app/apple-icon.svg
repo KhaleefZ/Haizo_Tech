@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Solid navy ground: iOS composites the icon on the home screen with no
+       page behind it, so a transparent or white mark would disappear. -->
+  <rect width="32" height="32" fill="#0F2A57"/>
+  <circle cx="16" cy="16" r="11" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  <ellipse cx="16" cy="16" rx="4.7" ry="11" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+  <path d="M5 16h22M7 10h18M7 22h18" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
