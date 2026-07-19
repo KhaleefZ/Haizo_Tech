@@ -83,6 +83,7 @@ export type AdminClientList = Schemas['AdminClientList'];
 export type CreateClient = Schemas['CreateClient'];
 export type UpdateClient = Schemas['UpdateClient'];
 
+export type DashboardStats = Schemas['DashboardStats'];
 export type TaskPriority = Schemas['TaskPriority'];
 export type AdminProjectListItem = Schemas['AdminProjectListItem'];
 export type AdminProjectList = Schemas['AdminProjectList'];

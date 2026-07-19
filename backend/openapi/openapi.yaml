@@ -1009,6 +1009,21 @@ paths:
         '409': { $ref: '#/components/responses/Conflict' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/dashboard:
+    get:
+      operationId: adminGetDashboard
+      summary: Dashboard summary counts and recent activity
+      tags: [Admin]
+      responses:
+        '200':
+          description: Dashboard stats
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DashboardStats' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/projects:
     get:
       operationId: adminListProjects
@@ -2194,6 +2209,19 @@ components:
         organization: { type: string, minLength: 1, maxLength: 200 }
         contactName: { type: string, minLength: 1, maxLength: 200 }
         email: { type: [string, 'null'], maxLength: 200 }
+
+    DashboardStats:
+      type: object
+      required: [newInquiries, openProjects, publishedServices, draftPosts, recentInquiries]
+      additionalProperties: false
+      properties:
+        newInquiries: { type: integer, minimum: 0 }
+        openProjects: { type: integer, minimum: 0 }
+        publishedServices: { type: integer, minimum: 0 }
+        draftPosts: { type: integer, minimum: 0 }
+        recentInquiries:
+          type: array
+          items: { $ref: '#/components/schemas/AdminInquiry' }
 
     TaskPriority:
       type: string

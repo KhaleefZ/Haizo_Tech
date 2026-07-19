@@ -65,6 +65,7 @@ import type {
   BoardTask,
   CreateTask,
   UpdateTask,
+  DashboardStats,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -266,5 +267,8 @@ export const api = {
     update: (id: string, input: UpdateTask) =>
       request<BoardTask>('PATCH', `/admin/tasks/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/tasks/${id}`),
+  },
+  dashboard: {
+    get: () => request<DashboardStats>('GET', '/admin/dashboard'),
   },
 };

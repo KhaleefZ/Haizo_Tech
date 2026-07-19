@@ -559,6 +559,23 @@ export interface paths {
         patch: operations["adminUpdateClient"];
         trace?: never;
     };
+    "/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Dashboard summary counts and recent activity */
+        get: operations["adminGetDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/projects": {
         parameters: {
             query?: never;
@@ -762,7 +779,7 @@ export interface paths {
         };
         /**
          * List team members
-         * @description Super-admin only. Managing users is the top privilege in the role matrix.
+         * @description Available to managers and above (used for task assignment). Changing roles is super-admin only.
          */
         get: operations["adminListUsers"];
         put?: never;
@@ -1262,6 +1279,13 @@ export interface components {
             organization?: string;
             contactName?: string;
             email?: string | null;
+        };
+        DashboardStats: {
+            newInquiries: number;
+            openProjects: number;
+            publishedServices: number;
+            draftPosts: number;
+            recentInquiries: components["schemas"]["AdminInquiry"][];
         };
         /** @enum {string} */
         TaskPriority: "Low" | "Medium" | "High";
@@ -2836,6 +2860,29 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dashboard stats */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardStats"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalError"];
         };
     };

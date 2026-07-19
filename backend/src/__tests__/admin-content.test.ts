@@ -382,6 +382,17 @@ describe('work CRUD', () => {
   });
 });
 
+describe('dashboard', () => {
+  it('403 for DEV, returns counts + recent inquiries for a manager', async () => {
+    expect((await request(app).get('/v1/admin/dashboard').set('Cookie', dev.cookie)).status).toBe(403);
+    const res = await request(app).get('/v1/admin/dashboard').set('Cookie', admin.cookie);
+    expect(res.status).toBe(200);
+    expect(typeof res.body.newInquiries).toBe('number');
+    expect(typeof res.body.publishedServices).toBe('number');
+    expect(Array.isArray(res.body.recentInquiries)).toBe(true);
+  });
+});
+
 describe('projects + kanban board', () => {
   it('creates a project with default columns, adds and moves a task, then deletes', async () => {
     expect((await request(app).get('/v1/admin/projects').set('Cookie', dev.cookie)).status).toBe(403);

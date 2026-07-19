@@ -51,6 +51,7 @@ import {
   adminDeleteInquiry,
 } from '../controllers/inquiry.controller.js';
 import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
+import { adminGetDashboard } from '../controllers/dashboard.controller.js';
 import {
   adminListClients,
   adminGetClient,
@@ -179,6 +180,9 @@ router.get('/admin/clients/:id', ...manage, adminGetClient);
 router.patch('/admin/clients/:id', ...mutate, adminUpdateClient);
 // operationId: adminDeleteClient
 router.delete('/admin/clients/:id', ...mutate, adminDeleteClient);
+
+// operationId: adminGetDashboard
+router.get('/admin/dashboard', ...manage, adminGetDashboard);
 
 // --- Projects + kanban board ---
 // operationId: adminListProjects
