@@ -44,6 +44,10 @@ import type {
   AdminUser,
   AdminUserList,
   Role,
+  AdminClient,
+  AdminClientList,
+  CreateClient,
+  UpdateClient,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -200,5 +204,13 @@ export const api = {
     list: () => request<AdminUserList>('GET', '/admin/users'),
     updateRole: (id: string, role: Role) =>
       request<AdminUser>('PATCH', `/admin/users/${id}`, { role }),
+  },
+  clients: {
+    list: (page = 1, pageSize = 100) =>
+      request<AdminClientList>('GET', `/admin/clients?page=${page}&pageSize=${pageSize}`),
+    create: (input: CreateClient) => request<AdminClient>('POST', '/admin/clients', input),
+    update: (id: string, input: UpdateClient) =>
+      request<AdminClient>('PATCH', `/admin/clients/${id}`, input),
+    remove: (id: string) => request<void>('DELETE', `/admin/clients/${id}`),
   },
 };

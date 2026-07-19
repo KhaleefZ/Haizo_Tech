@@ -78,6 +78,11 @@ export type AdminUser = Schemas['AdminUser'];
 export type AdminUserList = Schemas['AdminUserList'];
 export type UpdateUserRole = Schemas['UpdateUserRole'];
 
+export type AdminClient = Schemas['AdminClient'];
+export type AdminClientList = Schemas['AdminClientList'];
+export type CreateClient = Schemas['CreateClient'];
+export type UpdateClient = Schemas['UpdateClient'];
+
 /**
  * Typed API client.
  *

@@ -919,6 +919,96 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/clients:
+    get:
+      operationId: adminListClients
+      summary: List clients
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of clients
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminClientList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: adminCreateClient
+      summary: Create a client
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateClient' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminClient' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/clients/{id}:
+    get:
+      operationId: adminGetClient
+      summary: Get one client
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The client
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminClient' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateClient
+      summary: Update a client
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateClient' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminClient' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteClient
+      summary: Delete a client
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/users:
     get:
       operationId: adminListUsers
@@ -1719,6 +1809,47 @@ components:
       additionalProperties: false
       properties:
         role: { $ref: '#/components/schemas/Role' }
+
+    AdminClient:
+      type: object
+      required: [id, organization, contactName, projectCount, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        organization: { type: string, maxLength: 200 }
+        contactName: { type: string, maxLength: 200 }
+        email: { type: [string, 'null'] }
+        projectCount: { type: integer, minimum: 0 }
+        createdAt: { type: string, format: date-time }
+
+    AdminClientList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminClient' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    CreateClient:
+      type: object
+      required: [organization, contactName]
+      additionalProperties: false
+      properties:
+        organization: { type: string, minLength: 1, maxLength: 200 }
+        contactName: { type: string, minLength: 1, maxLength: 200 }
+        email: { type: [string, 'null'], maxLength: 200 }
+
+    UpdateClient:
+      type: object
+      description: A partial update; at least one field must be present.
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        organization: { type: string, minLength: 1, maxLength: 200 }
+        contactName: { type: string, minLength: 1, maxLength: 200 }
+        email: { type: [string, 'null'], maxLength: 200 }
 
 security:
   - sessionCookie: []

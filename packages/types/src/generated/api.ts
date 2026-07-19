@@ -522,6 +522,43 @@ export interface paths {
         patch: operations["adminUpdateInquiry"];
         trace?: never;
     };
+    "/admin/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List clients */
+        get: operations["adminListClients"];
+        put?: never;
+        /** Create a client */
+        post: operations["adminCreateClient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/clients/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one client */
+        get: operations["adminGetClient"];
+        put?: never;
+        post?: never;
+        /** Delete a client */
+        delete: operations["adminDeleteClient"];
+        options?: never;
+        head?: never;
+        /** Update a client */
+        patch: operations["adminUpdateClient"];
+        trace?: never;
+    };
     "/admin/users": {
         parameters: {
             query?: never;
@@ -1007,6 +1044,30 @@ export interface components {
         };
         UpdateUserRole: {
             role: components["schemas"]["Role"];
+        };
+        AdminClient: {
+            id: string;
+            organization: string;
+            contactName: string;
+            email?: string | null;
+            projectCount: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdminClientList: {
+            data: components["schemas"]["AdminClient"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        CreateClient: {
+            organization: string;
+            contactName: string;
+            email?: string | null;
+        };
+        /** @description A partial update; at least one field must be present. */
+        UpdateClient: {
+            organization?: string;
+            contactName?: string;
+            email?: string | null;
         };
     };
     responses: {
@@ -2285,6 +2346,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminInquiry"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListClients: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of clients */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminClientList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminCreateClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClient"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminClient"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The client */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminClient"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminDeleteClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClient"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminClient"];
                 };
             };
             400: components["responses"]["BadRequest"];

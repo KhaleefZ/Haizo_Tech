@@ -68,6 +68,7 @@ afterAll(async () => {
   await prisma.work.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.blog.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.inquiry.deleteMany({ where: { email: 'p4c-inquiry@test.local' } });
+  await prisma.client.deleteMany({ where: { organization: { startsWith: 'P4bClient' } } });
   await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
   await prisma.$disconnect();
 });
@@ -373,6 +374,34 @@ describe('work CRUD', () => {
 
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
+    ).toBe(204);
+  });
+});
+
+describe('clients CRUD', () => {
+  it('401 unauth, 403 for DEV, full CRUD for a manager-or-above', async () => {
+    expect((await request(app).get('/v1/admin/clients')).status).toBe(401);
+    expect((await request(app).get('/v1/admin/clients').set('Cookie', dev.cookie)).status).toBe(403);
+
+    const create = await request(app)
+      .post('/v1/admin/clients')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ organization: 'P4bClient Acme', contactName: 'Wile E' });
+    expect(create.status).toBe(201);
+    expect(create.body).toMatchObject({ organization: 'P4bClient Acme', projectCount: 0 });
+    const id = create.body.id;
+
+    const upd = await request(app)
+      .patch(`/v1/admin/clients/${id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ email: 'acme@example.com' });
+    expect(upd.status).toBe(200);
+    expect(upd.body.email).toBe('acme@example.com');
+
+    expect(
+      (await request(app).delete(`/v1/admin/clients/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
   });
 });

@@ -51,6 +51,13 @@ import {
   adminDeleteInquiry,
 } from '../controllers/inquiry.controller.js';
 import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
+import {
+  adminListClients,
+  adminGetClient,
+  adminCreateClient,
+  adminUpdateClient,
+  adminDeleteClient,
+} from '../controllers/client.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
 const manage = [requireAuth, requireRole('SUPER_ADMIN', 'MANAGER')] as const;
@@ -134,6 +141,17 @@ router.get('/admin/inquiries/:id', ...manage, adminGetInquiry);
 router.patch('/admin/inquiries/:id', ...mutate, adminUpdateInquiry);
 // operationId: adminDeleteInquiry
 router.delete('/admin/inquiries/:id', ...mutate, adminDeleteInquiry);
+
+// operationId: adminListClients
+router.get('/admin/clients', ...manage, adminListClients);
+// operationId: adminCreateClient
+router.post('/admin/clients', ...mutate, adminCreateClient);
+// operationId: adminGetClient
+router.get('/admin/clients/:id', ...manage, adminGetClient);
+// operationId: adminUpdateClient
+router.patch('/admin/clients/:id', ...mutate, adminUpdateClient);
+// operationId: adminDeleteClient
+router.delete('/admin/clients/:id', ...mutate, adminDeleteClient);
 
 // operationId: adminListUsers
 router.get('/admin/users', ...superOnly, adminListUsers);
