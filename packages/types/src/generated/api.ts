@@ -155,6 +155,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/industries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List published industries */
+        get: operations["listIndustries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/testimonials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List published testimonials
+         * @description Only returns testimonials that are published AND carry provenance. A quote
+         *     without a `sourceUrl` and `verifiedAt` cannot be published, so it can never
+         *     appear here — the guard is in the data, not in the template.
+         */
+        get: operations["listTestimonials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/work": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List published case studies */
+        get: operations["listWork"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/blog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List published blog posts */
+        get: operations["listBlogPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -250,6 +323,59 @@ export interface components {
             id: string;
             /** Format: date-time */
             receivedAt: string;
+        };
+        Industry: {
+            id: string;
+            slug: components["schemas"]["Slug"];
+            name: string;
+            capability: string;
+            icon?: string | null;
+            order: number;
+        };
+        IndustryList: {
+            data: components["schemas"]["Industry"][];
+        };
+        Testimonial: {
+            id: string;
+            author: string;
+            role?: string | null;
+            company?: string | null;
+            quote: string;
+            avatarUrl?: string | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            order: number;
+        };
+        TestimonialList: {
+            data: components["schemas"]["Testimonial"][];
+        };
+        Work: {
+            id: string;
+            title: string;
+            category: string;
+            description: string;
+            imageUrls: string[];
+            liveUrl?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        WorkList: {
+            data: components["schemas"]["Work"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        BlogPost: {
+            id: string;
+            title: string;
+            content: string;
+            tags: string[];
+            imageUrl?: string | null;
+            authorName?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        BlogPostList: {
+            data: components["schemas"]["BlogPost"][];
+            meta: components["schemas"]["PageMeta"];
         };
         /**
          * @description Matches the live database exactly. REDESIGN.md's ADMIN/EDITOR naming was a sketch;
@@ -526,6 +652,99 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["Unauthorized"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    listIndustries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All published industries, ordered */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndustryList"];
+                };
+            };
+            500: components["responses"]["InternalError"];
+        };
+    };
+    listTestimonials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Published, verified testimonials */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestimonialList"];
+                };
+            };
+            500: components["responses"]["InternalError"];
+        };
+    };
+    listWork: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+                category?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of case studies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    listBlogPosts: {
+        parameters: {
+            query?: {
+                page?: components["parameters"]["Page"];
+                pageSize?: components["parameters"]["PageSize"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A page of posts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlogPostList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             500: components["responses"]["InternalError"];
         };
     };

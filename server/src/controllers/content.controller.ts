@@ -28,3 +28,49 @@ export async function listWorkCategories(_req: Request, res: Response, next: Nex
     next(err);
   }
 }
+
+export async function listIndustries(_req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await contentService.listIndustries());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listTestimonials(_req: Request, res: Response, next: NextFunction) {
+  try {
+    res.json(await contentService.listTestimonials());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listWork(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    const category = req.query.category ? String(req.query.category) : undefined;
+    res.json(await contentService.listWork(page, pageSize, category));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listBlogPosts(req: Request, res: Response, next: NextFunction) {
+  try {
+    const page = Number(req.query.page ?? 1);
+    const pageSize = Number(req.query.pageSize ?? 20);
+    res.json(await contentService.listBlogPosts(page, pageSize));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function createInquiry(req: Request, res: Response, next: NextFunction) {
+  try {
+    // The spec has already validated shape, length, email format and consent===true.
+    res.status(201).json(await contentService.createInquiry(req.body));
+  } catch (err) {
+    next(err);
+  }
+}

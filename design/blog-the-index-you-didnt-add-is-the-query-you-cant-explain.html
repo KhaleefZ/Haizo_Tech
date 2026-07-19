@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The index you didn't add is the query you can't explain — HaizoTech</title>
+<meta name="description" content="How to read a Postgres query plan when a fast query goes slow, why the obvious composite index can make things worse, and when a partial index is the right answer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber is a figure or
+    outcome attributed to real client work that was written for the mockup and has <em>not</em> been
+    confirmed. Hover a highlight to see what needs checking. Nothing here goes live until every
+    highlight is verified and the <code>.unverified</code> class is removed. Numbers used purely as
+    worked examples are stated as hypothetical in the prose and are not highlighted.
+  </div>
+</div>
+
+<article>
+
+  <!-- ==================================================== article head -->
+  <section class="section" style="padding-bottom:var(--space-6)">
+    <div class="container container--narrow">
+
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="blog.html">Blog</a> <span aria-hidden="true">/</span>
+        The index you didn't add is the query you can't explain
+      </p>
+
+      <div class="row row--wrap" style="margin-bottom:1.25rem">
+        <span class="badge badge--neutral">PostgreSQL</span>
+        <span class="badge badge--neutral">Performance</span>
+      </div>
+
+      <h1>The index you didn't add is the query you can't explain</h1>
+
+      <p class="lead muted" style="margin-top:var(--space-5)">
+        A booking availability query went from
+        <span class="unverified" title="Invented for the mockup — confirm before publishing">40ms to 2.3 seconds over eighteen months</span>
+        without a single code change. Nothing was refactored, no dependency was upgraded, no
+        feature was added. The table simply got bigger, and the plan Postgres had been choosing
+        stopped being the right one.
+      </p>
+
+      <div class="row row--wrap" style="margin-top:var(--space-6)">
+        <div class="avatar" aria-hidden="true">GS</div>
+        <div>
+          <div class="strong" style="font-weight:600">Gokul S</div>
+          <div class="small muted">
+            Co-founder <span aria-hidden="true">·</span>
+            <time datetime="2026-06-24">24 June 2026</time>
+            <span aria-hidden="true">·</span> 11 min read
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== cover art -->
+      <div class="panel-art reveal" style="margin-top:var(--space-7);aspect-ratio:16/9">
+        <svg class="panel-art__glyph" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>
+        </svg>
+        <p class="panel-art__caption">
+          Placeholder cover art. Real article imagery — an annotated query plan screenshot — drops in here.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================= body -->
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+
+      <div class="rail" style="position:sticky;top:72px;z-index:30;margin-bottom:var(--space-7)" aria-hidden="true">
+        <span class="rail__fill"></span>
+      </div>
+
+      <div class="prose">
+
+        <p>
+          Query performance is not a property of a query. It is a property of a query
+          <em>and</em> the data it runs against. The planner picks a strategy using statistics
+          about what is in the table right now, so the same SQL can be answered by a completely
+          different plan six months later. That is not a bug. It is the planner doing its job with
+          different inputs.
+        </p>
+
+        <p>
+          The practical consequence is that slow queries usually do not need to be rewritten. They
+          need to be understood. Below is the sequence we work through, in order, before anyone is
+          allowed to add an index.
+        </p>
+
+        <h2>Read the plan before touching the schema</h2>
+
+        <p>
+          The most common mistake is to guess. Someone sees a slow query on a table with a
+          <code>status</code> column and a <code>created_at</code> column, adds an index on both,
+          and moves on. Sometimes it helps. Often it does nothing, and now there is an extra index
+          to maintain on every write.
+        </p>
+
+        <h3>EXPLAIN tells you the plan; ANALYZE tells you the truth</h3>
+
+        <p>
+          Plain <code>EXPLAIN</code> shows the plan the planner intends to use and its
+          <em>estimated</em> row counts. <code>EXPLAIN (ANALYZE, BUFFERS)</code> actually runs the
+          query and reports what really happened, including how many blocks came from cache versus
+          disk. The gap between estimated and actual rows is the single most useful number on the
+          page: when the planner thinks a step will return 40 rows and it returns 90,000, every
+          decision built on top of that estimate is wrong.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-text-muted)">-- Suppose bookings has ~2 million rows, of which a few thousand are 'held'.</span>
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT id, room_id, starts_at
+FROM   bookings
+WHERE  status = 'held'
+AND    starts_at &gt;= now()
+ORDER  BY starts_at
+LIMIT  50;
+
+Limit  (cost=0.43..812.10 rows=50 width=28)
+       (actual time=1904.221..2287.664 rows=50 loops=1)
+  Buffers: shared hit=118204 read=39117
+  -&gt;  Index Scan using bookings_starts_at_idx on bookings
+        (cost=0.43..71422.88 rows=4398 width=28)
+        (actual time=1904.219..2287.602 rows=50 loops=1)
+        Index Cond: (starts_at &gt;= now())
+        <span style="color:var(--color-warning)">Filter: (status = 'held'::text)</span>
+        <span style="color:var(--color-warning)">Rows Removed by Filter: 1443902</span>
+Planning Time: 0.214 ms
+Execution Time: 2287.719 ms</pre>
+        </div>
+
+        <p>
+          The <code>Rows Removed by Filter</code> line is the whole story. Postgres is walking the
+          <code>starts_at</code> index in order — which is genuinely the cheapest way to satisfy
+          <code>ORDER BY starts_at LIMIT 50</code> — and throwing away nearly one and a half million
+          rows on the way, because almost none of them have the status we want. At launch, when the
+          table held a few thousand future bookings, it found fifty matches almost immediately. The
+          plan never changed. The distance it had to walk did.
+        </p>
+
+        <h2>Why the obvious composite index made it worse</h2>
+
+        <p>
+          The reflex fix is <code>CREATE INDEX ON bookings (starts_at, status)</code>. It reads like
+          it covers the query: both columns are there, in the order they appear in the
+          <code>WHERE</code> clause. It does not help at all.
+        </p>
+
+        <h3>Column order is not cosmetic</h3>
+
+        <p>
+          A B-tree index is sorted by its first column, then by its second within each value of the
+          first, and so on. That structure determines what it can do:
+        </p>
+
+        <ul>
+          <li>
+            An <strong>equality</strong> predicate on a leading column narrows the scan to a
+            contiguous slice of the index. This is the cheap case.
+          </li>
+          <li>
+            A <strong>range</strong> predicate on a leading column also narrows to a contiguous
+            slice — but every column after it is now unordered within that slice, so it can only be
+            used as a filter, not to seek.
+          </li>
+          <li>
+            Because of that, put <strong>equality columns first and range columns last</strong>.
+            <code>(status, starts_at)</code> is a different index from <code>(starts_at, status)</code>,
+            and only one of them is useful here.
+          </li>
+          <li>
+            The index's sort order can also satisfy <code>ORDER BY</code> for free, but only if the
+            ordering columns are a prefix of the index — or follow equality-constrained columns.
+          </li>
+        </ul>
+
+        <p>
+          With <code>(starts_at, status)</code>, Postgres still walks the same range of the index in
+          the same order and still discards the same rows. It has just made the index physically
+          larger, so each page holds fewer entries and the walk touches more blocks. Measurably
+          worse, for exactly the reason it looked correct.
+        </p>
+
+        <p>
+          Flipping to <code>(status, starts_at)</code> is the right shape: seek directly to the
+          <code>held</code> section, then read it in <code>starts_at</code> order and stop after
+          fifty rows. No filtering, no sort.
+        </p>
+
+        <h2>The partial index that actually fixed it</h2>
+
+        <p>
+          <code>(status, starts_at)</code> works, but it indexes all two million rows, including
+          every <code>cancelled</code> and <code>completed</code> booking that no availability query
+          will ever ask about. Those rows cost write throughput and disk, and they buy nothing.
+        </p>
+
+        <p>
+          A partial index stores only the rows matching a predicate:
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-brand-blue)">CREATE INDEX CONCURRENTLY</span> bookings_held_starts_at_idx
+    <span style="color:var(--color-brand-blue)">ON</span> bookings (starts_at)
+ <span style="color:var(--color-brand-blue)">WHERE</span> status = 'held';
+
+<span style="color:var(--color-text-muted)">-- The planner uses a partial index only when it can prove the query's
+-- WHERE clause implies the index predicate. `status = 'held'` does.
+-- `status IN ('held','confirmed')` does not — that needs its own index
+-- or a wider predicate.</span></pre>
+        </div>
+
+        <p>
+          Note that <code>status</code> does not need to be a column <em>in</em> the index — it is
+          in the predicate instead. Every entry in this index is already known to be
+          <code>held</code>, so the index only has to store <code>starts_at</code>. On a table where
+          held bookings are a small fraction of the rows, that is a dramatically smaller structure:
+          faster to scan, cheaper to keep in cache, and untouched by writes to rows that do not
+          match the predicate.
+        </p>
+
+        <p>
+          <code>CONCURRENTLY</code> matters in production. Without it, <code>CREATE INDEX</code>
+          takes a lock that blocks writes to the table for the duration of the build. With it, the
+          build takes two passes and longer overall, but the table stays writable. It cannot run
+          inside a transaction block, and if it fails it leaves an invalid index behind that you
+          have to drop before retrying — both worth knowing before you run it at 9am.
+        </p>
+
+        <div class="mockup-note" style="margin-top:var(--space-6)">
+          <strong>The trap in partial indexes:</strong> they are only as good as the assumption
+          behind the predicate. Index <code>WHERE status = 'held'</code> and then add a
+          <code>pending_payment</code> status that availability also needs to consider, and the
+          planner silently stops using the index for the new query. It does not warn you. It just
+          goes back to the plan you had before, and you are debugging the same slowdown a year
+          later. Partial indexes belong next to a comment explaining what they assume.
+        </div>
+
+        <h2>Statistics are the other half of the problem</h2>
+
+        <p>
+          Sometimes the index exists and the planner still refuses to use it, because its row
+          estimate is badly wrong. Two things to check before blaming the planner:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Is autovacuum keeping up?</strong> Statistics are refreshed by
+            <code>ANALYZE</code>, which autovacuum runs on its own schedule. On a table with heavy
+            churn, the defaults can lag far enough that the planner is working from a snapshot of a
+            much smaller table.
+          </li>
+          <li>
+            <strong>Is the default statistics target high enough?</strong> Postgres samples a fixed
+            number of values per column to build its histogram. On a column with a very skewed
+            distribution, raising <code>default_statistics_target</code> for that column and
+            re-running <code>ANALYZE</code> can change the plan without changing the schema.
+          </li>
+          <li>
+            <strong>Are the columns correlated?</strong> Postgres assumes independence between
+            predicates by default. If <code>status</code> and <code>starts_at</code> are related —
+            and in a booking system they very much are, since old bookings are rarely still
+            <code>held</code> — the estimate for the combination will be off. Extended statistics
+            via <code>CREATE STATISTICS</code> tell the planner about that correlation.
+          </li>
+        </ul>
+
+        <h2>What to take away</h2>
+
+        <p>
+          The useful discipline is not "add indexes for slow queries". It is closer to this:
+        </p>
+
+        <ul>
+          <li>
+            Slow queries that were once fast are usually a distribution change, not a code change.
+            Look at how much data the plan is discarding before you look at the SQL.
+          </li>
+          <li>
+            <code>Rows Removed by Filter</code> and the estimated-versus-actual row gap tell you
+            more than the total execution time does.
+          </li>
+          <li>
+            Equality columns before range columns. <code>(a, b)</code> and <code>(b, a)</code> are
+            not interchangeable, and picking the wrong one can be slower than having no index.
+          </li>
+          <li>
+            When a query only ever cares about a small, stable subset of rows, a partial index is
+            smaller, faster, and cheaper to write than a full one — as long as the predicate is
+            documented and revisited when the states change.
+          </li>
+          <li>
+            Build indexes <code>CONCURRENTLY</code> on live tables, and know the failure mode before
+            you run it.
+          </li>
+        </ul>
+
+        <p>
+          The query in the title never got rewritten. It is the same SQL it was on day one. The
+          difference is that we now know why it is fast, which means we will notice when that stops
+          being true.
+        </p>
+
+      </div>
+
+      <!-- ================================================ author card -->
+      <div class="card reveal" style="margin-top:var(--space-8)">
+        <div class="row row--wrap">
+          <div class="avatar avatar--lg" aria-hidden="true">GS</div>
+          <div>
+            <div class="strong" style="font-weight:600">Gokul S</div>
+            <div class="small muted">Co-founder, HaizoTech</div>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-4)">
+          Works mostly on data models, query performance and the backend contracts that keep the
+          rest of the system honest. <a href="about.html">More about the team</a>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</article>
+
+  <!-- ================================================= related posts -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal" style="margin-bottom:var(--space-6)">
+        <h2>Related reading</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link reveal" href="blog-row-level-security-vs-a-tenant-id-everywhere.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">PostgreSQL</span>
+            <span class="badge badge--neutral">Multi-tenancy</span>
+          </div>
+          <h3 style="margin-top:1rem">Row-level security vs. a tenant_id everywhere: what we chose for SchoolOS</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Two ways to isolate tenants in one Postgres database, the failure mode of each, and
+            why we ended up enforcing it in two places rather than one.
+          </p>
+        </a>
+
+        <a class="card card--link reveal" data-delay="60" href="blog-you-probably-dont-need-kafka-background-jobs-on-postgres.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">Architecture</span>
+            <span class="badge badge--neutral">Queues</span>
+          </div>
+          <h3 style="margin-top:1rem">You probably don't need Kafka: background jobs on Postgres</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            SELECT … FOR UPDATE SKIP LOCKED handles far more throughput than most teams will
+            ever reach. Where the ceiling actually is.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Want this kind of thinking on your project?</h2>
+        <p class="lead">The decisions we write about here are the ones we'll be making on your build.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

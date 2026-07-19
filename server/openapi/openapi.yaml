@@ -199,6 +199,84 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /industries:
+    get:
+      operationId: listIndustries
+      summary: List published industries
+      tags: [Content]
+      security: []
+      responses:
+        '200':
+          description: All published industries, ordered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IndustryList' }
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /testimonials:
+    get:
+      operationId: listTestimonials
+      summary: List published testimonials
+      description: |
+        Only returns testimonials that are published AND carry provenance. A quote
+        without a `sourceUrl` and `verifiedAt` cannot be published, so it can never
+        appear here — the guard is in the data, not in the template.
+      tags: [Content]
+      security: []
+      responses:
+        '200':
+          description: Published, verified testimonials
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TestimonialList' }
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /work:
+    get:
+      operationId: listWork
+      summary: List published case studies
+      tags: [Content]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: category
+          in: query
+          required: false
+          schema: { type: string, maxLength: 80 }
+      responses:
+        '200':
+          description: A page of case studies
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WorkList' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /blog:
+    get:
+      operationId: listBlogPosts
+      summary: List published blog posts
+      tags: [Content]
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of posts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BlogPostList' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
 components:
   securitySchemes:
     sessionCookie:
@@ -411,6 +489,100 @@ components:
       properties:
         id: { type: string }
         receivedAt: { type: string, format: date-time }
+
+    Industry:
+      type: object
+      required: [id, slug, name, capability, order]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        slug: { $ref: '#/components/schemas/Slug' }
+        name: { type: string, maxLength: 80 }
+        capability: { type: string, maxLength: 300 }
+        icon: { type: [string, 'null'] }
+        order: { type: integer }
+
+    IndustryList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Industry' }
+
+    Testimonial:
+      type: object
+      required: [id, author, quote, order]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        author: { type: string, maxLength: 120 }
+        role: { type: [string, 'null'] }
+        company: { type: [string, 'null'] }
+        quote: { type: string, maxLength: 2000 }
+        avatarUrl: { type: [string, 'null'] }
+        verifiedAt: { type: [string, 'null'], format: date-time }
+        order: { type: integer }
+
+    TestimonialList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Testimonial' }
+
+    Work:
+      type: object
+      required: [id, title, category, description, imageUrls]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        title: { type: string, maxLength: 200 }
+        category: { type: string, maxLength: 80 }
+        description: { type: string }
+        imageUrls:
+          type: array
+          items: { type: string }
+        liveUrl: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+
+    WorkList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Work' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    BlogPost:
+      type: object
+      required: [id, title, content, tags, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        title: { type: string, maxLength: 250 }
+        content: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        imageUrl: { type: [string, 'null'] }
+        authorName: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+
+    BlogPostList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/BlogPost' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
 
     Role:
       type: string

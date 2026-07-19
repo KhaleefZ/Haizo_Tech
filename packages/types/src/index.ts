@@ -22,6 +22,14 @@ export type Service = Schemas['Service'];
 export type ServiceList = Schemas['ServiceList'];
 export type WorkCategory = Schemas['WorkCategory'];
 export type WorkCategoryList = Schemas['WorkCategoryList'];
+export type Industry = Schemas['Industry'];
+export type IndustryList = Schemas['IndustryList'];
+export type Testimonial = Schemas['Testimonial'];
+export type TestimonialList = Schemas['TestimonialList'];
+export type Work = Schemas['Work'];
+export type WorkList = Schemas['WorkList'];
+export type BlogPost = Schemas['BlogPost'];
+export type BlogPostList = Schemas['BlogPostList'];
 
 export type CreateInquiry = Schemas['CreateInquiry'];
 export type InquiryReceipt = Schemas['InquiryReceipt'];

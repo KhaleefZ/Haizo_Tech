@@ -112,77 +112,249 @@
   </div>
 
   <!-- ======================================================== industries
-       Six sectors, each with its own art panel. The tiles reveal in a
-       left/centre/right stagger as the grid scrolls in, and the rail beneath
-       tracks progress through the section. -->
+       Two bands sliding in opposite directions, echoing the marquee on the
+       live site. Each track is duplicated once and travels exactly 50%, so the
+       loop is seamless. The duplicate half is aria-hidden — a screen reader
+       should hear each industry once, not twice.
+       Motion pauses on hover and on keyboard focus so a card can be read. -->
   <section class="section section--tint" id="industries">
     <div class="container">
       <div class="section-head reveal">
         <p class="overline">Industries we build for</p>
         <h2>Domain knowledge, not just delivery</h2>
-        <p class="lead muted">Six sectors we’ve shipped into. We know where each one’s systems usually break.</p>
+        <p class="lead muted">Six sectors we&rsquo;ve shipped into. We know where each one&rsquo;s systems usually break.</p>
       </div>
+    </div>
 
-      <div class="ind-grid">
-        <article class="ind-tile reveal-l" data-delay="0">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>Healthcare</h3>
-            <p class="muted small" style="margin-top:.5rem">Patient-facing systems with role-based access, audit trails and careful data handling. Records that stay correct under concurrent edits.</p>
-          </div>
-        </article>
-        <article class="ind-tile reveal" data-delay="70">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>FinTech</h3>
-            <p class="muted small" style="margin-top:.5rem">UPI and Razorpay integrations, reconciliation flows, and ledgers that survive an audit. Every rupee traceable to a source event.</p>
-          </div>
-        </article>
-        <article class="ind-tile reveal-r" data-delay="140">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>Education</h3>
-            <p class="muted small" style="margin-top:.5rem">Attendance, fees, timetables and parent access — multi-tenant from the first line, so one school can never see another’s data.</p>
-          </div>
-        </article>
-        <article class="ind-tile reveal-l" data-delay="0">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>Hospitality</h3>
-            <p class="muted small" style="margin-top:.5rem">Room and venue booking with live availability, pricing rules and reporting. Availability is derived from bookings, so double bookings can’t happen.</p>
-          </div>
-        </article>
-        <article class="ind-tile reveal" data-delay="70">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>Logistics</h3>
-            <p class="muted small" style="margin-top:.5rem">Dispatch and tracking dashboards backed by event streams, built to stay accurate when the day gets busy rather than degrading under load.</p>
-          </div>
-        </article>
-        <article class="ind-tile reveal-r" data-delay="140">
-          <div class="ind-tile__art" aria-hidden="true">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
-          </div>
-          <div class="ind-tile__body">
-            <h3>Cloud &amp; internal tooling</h3>
-            <p class="muted small" style="margin-top:.5rem">Control planes, cost visibility and access management across providers — one view instead of four consoles and a spreadsheet.</p>
-          </div>
-        </article>
+    <div class="ind-marquee" role="region" aria-label="Industries we build for">
+      <div class="ind-track">
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 55%,#93C5FD 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <h3>Healthcare</h3>
+              <p>Patient platforms with role-based access and audit trails</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1D4ED8 60%,#60A5FA 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3>FinTech</h3>
+              <p>UPI and Razorpay flows, ledgers that survive an audit</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1E40AF 0%,#3B82F6 50%,#BFDBFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
+              <h3>Education</h3>
+              <p>Attendance, fees and timetables, multi-tenant from day one</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#3B82F6 70%,#DBEAFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+              <h3>Hospitality</h3>
+              <p>Live availability and pricing rules, no double bookings</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#60A5FA 60%,#EFF6FF 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <h3>Logistics</h3>
+              <p>Dispatch and tracking that stay accurate under load</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1E40AF 55%,#3B82F6 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+              <h3>Cloud &amp; tooling</h3>
+              <p>Control planes with cost and access visibility</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 55%,#93C5FD 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <h3>Healthcare</h3>
+              <p>Patient platforms with role-based access and audit trails</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1D4ED8 60%,#60A5FA 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3>FinTech</h3>
+              <p>UPI and Razorpay flows, ledgers that survive an audit</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1E40AF 0%,#3B82F6 50%,#BFDBFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
+              <h3>Education</h3>
+              <p>Attendance, fees and timetables, multi-tenant from day one</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#3B82F6 70%,#DBEAFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+              <h3>Hospitality</h3>
+              <p>Live availability and pricing rules, no double bookings</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#60A5FA 60%,#EFF6FF 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <h3>Logistics</h3>
+              <p>Dispatch and tracking that stay accurate under load</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1E40AF 55%,#3B82F6 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+              <h3>Cloud &amp; tooling</h3>
+              <p>Control planes with cost and access visibility</p>
+            </span>
+          </a>
       </div>
+    </div>
 
-      <div class="rail" style="margin-top:var(--space-7)" aria-hidden="true"><span class="rail__fill"></span></div>
-      <p class="small muted reveal" style="margin-top:var(--space-4);text-align:center">
-        Not on the list? The engineering is the same — <a href="contact.html">tell us the problem</a>.
+    <div class="ind-marquee" aria-hidden="true">
+      <div class="ind-track ind-track--reverse">
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#3B82F6 70%,#DBEAFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+              <h3>Hospitality</h3>
+              <p>Live availability and pricing rules, no double bookings</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#60A5FA 60%,#EFF6FF 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <h3>Logistics</h3>
+              <p>Dispatch and tracking that stay accurate under load</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1E40AF 55%,#3B82F6 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+              <h3>Cloud &amp; tooling</h3>
+              <p>Control planes with cost and access visibility</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 55%,#93C5FD 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <h3>Healthcare</h3>
+              <p>Patient platforms with role-based access and audit trails</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1D4ED8 60%,#60A5FA 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3>FinTech</h3>
+              <p>UPI and Razorpay flows, ledgers that survive an audit</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1E40AF 0%,#3B82F6 50%,#BFDBFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
+              <h3>Education</h3>
+              <p>Attendance, fees and timetables, multi-tenant from day one</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#3B82F6 70%,#DBEAFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+              <h3>Hospitality</h3>
+              <p>Live availability and pricing rules, no double bookings</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#60A5FA 60%,#EFF6FF 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <h3>Logistics</h3>
+              <p>Dispatch and tracking that stay accurate under load</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1E40AF 55%,#3B82F6 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+              <h3>Cloud &amp; tooling</h3>
+              <p>Control planes with cost and access visibility</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 55%,#93C5FD 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <h3>Healthcare</h3>
+              <p>Patient platforms with role-based access and audit trails</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#0F2A57 0%,#1D4ED8 60%,#60A5FA 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3>FinTech</h3>
+              <p>UPI and Razorpay flows, ledgers that survive an audit</p>
+            </span>
+          </a>
+          <a class="ind-card" href="contact.html" aria-hidden="true" tabindex="-1">
+            <span class="ind-card__art" style="background-image:linear-gradient(135deg,#1E40AF 0%,#3B82F6 50%,#BFDBFE 100%)"></span>
+            <span class="ind-card__scrim" aria-hidden="true"></span>
+            <span class="ind-card__body">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.9;margin-bottom:8px"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>
+              <h3>Education</h3>
+              <p>Attendance, fees and timetables, multi-tenant from day one</p>
+            </span>
+          </a>
+      </div>
+    </div>
+
+    <div class="container">
+      <p class="small muted reveal" style="margin-top:var(--space-6);text-align:center">
+        Not on the list? The engineering is the same &mdash; <a href="contact.html">tell us the problem</a>.
       </p>
     </div>
   </section>
@@ -237,30 +409,55 @@
     </div>
   </section>
 
-  <!-- ========================================================== process -->
+  <!-- ========================================================== process
+       Mirrors the live site's Development Process: four numbered steps on a
+       connecting line, each node holding a pulsing dot. Here the spine draws
+       itself as the section enters and the steps stagger in behind it. Step
+       names and one-line summaries are the live site's own. -->
   <section class="section section--tint">
     <div class="container">
       <div class="section-head reveal">
         <p class="overline">Process</p>
-        <h2>Four steps, no surprises</h2>
-        <p class="lead muted">The same shape on every engagement, whether it's a six-week build or a long-running retainer.</p>
+        <h2>Development process</h2>
+        <p class="lead muted">The same four steps on every engagement, whether it&rsquo;s a six-week build or a long-running retainer.</p>
       </div>
-      <div class="steps steps--draw reveal">
-        <div class="step">
-          <h4>Scope</h4>
-          <p class="small muted" style="margin-top:.5rem">We map the problem, the users and the constraints, then write down what v1 will and won't include.</p>
+
+      <div class="timeline reveal">
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">01</p>
+            <h3>Research &amp; Planning</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Understanding constraints and requirements.</p>
+            <p class="small">We map the problem, the users and the limits you actually operate under, then write down what v1 will and won&rsquo;t include.</p>
+          </div>
         </div>
-        <div class="step">
-          <h4>Design</h4>
-          <p class="small muted" style="margin-top:.5rem">Flows and screens you can click before we build them, so changes are cheap.</p>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">02</p>
+            <h3>Design &amp; Prototype</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">System design and technical foundation.</p>
+            <p class="small">Flows and screens you can click, and the data model underneath them, settled before anything is expensive to change.</p>
+          </div>
         </div>
-        <div class="step">
-          <h4>Build</h4>
-          <p class="small muted" style="margin-top:.5rem">Weekly working software on a staging URL. You see progress, not status reports.</p>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">03</p>
+            <h3>Development &amp; Testing</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Iterative sprint execution and QA.</p>
+            <p class="small">Weekly working software on a staging URL you can open. Typecheck, lint and tests gate every merge.</p>
+          </div>
         </div>
-        <div class="step">
-          <h4>Ship &amp; support</h4>
-          <p class="small muted" style="margin-top:.5rem">Deploy, monitor, hand over the keys, and stay on through the settling-in period.</p>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">04</p>
+            <h3>Deployment &amp; Maintenance</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Staging to production rollout.</p>
+            <p class="small">We deploy, watch it, hand over the keys and stay on through the settling-in period.</p>
+          </div>
         </div>
       </div>
     </div>

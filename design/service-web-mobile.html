@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web &amp; mobile application development — HaizoTech</title>
+<meta name="description" content="Creating intuitive, fast-loading web and mobile applications with cutting-edge technologies for exceptional user experiences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html" aria-current="page">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- The service description, the four feature claims and the three stack
+       names are the live site's own copy. The process, stack narrative and FAQ
+       answers below were drafted for the mockup and state no figures,
+       timelines or prices, so nothing here needs the .unverified treatment. -->
+  <div class="container" style="padding-top:var(--space-4)">
+    <div class="mockup-note">
+      <strong>Copy status.</strong> The service description, the four capability points and the
+      three named technologies come from the live site. The process, stack notes and FAQ answers
+      were drafted for this mockup and state no figures, timelines or prices — if any are added
+      later they must be verified and wrapped in <code>.unverified</code> first.
+    </div>
+  </div>
+
+  <!-- ============================================================= hero -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"><div class="hero-blob"></div></div>
+    <div class="container" style="position:relative;z-index:1;max-width:900px">
+      <p class="small muted fade-up" data-delay="0" style="margin-bottom:1rem">
+        <a href="services.html">Services</a> <span aria-hidden="true">/</span> Web &amp; mobile application development
+      </p>
+
+      <h1 style="max-width:none">
+        <span class="word">Web</span>
+        <span class="word">&amp;&nbsp;mobile</span>
+        <span class="fade-up" data-delay="260" style="display:block">application development.</span>
+      </h1>
+
+      <p class="lead fade-up" data-delay="420" style="max-width:62ch;margin-top:var(--space-5)">
+        Creating intuitive, fast-loading web and mobile applications with cutting-edge
+        technologies for exceptional user experiences.
+      </p>
+
+      <div class="row row--wrap fade-up" data-delay="500" style="margin-top:var(--space-5)">
+        <span class="badge badge--neutral">Sub-second page loads</span>
+        <span class="badge badge--neutral">Cross-platform consistency</span>
+        <span class="badge badge--neutral">SEO-optimized architectures</span>
+      </div>
+
+      <div class="hero-ctas fade-up" data-delay="580">
+        <a class="btn btn--primary" href="contact.html">
+          Start a Project
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--outline" href="services.html">All services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== what's included -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">What's included</p>
+        <h2>What you actually get</h2>
+        <p class="lead muted">Four things every app build ships with, because an interface that is slow, inconsistent or invisible to search is an interface nobody finishes using.</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card reveal">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 11-13h-7z"/></svg></div>
+          <h3 style="margin-top:1rem">Sub-second page loads</h3>
+          <p class="muted small" style="margin-top:.5rem">Performance is a build constraint, not a later clean-up. We budget the payload up front, render on the server where it helps, and keep the critical path small enough that the first screen arrives before attention does.</p>
+        </div>
+        <div class="card reveal" data-delay="60">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="13" height="10" rx="1.5"/><rect x="13" y="9" width="9" height="12" rx="2"/></svg></div>
+          <h3 style="margin-top:1rem">Cross-platform consistency</h3>
+          <p class="muted small" style="margin-top:.5rem">One design system and one set of components behind both the web app and the mobile app, so a change to a form or a state lands in every place it appears rather than in whichever codebase someone remembered.</p>
+        </div>
+        <div class="card reveal" data-delay="120">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
+          <h3 style="margin-top:1rem">High conversion UI/UX</h3>
+          <p class="muted small" style="margin-top:.5rem">We design the path a user is actually trying to take — fewer steps, clearer state, obvious next action — and handle the loading, empty and error cases explicitly, because most drop-off happens where nobody drew a screen.</p>
+        </div>
+        <div class="card reveal" data-delay="180">
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.5-4.5"/></svg></div>
+          <h3 style="margin-top:1rem">SEO-optimized architectures</h3>
+          <p class="muted small" style="margin-top:.5rem">Real URLs, server-rendered content, correct heading structure and metadata that a crawler can read without executing your whole application first. Accessibility and search visibility come from the same discipline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ process -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">Process</p>
+        <h2>How an app gets built</h2>
+        <p class="lead muted">The spine draws as you reach it — four steps tuned to interface work, where the design and the build are the same conversation.</p>
+      </div>
+
+      <div class="timeline reveal">
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">01</p>
+            <h3>Flows &amp; screens</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">What the user is trying to finish.</p>
+            <p class="small">We list the journeys that matter, the roles that take them, and the states each screen has to survive — signed out, empty, loading, failed.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">02</p>
+            <h3>Design system</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Tokens and components before pages.</p>
+            <p class="small">Colour, type, spacing and the shared components are settled once, so web and mobile stay consistent without anyone policing it.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">03</p>
+            <h3>Build against the API contract</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Screens wired to real data.</p>
+            <p class="small">Types come from the API contract rather than guesswork, so the frontend and the backend cannot quietly disagree about a payload.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-node" aria-hidden="true"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <p class="tl-num">04</p>
+            <h3>Performance &amp; store release</h3>
+            <p class="small strong" style="margin-top:6px;font-weight:600">Measured, then shipped.</p>
+            <p class="small">Load and accessibility checks on real devices, then release to the web and through the app stores with the rollback path already known.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== tech stack -->
+  <!-- overflow-x:clip contains the ±38px start transform of .reveal-l so the
+       page never scrolls sideways on a narrow viewport. -->
+  <section class="section section--tint" style="overflow-x:clip">
+    <div class="container">
+      <div class="grid grid--2" style="gap:var(--space-8);align-items:center">
+        <div class="reveal reveal-l">
+          <p class="overline">Tech stack</p>
+          <h2 style="margin-top:.75rem">Three tools, shared between web and mobile</h2>
+          <p class="lead muted" style="margin-top:1rem">
+            We keep the surface deliberately small. The same language, the same component
+            thinking and the same team move between the browser build and the device build,
+            which is what makes cross-platform consistency practical rather than aspirational.
+          </p>
+
+          <div class="row row--wrap" style="margin-top:1.75rem">
+            <span class="badge badge--neutral">React</span>
+            <span class="badge badge--neutral">Next.js</span>
+            <span class="badge badge--neutral">React Native</span>
+          </div>
+
+          <div style="margin-top:2rem;display:flex;flex-direction:column;gap:var(--space-4)">
+            <div class="tick-row">
+              <span class="badge" style="flex:none">React</span>
+              <p class="small">The component model everything else sits on. State and UI live together, and a component is written once and reused.</p>
+            </div>
+            <div class="tick-row">
+              <span class="badge" style="flex:none">Next.js</span>
+              <p class="small">Server rendering, real routes and metadata — the part that makes pages both fast on first paint and legible to crawlers.</p>
+            </div>
+            <div class="tick-row">
+              <span class="badge" style="flex:none">React Native</span>
+              <p class="small">Native iOS and Android from the same component vocabulary, so the mobile app is not a separate product with a separate backlog.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-media">
+          <div class="panel-art">
+            <svg class="panel-art__glyph" width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="1.5" y="4" width="14" height="11" rx="1.5"/>
+              <path d="M1.5 7.5h14"/>
+              <rect x="13.5" y="9" width="9" height="12.5" rx="1.75"/>
+              <path d="M17.5 19h1.5"/>
+            </svg>
+            <p class="panel-art__caption">One design system, two runtimes, no divergence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== related work -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="overline">Related work</p>
+        <h2>Two interface-heavy builds</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link card--flush reveal" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">EdTech</span>
+            <h3 style="margin-top:.75rem">SchoolOS</h3>
+            <p class="muted small" style="margin-top:.5rem">Multi-tenant school management SaaS — attendance, fees, timetables and a parent portal, with each school's data isolated.</p>
+            <p class="small accent" style="margin-top:1rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+
+        <a class="card card--link card--flush reveal" data-delay="60" href="work-detail.html">
+          <div class="thumb"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+          <div style="padding:var(--space-5)">
+            <span class="badge badge--neutral">Hospitality</span>
+            <h3 style="margin-top:.75rem">Venue &amp; mandapam booking SaaS</h3>
+            <p class="muted small" style="margin-top:.5rem">Multi-venue availability, slot-based pricing, advance payments and event schedules — built for the double-booking problem that phone-and-diary booking creates.</p>
+            <p class="small accent" style="margin-top:1rem;font-weight:600">Read the case study →</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================== FAQ -->
+  <section class="section section--tint">
+    <div class="container container--narrow">
+      <div class="section-head reveal">
+        <p class="overline">FAQ</p>
+        <h2>Questions we get asked first</h2>
+      </div>
+
+      <div class="grid" style="gap:var(--space-4)">
+        <div class="card reveal">
+          <h3>Do we need a separate mobile app, or is a web app enough?</h3>
+          <p class="muted" style="margin-top:.75rem">It depends on what the app has to reach. If you need the camera, offline use, push notifications or a store presence, a native app earns its keep. If you don't, a well-built web app reaches every device immediately and costs less to maintain. We'll say which one your case is before you commit to either.</p>
+        </div>
+        <div class="card reveal" data-delay="60">
+          <h3>Can you work with our existing design or brand?</h3>
+          <p class="muted" style="margin-top:.75rem">Yes. If you have a design system or brand guidelines we build the token set from those, so the app looks like your product rather than a framework's defaults. If you don't have one, we make it as part of the build and hand it over with the code.</p>
+        </div>
+        <div class="card reveal" data-delay="120">
+          <h3>How do you keep the app fast as it grows?</h3>
+          <p class="muted" style="margin-top:.75rem">By treating load as something measured on every merge, not something checked at the end. We watch the payload size and the render path as features land, so a regression is a build failure rather than a support ticket six months later.</p>
+        </div>
+        <div class="card reveal" data-delay="180">
+          <h3>Who handles the app store submissions?</h3>
+          <p class="muted" style="margin-top:.75rem">We do, on your developer accounts — the accounts stay in your name so you keep control of the listing, the signing keys and the release history. We take you through the first submission and leave you able to run the next one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== other services -->
+  <section class="section">
+    <div class="container container--narrow">
+      <p class="small muted reveal" style="text-align:center">
+        Other services:
+        <a href="service-detail.html">Custom software development</a> ·
+        <a href="service-ai-systems.html">AI systems &amp; integrations</a> ·
+        <a href="service-network-it.html">Network services &amp; IT solutions</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================================================= CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Have an app that needs building?</h2>
+        <p class="lead">Tell us who uses it and what they're trying to finish. We'll tell you honestly what it should be built as.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="service-detail.html">Custom software</a>
+          <a href="service-ai-systems.html">AI &amp; intelligent systems</a>
+          <a href="service-web-mobile.html">Web &amp; mobile apps</a>
+          <a href="service-network-it.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
