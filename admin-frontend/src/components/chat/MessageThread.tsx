@@ -5,7 +5,15 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { Avatar, Button, Spinner, cn } from '@haizo/ui';
 import type { ChatConversation, ChatMessage } from '@haizo/types';
 import { api, ApiError } from '../../lib/api';
-import { useSocketEvent } from '../../lib/socket';
+import { getSocket, useSocketEvent } from '../../lib/socket';
+import { useIsOnline } from '../../lib/presence';
+import { PresenceAvatar } from './PresenceAvatar';
+
+interface TypingEvent {
+  conversationId: string;
+  userId: string;
+  name: string;
+}
 
 function clock(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -37,15 +45,35 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
   const [draft, setDraft] = React.useState('');
   const [sending, setSending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [typing, setTyping] = React.useState<Record<string, string>>({});
   const bottomRef = React.useRef<HTMLDivElement>(null);
   const bodyRef = React.useRef<HTMLDivElement>(null);
+  const typingTimers = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const stopTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastTypingSent = React.useRef(0);
 
-  // A fresh conversation starts with no live messages.
+  // The other member of a DM — drives the header presence dot + status line.
+  const other = conversation.type === 'dm' ? conversation.members.find((m) => m.id !== meId) : undefined;
+  const otherOnline = useIsOnline(other?.id);
+
+  // A fresh conversation starts clean.
   React.useEffect(() => {
     setLive([]);
     setDraft('');
     setError(null);
+    setTyping({});
+    Object.values(typingTimers.current).forEach(clearTimeout);
+    typingTimers.current = {};
   }, [convId]);
+
+  // Don't leak timers when the thread unmounts.
+  React.useEffect(() => {
+    const timers = typingTimers.current;
+    return () => {
+      Object.values(timers).forEach(clearTimeout);
+      if (stopTimer.current) clearTimeout(stopTimer.current);
+    };
+  }, []);
 
   const history = useInfiniteQuery({
     queryKey: ['chat', 'messages', convId],
@@ -64,8 +92,57 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
 
   // Live delivery — our own sends echo back here too, so dedupe by id handles it.
   useSocketEvent<ChatMessage>('chat:message', (msg) => {
-    if (msg.conversationId === convId) setLive((prev) => [...prev, msg]);
+    if (msg.conversationId === convId) {
+      setLive((prev) => [...prev, msg]);
+      // Whatever they were typing has now landed as a message.
+      setTyping((t) => {
+        const { [msg.sender.id]: _drop, ...rest } = t;
+        return rest;
+      });
+    }
   });
+
+  // Someone in this conversation is typing — show it, and auto-clear if their
+  // stop event is lost.
+  useSocketEvent<TypingEvent>('chat:typing', (e) => {
+    if (e.conversationId !== convId || e.userId === meId) return;
+    setTyping((t) => ({ ...t, [e.userId]: e.name }));
+    clearTimeout(typingTimers.current[e.userId]);
+    typingTimers.current[e.userId] = setTimeout(() => {
+      setTyping((t) => {
+        const { [e.userId]: _drop, ...rest } = t;
+        return rest;
+      });
+    }, 4000);
+  });
+  useSocketEvent<TypingEvent>('chat:stop_typing', (e) => {
+    if (e.conversationId !== convId) return;
+    clearTimeout(typingTimers.current[e.userId]);
+    setTyping((t) => {
+      const { [e.userId]: _drop, ...rest } = t;
+      return rest;
+    });
+  });
+
+  /** Tell the room we're typing — throttled — and schedule a stop. */
+  function signalTyping() {
+    const now = Date.now();
+    if (now - lastTypingSent.current > 1500) {
+      getSocket().emit('chat:typing', { conversationId: convId });
+      lastTypingSent.current = now;
+    }
+    if (stopTimer.current) clearTimeout(stopTimer.current);
+    stopTimer.current = setTimeout(() => {
+      getSocket().emit('chat:stop_typing', { conversationId: convId });
+      lastTypingSent.current = 0;
+    }, 2000);
+  }
+
+  function stopTyping() {
+    if (stopTimer.current) clearTimeout(stopTimer.current);
+    getSocket().emit('chat:stop_typing', { conversationId: convId });
+    lastTypingSent.current = 0;
+  }
 
   // Keep pinned to the newest message when the count grows.
   React.useEffect(() => {
@@ -82,6 +159,7 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
       const msg = await api.chat.post(convId, body, crypto.randomUUID());
       setLive((prev) => [...prev, msg]); // instant echo; socket copy dedupes
       setDraft('');
+      stopTyping();
       qc.invalidateQueries({ queryKey: ['chat', 'conversations'] });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not send. Try again.');
@@ -93,13 +171,25 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
   const subtitle =
     conversation.type === 'channel'
       ? `Project channel · ${conversation.members.length} member${conversation.members.length === 1 ? '' : 's'}`
-      : 'Direct message';
+      : otherOnline
+        ? 'Online'
+        : 'Offline';
+
+  const typingNames = Object.values(typing);
+  const typingLabel =
+    typingNames.length === 0
+      ? null
+      : typingNames.length === 1
+        ? `${typingNames[0]} is typing…`
+        : typingNames.length === 2
+          ? `${typingNames[0]} and ${typingNames[1]} are typing…`
+          : 'Several people are typing…';
 
   return (
     <div className="flex h-full min-w-0 flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-border px-5 py-3">
-        <Avatar size="xs" name={conversation.title} />
+        <PresenceAvatar size="xs" userId={other?.id} name={conversation.title} src={other?.avatarUrl ?? undefined} />
         <div className="min-w-0">
           <p className="truncate font-semibold text-text-strong">{conversation.title}</p>
           <p className="truncate text-xs text-text-muted">{subtitle}</p>
@@ -180,13 +270,30 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
         )}
       </div>
 
+      {/* Typing indicator */}
+      <div className="h-5 px-5 text-xs text-text-muted" aria-live="polite">
+        {typingLabel ? (
+          <span className="inline-flex items-center gap-1">
+            <span className="flex gap-0.5">
+              <span className="size-1 animate-bounce rounded-full bg-text-muted [animation-delay:-0.2s]" />
+              <span className="size-1 animate-bounce rounded-full bg-text-muted [animation-delay:-0.1s]" />
+              <span className="size-1 animate-bounce rounded-full bg-text-muted" />
+            </span>
+            {typingLabel}
+          </span>
+        ) : null}
+      </div>
+
       {/* Composer */}
       <form onSubmit={send} className="border-t border-border p-3">
         {error ? <p className="mb-2 px-1 text-xs text-danger">{error}</p> : null}
         <div className="flex items-end gap-2">
           <textarea
             value={draft}
-            onChange={(e) => setDraft(e.target.value)}
+            onChange={(e) => {
+              setDraft(e.target.value);
+              if (e.target.value.trim()) signalTyping();
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();

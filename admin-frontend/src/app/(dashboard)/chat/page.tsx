@@ -8,6 +8,7 @@ import { api } from '../../../lib/api';
 import { useAuth } from '../../../lib/auth';
 import { useSocketEvent } from '../../../lib/socket';
 import { MessageThread } from '../../../components/chat/MessageThread';
+import { PresenceAvatar } from '../../../components/chat/PresenceAvatar';
 
 function relTime(iso: string): string {
   const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -148,6 +149,7 @@ export default function ChatPage() {
             <ul>
               {filtered.map((c) => {
                 const active = c.id === selectedId;
+                const other = c.type === 'dm' ? c.members.find((m) => m.id !== user?.id) : undefined;
                 return (
                   <li key={c.id}>
                     <button
@@ -157,7 +159,7 @@ export default function ChatPage() {
                         active ? 'bg-bg-tint-2' : 'hover:bg-bg-tint',
                       )}
                     >
-                      <Avatar size="xs" name={c.title} />
+                      <PresenceAvatar size="xs" userId={other?.id} name={c.title} src={other?.avatarUrl ?? undefined} />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
                           <span className="truncate text-sm font-semibold text-text-strong">{c.title}</span>

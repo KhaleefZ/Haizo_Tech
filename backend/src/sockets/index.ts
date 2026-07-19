@@ -17,6 +17,7 @@ import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import { authenticateHandshake, SocketAuthError } from './auth.js';
 import { setIo, conversationRoom } from './io.js';
+import { markOnline, markOffline, onlineUserIds } from './presence.js';
 import { prisma } from '../lib/prisma.js';
 import type { AuthUser } from '../middleware/auth.js';
 
@@ -67,6 +68,32 @@ export function attachSockets(httpServer: HttpServer): Server {
         for (const m of memberships) void socket.join(conversationRoom(m.conversationId));
       })
       .catch((err: unknown) => logger.error({ err, userId: user.id }, 'chat room join failed'));
+
+    // Presence: send this socket the current online set, and tell everyone else if
+    // the user just came online (first tab).
+    socket.emit('presence:state', onlineUserIds());
+    if (markOnline(user.id)) io.emit('presence:update', { userId: user.id, status: 'online' });
+    // A late presence consumer can ask for a fresh snapshot at any time.
+    socket.on('presence:get', () => socket.emit('presence:state', onlineUserIds()));
+
+    // Typing indicators are ephemeral and never persisted. Only relay to a room
+    // the socket is actually a member of, so a client can't spoof typing into a
+    // conversation it isn't in.
+    const relayTyping = (event: 'chat:typing' | 'chat:stop_typing') => (payload: unknown) => {
+      const convId = (payload as { conversationId?: unknown })?.conversationId;
+      if (typeof convId !== 'string' || !socket.rooms.has(conversationRoom(convId))) return;
+      socket.to(conversationRoom(convId)).emit(event, {
+        conversationId: convId,
+        userId: user.id,
+        name: user.name,
+      });
+    };
+    socket.on('chat:typing', relayTyping('chat:typing'));
+    socket.on('chat:stop_typing', relayTyping('chat:stop_typing'));
+
+    socket.on('disconnect', () => {
+      if (markOffline(user.id)) io.emit('presence:update', { userId: user.id, status: 'offline' });
+    });
   });
 
   // Disconnect sockets whose access token has expired since the handshake.
