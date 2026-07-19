@@ -4,6 +4,7 @@ import { RotatingHeadline } from '@/components/RotatingHeadline';
 import { Marquee } from '@/components/Marquee';
 import { IndustryBand } from '@/components/IndustryBand';
 import { ProcessTimeline } from '@/components/ProcessTimeline';
+import { EngineeringCulture } from '@/components/EngineeringCulture';
 import { Reveal } from '@/components/Reveal';
 
 export default async function Home() {
@@ -44,6 +45,8 @@ export default async function Home() {
       <Marquee items={serviceNames} />
 
       <IndustryBand industries={industries?.data ?? []} />
+
+      <EngineeringCulture />
 
       <section className="bg-bg-tint py-24">
         <div className="mx-auto max-w-6xl px-6">

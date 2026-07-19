@@ -246,86 +246,54 @@
   </section>
 
   <!-- =============================================== engineering culture
-       Adapted from the live site's "Our Engineering Culture". Two compact
-       pillars, then Secure by Design spanning the row with its checklist —
-       so the section reads as a composition, not a wall of cards.
-
-       The old terminal/CI panel was dropped here: the CI gate it showed is
-       already covered by "Automated Security CI/CD Pipelines" below and by
-       the Development Process section immediately after, and the pillars
-       hold the row better without it.
-
-       Copy note: "Scalable Architecture" is rewritten. The live site's line
-       ("proprietary consensus driving high-frequency operations") is crypto
-       boilerplate that means nothing to a hospital or a hotel. -->
+       The live site's "Our Engineering Culture", cut to the point. Three equal
+       pillars on one row; the security checklist sits inside its own pillar and
+       ticks in item by item rather than floating beside a wide card. -->
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
         <p class="overline">How we work</p>
         <h2>Our engineering culture</h2>
-        <p class="lead muted">We build services with scalable architecture, clean code, and AI-driven efficiency.</p>
+        <p class="lead muted">
+          Scalable architecture, clean code, and security that doesn&rsquo;t slow delivery down.
+        </p>
       </div>
 
       <div class="pillars reveal">
-
         <article class="pillar">
           <div class="pillar__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-          <h3>Scalable Architecture</h3>
-          <p>
-            Systems that are still fast on year three of data, not just launch week.
-            Connection pooling so the database isn't opening a new connection per
-            request, indexes chosen against the queries you actually run, and slow
-            work — reports, exports, emails, imports — moved off the request into
-            background jobs so nobody waits on a spinner.
-          </p>
-          <p>
-            And when you do need more capacity, you add another instance rather than
-            rewriting the application: state lives in the database and the cache, not
-            in one server's memory.
+          <h3>Scalable architecture</h3>
+          <p class="muted">
+            Still fast on year three of data, not just launch week. Pooled connections,
+            indexes chosen against the queries you actually run, and slow work moved to
+            background jobs.
           </p>
         </article>
 
         <article class="pillar">
           <div class="pillar__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div>
-          <h3>Seamless Connectivity</h3>
-          <p>
-            Your software should fit the tools you already run on, not replace them.
-            We integrate with the payment gateways, accounting systems, calendars,
-            messaging and identity providers your team uses every day — so data moves
-            between them automatically instead of through someone's spreadsheet.
-          </p>
-          <p>
-            Every integration is documented and the credentials are yours, so swapping
-            a provider later is a change, not a rebuild.
+          <h3>Seamless connectivity</h3>
+          <p class="muted">
+            Fits the tools you already run on. Payments, accounting, calendars and identity
+            wired together so data moves on its own &mdash; documented, with the credentials yours.
           </p>
         </article>
 
-        <article class="pillar pillar--wide">
-          <div>
-            <div class="pillar__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
-            <h3>Secure by Design</h3>
-            <p>
-              Every application we build is protected by modern security practices and
-              continuous monitoring.
-            </p>
-            <p>
-              Meeting industry standards doesn't have to cost you delivery speed — the
-              checks run in the pipeline, on every merge, rather than as an audit at the
-              end. We work zero-trust by default: nothing is trusted because of where it
-              sits on the network, every request is authenticated and authorised, and
-              threats are mitigated at the boundary before they reach your data.
-            </p>
-          </div>
-
+        <article class="pillar">
+          <div class="pillar__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Secure by design</h3>
+          <p class="muted">
+            Zero-trust by default, with the checks running in the pipeline on every merge
+            rather than as an audit at the end.
+          </p>
           <ul class="sec-list">
-            <li><svg class="sec-list__tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>End-to-End Data Encryption</li>
-            <li><svg class="sec-list__tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Role-Based Access Control (RBAC)</li>
-            <li><svg class="sec-list__tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Regular Vulnerability Assessments</li>
-            <li><svg class="sec-list__tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Automated Security CI/CD Pipelines</li>
-            <li><svg class="sec-list__tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Industry Standard Compliance (GDPR, HIPAA)</li>
+            <li>End-to-End Data Encryption</li>
+            <li>Role-Based Access Control (RBAC)</li>
+            <li>Regular Vulnerability Assessments</li>
+            <li>Automated Security CI/CD Pipelines</li>
+            <li>Industry Standard Compliance (GDPR, HIPAA)</li>
           </ul>
         </article>
-
       </div>
     </div>
   </section>

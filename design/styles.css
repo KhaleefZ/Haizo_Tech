@@ -1091,7 +1091,7 @@ a:hover { color: var(--color-brand-blue-600); }
    .is-in — one observer, no per-card observation. Transform/opacity only.
    Neutralised in the reduced-motion block at the bottom of this file. */
 
-.pillars { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); align-items: stretch; }
 
 .pillar {
   background: var(--color-card);
@@ -1233,4 +1233,51 @@ a:hover { color: var(--color-brand-blue-600); }
     transition: none !important;
     transition-delay: 0ms !important;
   }
+}
+
+
+/* ------------------------------------------------- engineering culture list
+   The security checklist, inside the "Secure by design" pillar. Items tick in
+   one at a time once the row reveals — sequenced after the pillar itself so the
+   card lands first and the list fills in behind it. */
+
+.sec-list {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--color-border);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sec-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: var(--text-small);
+  color: var(--color-text);
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
+}
+.sec-list li::before {
+  content: '';
+  flex: none;
+  width: 16px; height: 16px; margin-top: 2px;
+  background: var(--color-success);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.is-in .sec-list li { opacity: 1; transform: none; }
+.is-in .sec-list li:nth-child(1) { transition-delay: 420ms; }
+.is-in .sec-list li:nth-child(2) { transition-delay: 500ms; }
+.is-in .sec-list li:nth-child(3) { transition-delay: 580ms; }
+.is-in .sec-list li:nth-child(4) { transition-delay: 660ms; }
+.is-in .sec-list li:nth-child(5) { transition-delay: 740ms; }
+
+/* Pillars stagger in rather than arriving together. */
+.pillars .pillar { opacity: 0; transform: translateY(18px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+.pillars.is-in .pillar { opacity: 1; transform: none; }
+.pillars.is-in .pillar:nth-child(2) { transition-delay: 110ms; }
+.pillars.is-in .pillar:nth-child(3) { transition-delay: 220ms; }
+
+@media (max-width: 1000px) { .pillars { grid-template-columns: 1fr; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pillars .pillar, .sec-list li { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
