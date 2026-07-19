@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treating the OpenAPI spec as the contract, not the documentation — HaizoTech</title>
+<meta name="description" content="Generating client types from an OpenAPI spec and failing CI when the implementation drifts — how to make the frontend and backend structurally unable to disagree.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber is an outcome
+    attributed to real client work that was written for the mockup and has <em>not</em> been
+    confirmed. Hover a highlight to see what needs checking. Nothing here goes live until every
+    highlight is verified and the <code>.unverified</code> class is removed.
+  </div>
+</div>
+
+<article>
+
+  <!-- ==================================================== article head -->
+  <section class="section" style="padding-bottom:var(--space-6)">
+    <div class="container container--narrow">
+
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="blog.html">Blog</a> <span aria-hidden="true">/</span>
+        Treating the OpenAPI spec as the contract, not the documentation
+      </p>
+
+      <div class="row row--wrap" style="margin-bottom:1.25rem">
+        <span class="badge badge--neutral">OpenAPI</span>
+        <span class="badge badge--neutral">Process</span>
+      </div>
+
+      <h1>Treating the OpenAPI spec as the contract, not the documentation</h1>
+
+      <p class="lead muted" style="margin-top:var(--space-5)">
+        Most teams write the API, then write a spec describing it, then watch the two drift apart
+        over the next six months. Generate the client types from the spec instead, and fail CI when
+        the implementation no longer matches it, and the drift becomes a build error rather than a
+        production bug.
+        <span class="unverified" title="Invented for the mockup — confirm before publishing">The frontend and backend stopped disagreeing the week we turned this on.</span>
+      </p>
+
+      <div class="row row--wrap" style="margin-top:var(--space-6)">
+        <div class="avatar" aria-hidden="true">KZ</div>
+        <div>
+          <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+          <div class="small muted">
+            Co-founder <span aria-hidden="true">·</span>
+            <time datetime="2026-06-05">5 June 2026</time>
+            <span aria-hidden="true">·</span> 8 min read
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== cover art -->
+      <div class="panel-art reveal" style="margin-top:var(--space-7);aspect-ratio:16/9">
+        <svg class="panel-art__glyph" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6"/><path d="m9 13-2 2 2 2"/><path d="m15 13 2 2-2 2"/>
+        </svg>
+        <p class="panel-art__caption">
+          Placeholder cover art. Real article imagery — a CI run failing on a contract diff — drops in here.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================= body -->
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+
+      <div class="rail" style="position:sticky;top:72px;z-index:30;margin-bottom:var(--space-7)" aria-hidden="true">
+        <span class="rail__fill"></span>
+      </div>
+
+      <div class="prose">
+
+        <p>
+          There is a specific class of bug that only exists on teams with more than one person. The
+          backend renames a field from <code>customer_name</code> to <code>customerName</code>. The
+          change is correct, the tests pass, the endpoint returns 200. Two days later someone reports
+          that a name is blank on a screen nobody opened during QA. The frontend was reading a key
+          that no longer exists, and JavaScript has no opinion about that: it just hands back
+          <code>undefined</code> and renders nothing.
+        </p>
+
+        <p>
+          Nothing caught it because nothing was watching the boundary. Both sides had tests. Both
+          sides were green. The tests just never asked each other what they expected.
+        </p>
+
+        <h2>Documentation drifts; contracts don't</h2>
+
+        <p>
+          The distinction is about direction. A spec written <em>after</em> the implementation is
+          documentation: a description that was accurate once. Nothing depends on it, so nothing
+          notices when it rots. Within a couple of months it is a file people stop opening, because
+          it has been wrong before and they no longer trust it.
+        </p>
+
+        <p>
+          A spec that the build depends on is a contract. If it is wrong, something breaks
+          immediately and loudly. That is the entire trick — not better discipline, just moving the
+          spec somewhere that discipline is enforced mechanically.
+        </p>
+
+        <h3>Spec-first or code-first, either is fine</h3>
+
+        <p>
+          There is a long-running argument about whether to hand-write the OpenAPI document and
+          generate server stubs from it, or to write the code with annotations and generate the
+          document. Both work. What matters is that exactly one of them is the source of truth and
+          the other is generated, never edited by hand, and checked in.
+        </p>
+
+        <p>
+          We usually go code-first, because keeping the annotations next to the handler makes them
+          far more likely to be updated in the same commit as the behaviour. The generated document
+          is committed to the repository, and CI regenerates it and fails if the committed copy
+          differs.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-text-muted)"># The whole gate, in four commands.</span>
+
+<span style="color:var(--color-brand-blue)">pnpm</span> openapi:generate      <span style="color:var(--color-text-muted)"># code -&gt; openapi.json</span>
+<span style="color:var(--color-brand-blue)">git</span> diff --exit-code openapi.json
+   <span style="color:var(--color-text-muted)"># ^ fails if the committed spec is stale</span>
+
+<span style="color:var(--color-brand-blue)">pnpm</span> openapi:lint          <span style="color:var(--color-text-muted)"># spec is valid + follows house rules</span>
+<span style="color:var(--color-brand-blue)">pnpm</span> types:generate        <span style="color:var(--color-text-muted)"># openapi.json -&gt; api-types.d.ts</span>
+<span style="color:var(--color-brand-blue)">pnpm</span> typecheck             <span style="color:var(--color-text-muted)"># frontend must satisfy those types</span></pre>
+        </div>
+
+        <p>
+          Rename a field in a handler and forget to update the frontend, and the failure now happens
+          at step five, on your machine, before the pull request exists. The bug is not caught
+          earlier — it is never created.
+        </p>
+
+        <h2>What the generated types actually buy you</h2>
+
+        <p>
+          Generating TypeScript from the spec is the part that changes day-to-day work. A hand-written
+          <code>interface Booking</code> in the frontend is a guess about the API that happened to be
+          right on the day it was written. A generated one cannot be a guess.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Renamed and removed fields become compile errors.</strong> The class of bug in the
+            opening of this post stops being possible.
+          </li>
+          <li>
+            <strong>Nullability stops being folklore.</strong> If the spec says a field is optional,
+            the generated type says <code>string | undefined</code>, and every call site is forced to
+            handle the missing case. Teams are consistently wrong about which fields can be null; the
+            spec is the only place to settle it once.
+          </li>
+          <li>
+            <strong>Enums stay in sync.</strong> Add a <code>pending_payment</code> status on the
+            backend and the frontend's exhaustive <code>switch</code> immediately fails to compile,
+            pointing at every screen that needs a decision about it.
+          </li>
+          <li>
+            <strong>Request shapes are checked too.</strong> Not just responses — the body you send,
+            the path parameters, the query string.
+          </li>
+          <li>
+            <strong>The spec becomes worth reading.</strong> Because it is load-bearing, it is
+            accurate; because it is accurate, people use it instead of asking in chat.
+          </li>
+        </ul>
+
+        <div class="mockup-note" style="margin-top:var(--space-6)">
+          <strong>Generate types, not clients.</strong> Full client generators produce a lot of
+          code you did not write, with their own opinions about fetching, retries, caching and error
+          handling — and you will end up fighting them the first time you need a request cancelled or
+          a response cached. Generating only the <em>types</em> and keeping a small hand-written
+          fetch wrapper gives you the safety without inheriting a framework.
+        </div>
+
+        <h2>Validate the implementation, not just the document</h2>
+
+        <p>
+          A spec can be perfectly valid and still describe something the server does not do. Schema
+          linting proves the document is well-formed; it proves nothing about the running code.
+        </p>
+
+        <h3>Assert against the spec in integration tests</h3>
+
+        <p>
+          The cheap version of contract testing is to load the spec in the API test suite and assert
+          that every real response validates against the schema for that path and status code. It is
+          a handful of lines of setup and it catches the cases annotations miss — a field the
+          serialiser drops, a date formatted differently than declared, an error shape that only
+          appears on the 409 path.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-text-muted)">// One assertion, applied to every response the suite produces.</span>
+<span style="color:var(--color-brand-blue)">const</span> res = <span style="color:var(--color-brand-blue)">await</span> api.post(<span style="color:var(--color-success)">'/bookings'</span>, payload);
+
+expect(res.status).toBe(<span style="color:var(--color-success)">201</span>);
+expectValidAgainstSpec(res, {
+  path:   <span style="color:var(--color-success)">'/bookings'</span>,
+  method: <span style="color:var(--color-success)">'post'</span>,
+  status: <span style="color:var(--color-success)">201</span>,
+});
+
+<span style="color:var(--color-text-muted)">// Also assert the FAILURE paths. Error responses are the ones that
+// drift most, because nobody looks at them until production does.</span>
+<span style="color:var(--color-brand-blue)">const</span> conflict = <span style="color:var(--color-brand-blue)">await</span> api.post(<span style="color:var(--color-success)">'/bookings'</span>, overlapping);
+expect(conflict.status).toBe(<span style="color:var(--color-success)">409</span>);
+expectValidAgainstSpec(conflict, {
+  path: <span style="color:var(--color-success)">'/bookings'</span>, method: <span style="color:var(--color-success)">'post'</span>, status: <span style="color:var(--color-success)">409</span>,
+});</pre>
+        </div>
+
+        <h3>Shared models via $ref, or the duplication comes back</h3>
+
+        <p>
+          A spec with <code>Booking</code> defined inline in six places is not a single source of
+          truth — it is six sources that currently agree. Every shared shape belongs in
+          <code>components/schemas</code> and is referenced with <code>$ref</code> everywhere it
+          appears. This is the same rule as not copy-pasting a type definition in application code,
+          and it is broken just as often, because inline schemas are what most annotation tools
+          produce by default.
+        </p>
+
+        <h2>The failure modes worth knowing</h2>
+
+        <ul>
+          <li>
+            <strong>A spec nobody generates from.</strong> If the frontend still hand-writes its
+            types, you have documentation again, with extra steps.
+          </li>
+          <li>
+            <strong>Committed artefacts nobody regenerates.</strong> Without the
+            <code>git diff --exit-code</code> step, the committed spec quietly falls behind the code
+            and the generated types describe last month's API very confidently.
+          </li>
+          <li>
+            <strong>Overly permissive schemas.</strong> <code>additionalProperties: true</code> and
+            untyped <code>object</code> fields make validation pass while proving nothing. If a
+            schema accepts anything, it is not a contract.
+          </li>
+          <li>
+            <strong>Treating any change as a breaking change.</strong> Adding an optional response
+            field is safe; removing a field or tightening a type is not. Knowing the difference is
+            what keeps the process from becoming a tax on every pull request.
+          </li>
+        </ul>
+
+        <h2>What to take away</h2>
+
+        <p>
+          None of this is about OpenAPI specifically. The principle is that an agreement between two
+          systems should be represented once, in a form that both sides derive from, with a build
+          step that fails when they diverge. OpenAPI is just the most widely supported way to write
+          that agreement down for an HTTP API.
+        </p>
+
+        <p>
+          The three things that make it work, in order of importance: generate the client types
+          rather than writing them; commit the spec and fail CI when it is stale; validate real
+          responses against the schema, including the error paths. Skip any one of them and you are
+          back to a document that describes an API you hope you still have.
+        </p>
+
+      </div>
+
+      <!-- ================================================ author card -->
+      <div class="card reveal" style="margin-top:var(--space-8)">
+        <div class="row row--wrap">
+          <div class="avatar avatar--lg" aria-hidden="true">KZ</div>
+          <div>
+            <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+            <div class="small muted">Co-founder, HaizoTech</div>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-4)">
+          Spends most of his time on the frontend and on the seam between it and the API, which is
+          where the interesting bugs live. <a href="about.html">More about the team</a>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</article>
+
+  <!-- ================================================= related posts -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal" style="margin-bottom:var(--space-6)">
+        <h2>Related reading</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link reveal" href="blog-react-server-components-one-year-in.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">React</span>
+            <span class="badge badge--neutral">Next.js</span>
+          </div>
+          <h3 style="margin-top:1rem">React Server Components, one year in: where we use them and where we don't</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            An honest account after shipping real apps. Genuinely better for data-heavy pages;
+            a poor trade for anything with dense client interaction.
+          </p>
+        </a>
+
+        <a class="card card--link reveal" data-delay="60" href="blog-the-index-you-didnt-add-is-the-query-you-cant-explain.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">PostgreSQL</span>
+            <span class="badge badge--neutral">Performance</span>
+          </div>
+          <h3 style="margin-top:1rem">The index you didn't add is the query you can't explain</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            How we read the query plan, why the obvious composite index made it worse, and the
+            partial index that actually fixed it.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Want this kind of thinking on your project?</h2>
+        <p class="lead">The decisions we write about here are the ones we'll be making on your build.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h2 class="footer-head">Services</h2>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Company</h2>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Legal</h2>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

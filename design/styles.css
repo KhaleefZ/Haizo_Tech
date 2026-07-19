@@ -262,7 +262,7 @@ a:hover { color: var(--color-brand-blue-600); }
 /* ------------------------------------------------------------------- footer */
 
 .site-footer { background: var(--color-brand-navy); color: #CBD5E1; padding-block: var(--space-8) var(--space-6); }
-.site-footer h4 { color: #fff; font-size: var(--text-small); text-transform: uppercase; letter-spacing: .08em; margin-bottom: var(--space-4); }
+.site-footer .footer-head { color: #fff; font-size: var(--text-small); text-transform: uppercase; letter-spacing: .08em; margin-bottom: var(--space-4); }
 .site-footer a { color: #CBD5E1; font-size: 0.9375rem; }
 .site-footer a:hover { color: #fff; }
 .site-footer .logo { color: #fff; }

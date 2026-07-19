@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React Server Components, one year in — HaizoTech</title>
+<meta name="description" content="Where React Server Components genuinely pay off, where the client-component boundary makes them a poor trade, and how to decide per route rather than per project.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ============================================================ header -->
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14" stroke="#1D4ED8" stroke-width="2"/>
+        <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+        <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      HaizoTech
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="nav" aria-label="Main">
+      <a href="services.html">Services</a>
+      <a href="work.html">Our Works</a>
+      <a href="about.html">About</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn--primary btn--sm" href="contact.html">Start a Project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="container" style="padding-top:var(--space-4)">
+  <div class="mockup-note mockup-note--warn">
+    <strong>Unverified copy on this page.</strong> Anything highlighted in amber is a claim about
+    real client work that was written for the mockup and has <em>not</em> been confirmed. Hover a
+    highlight to see what needs checking. Nothing here goes live until every highlight is verified
+    and the <code>.unverified</code> class is removed.
+  </div>
+</div>
+
+<article>
+
+  <!-- ==================================================== article head -->
+  <section class="section" style="padding-bottom:var(--space-6)">
+    <div class="container container--narrow">
+
+      <p class="small muted" style="margin-bottom:1.5rem">
+        <a href="blog.html">Blog</a> <span aria-hidden="true">/</span>
+        React Server Components, one year in
+      </p>
+
+      <div class="row row--wrap" style="margin-bottom:1.25rem">
+        <span class="badge badge--neutral">React</span>
+        <span class="badge badge--neutral">Next.js</span>
+      </div>
+
+      <h1>React Server Components, one year in: where we use them and where we don't</h1>
+
+      <p class="lead muted" style="margin-top:var(--space-5)">
+        An honest account
+        <span class="unverified" title="Invented for the mockup — confirm the real number of projects before publishing">after shipping three apps</span>
+        on the App Router. Server Components are genuinely better for data-heavy pages that mostly
+        read. They are a poor trade for anything with dense client interaction, and most of the pain
+        people report comes from picking one answer for the whole application.
+      </p>
+
+      <div class="row row--wrap" style="margin-top:var(--space-6)">
+        <div class="avatar" aria-hidden="true">KZ</div>
+        <div>
+          <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+          <div class="small muted">
+            Co-founder <span aria-hidden="true">·</span>
+            <time datetime="2026-05-19">19 May 2026</time>
+            <span aria-hidden="true">·</span> 13 min read
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== cover art -->
+      <div class="panel-art reveal" style="margin-top:var(--space-7);aspect-ratio:16/9">
+        <svg class="panel-art__glyph" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">
+          <circle cx="12" cy="12" r="2.2"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(120 12 12)"/>
+        </svg>
+        <p class="panel-art__caption">
+          Placeholder cover art. Real article imagery — a component tree with the client boundary marked — drops in here.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================= body -->
+  <section class="section" style="padding-top:0">
+    <div class="container container--narrow">
+
+      <div class="rail" style="position:sticky;top:72px;z-index:30;margin-bottom:var(--space-7)" aria-hidden="true">
+        <span class="rail__fill"></span>
+      </div>
+
+      <div class="prose">
+
+        <p>
+          The framing that caused the most trouble in the first few months was treating Server
+          Components as a replacement for client rendering. They are not a replacement. They are a
+          second place to run component code, with different capabilities, and the interesting
+          engineering is in deciding where the line between the two falls.
+        </p>
+
+        <p>
+          Get that line in the right place and a page ships less JavaScript and fetches data without
+          a round trip. Get it wrong and you spend a week discovering that a context provider three
+          levels up has quietly turned your entire route into a client bundle.
+        </p>
+
+        <h2>What actually changes</h2>
+
+        <p>
+          A Server Component runs once, on the server, and never ships to the browser. Its code is
+          not in the bundle. It can read from the database directly, use secrets, and
+          <code>await</code> in the component body. What it cannot do is anything stateful or
+          interactive: no <code>useState</code>, no <code>useEffect</code>, no event handlers, no
+          browser APIs.
+        </p>
+
+        <p>
+          A Client Component is the React you already know. It ships to the browser, hydrates, and
+          handles interaction. The <code>'use client'</code> directive marks the boundary — and this
+          is the part that trips people up, because the directive is not a per-component setting.
+        </p>
+
+        <h3>The boundary is a subtree, not a file</h3>
+
+        <p>
+          Marking a module <code>'use client'</code> puts that module <em>and everything it imports</em>
+          into the client graph. A single directive at the top of a layout can pull the whole route
+          into the browser bundle, and nothing warns you, because everything still works. It just
+          works the way it did before Server Components existed.
+        </p>
+
+        <div class="card card--flush" style="margin-top:var(--space-5)">
+          <div class="hero-card-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <pre style="margin:0;padding:var(--space-5);font-family:var(--font-mono);font-size:.8125rem;line-height:1.7;color:var(--color-text);overflow-x:auto"><span style="color:var(--color-danger)">// Wrong. The whole page is now a Client Component because one
+// button needed onClick — so BookingTable, its formatting helpers
+// and the date library it imports all ship to the browser.</span>
+<span style="color:var(--color-success)">'use client'</span>;
+
+<span style="color:var(--color-brand-blue)">export default async function</span> Page() { <span style="color:var(--color-text-muted)">/* ... */</span> }
+
+
+<span style="color:var(--color-success)">// Right. The page stays on the server. Only the interactive leaf
+// crosses the boundary, and it receives already-rendered children.</span>
+<span style="color:var(--color-brand-blue)">import</span> { ExportButton } <span style="color:var(--color-brand-blue)">from</span> <span style="color:var(--color-success)">'./export-button'</span>; <span style="color:var(--color-text-muted)">// 'use client'</span>
+
+<span style="color:var(--color-brand-blue)">export default async function</span> Page() {
+  <span style="color:var(--color-brand-blue)">const</span> bookings = <span style="color:var(--color-brand-blue)">await</span> db.bookings.upcoming();
+  <span style="color:var(--color-brand-blue)">return</span> (
+    &lt;section&gt;
+      &lt;BookingTable rows={bookings} /&gt;   <span style="color:var(--color-text-muted)">{/* server */}</span>
+      &lt;ExportButton count={bookings.length} /&gt; <span style="color:var(--color-text-muted)">{/* client */}</span>
+    &lt;/section&gt;
+  );
+}</pre>
+        </div>
+
+        <p>
+          The rule that follows from this: push <code>'use client'</code> as far down the tree as it
+          will go. Interactive leaves, not interactive pages. A Server Component can render a Client
+          Component, and a Client Component can render Server Components passed to it as
+          <code>children</code> — that second direction is the escape hatch that makes deeply
+          interactive layouts workable, and it is worth learning early.
+        </p>
+
+        <h2>Where they clearly win</h2>
+
+        <p>
+          The pattern where Server Components are unambiguously the better tool is a page that reads
+          a lot of data, renders it, and offers only shallow interaction. Dashboards, list and detail
+          views, reports, content pages, admin tables.
+        </p>
+
+        <ul>
+          <li>
+            <strong>The data fetch has no round trip.</strong> The component queries the database in
+            the same process. No API call from the browser, no loading spinner for the initial view,
+            no waterfall where the page must render before it knows what to request.
+          </li>
+          <li>
+            <strong>Heavy dependencies stay on the server.</strong> Markdown renderers, date and
+            currency formatters with full locale data, syntax highlighters, validation schemas — all
+            of it runs where it costs nothing in bundle size.
+          </li>
+          <li>
+            <strong>Secrets stay put.</strong> There is no client bundle to accidentally leak an API
+            key into, because the code never leaves the server.
+          </li>
+          <li>
+            <strong>Streaming gives you real progressive rendering.</strong> Wrap a slow section in
+            <code>&lt;Suspense&gt;</code> and the rest of the page reaches the user immediately.
+            The fallback is server-rendered too, so it is not a blank frame.
+          </li>
+          <li>
+            <strong>Less state to manage.</strong> A large amount of client state exists purely to
+            cache server data. When the server renders it, that machinery disappears along with it.
+          </li>
+        </ul>
+
+        <h2>Where they are a poor trade</h2>
+
+        <p>
+          The other side is just as clear once you have hit it. If a screen's core loop is
+          interaction — dragging, filtering, editing in place, live validation, optimistic updates
+          — you will end up marking nearly everything <code>'use client'</code> anyway, and you will
+          have paid the framework's complexity for none of its benefit.
+        </p>
+
+        <h3>The tells</h3>
+
+        <ul>
+          <li>
+            <strong>Most components need state.</strong> If nine out of ten leaves need
+            <code>useState</code>, the boundary is not buying you a smaller bundle. It is just an
+            extra concept.
+          </li>
+          <li>
+            <strong>Interaction must feel instant.</strong> Anything that round-trips to the server
+            to re-render has a floor set by network latency. For a filter that should respond as the
+            user types, that floor is too high — filter on the client over data you already have.
+          </li>
+          <li>
+            <strong>The state is genuinely client-owned.</strong> A half-completed multi-step form, a
+            canvas, an editor, a drag operation in progress. None of that belongs on the server, and
+            trying to put it there produces worse code than the client-only version.
+          </li>
+          <li>
+            <strong>You are fighting serialisation.</strong> Props crossing the boundary must be
+            serialisable. Passing functions, class instances or <code>Date</code>-heavy structures
+            around gets awkward fast, and the awkwardness is a signal the split is in the wrong
+            place.
+          </li>
+        </ul>
+
+        <div class="mockup-note" style="margin-top:var(--space-6)">
+          <strong>The decision is per route, not per project.</strong> This is the single most useful
+          thing we learned. The same application can have a Server-Component-first reporting section
+          and a thoroughly client-rendered scheduling screen, and both can be the right call. Teams
+          that suffer with the App Router are usually the ones that adopted a rule for the whole
+          codebase and then defended it.
+        </div>
+
+        <h2>The parts that stayed genuinely awkward</h2>
+
+        <h3>Caching is the real learning curve</h3>
+
+        <p>
+          Server Components themselves are simple. Deciding what is static, what revalidates on a
+          timer, what revalidates on a tag, and what must never be cached is not — and the defaults
+          have shifted between framework versions often enough that most answers you find online are
+          for a different version than the one you are running. Be explicit about caching at every
+          fetch rather than relying on defaults, and write down which routes are dynamic and why.
+        </p>
+
+        <h3>Error boundaries and loading states need designing</h3>
+
+        <p>
+          Streaming means parts of a page can fail independently. That is a feature, but it means
+          "what does this page look like when one section errors" is now a real design question with
+          a real answer required for each section, not a single top-level error screen. The framework
+          gives you the mechanism; it does not give you the decision.
+        </p>
+
+        <h3>Third-party components assume the client</h3>
+
+        <p>
+          A great many libraries are written with the implicit assumption that they run in a browser.
+          Most work fine once wrapped in a small client component, but "wrap it" is a step you take
+          repeatedly, and each wrapper is a place the boundary can creep upward if you are not
+          watching.
+        </p>
+
+        <h2>What to take away</h2>
+
+        <p>
+          Server Components are worth using, and the debate about whether they are good is less
+          useful than knowing precisely what they are good <em>at</em>. Our working rules:
+        </p>
+
+        <ul>
+          <li>
+            Default to server rendering for anything that mostly reads and displays. Default to
+            client rendering for anything whose primary purpose is interaction.
+          </li>
+          <li>
+            Decide per route. Mixed applications are normal and fine.
+          </li>
+          <li>
+            Keep <code>'use client'</code> on leaves. Audit the bundle occasionally to catch the
+            directive that migrated upward during a refactor.
+          </li>
+          <li>
+            Be explicit about caching. Never inherit a default you cannot state out loud.
+          </li>
+          <li>
+            If a screen ends up almost entirely client components, that is not a failure — it is the
+            correct answer for that screen, and you should stop trying to fix it.
+          </li>
+        </ul>
+
+        <p>
+          The technology is not the hard part. Resisting the urge to apply one answer everywhere is.
+        </p>
+
+      </div>
+
+      <!-- ================================================ author card -->
+      <div class="card reveal" style="margin-top:var(--space-8)">
+        <div class="row row--wrap">
+          <div class="avatar avatar--lg" aria-hidden="true">KZ</div>
+          <div>
+            <div class="strong" style="font-weight:600">Khaleefulla Z</div>
+            <div class="small muted">Co-founder, HaizoTech</div>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-4)">
+          Spends most of his time on the frontend and on the seam between it and the API, which is
+          where the interesting bugs live. <a href="about.html">More about the team</a>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</article>
+
+  <!-- ================================================= related posts -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="section-head reveal" style="margin-bottom:var(--space-6)">
+        <h2>Related reading</h2>
+      </div>
+
+      <div class="grid grid--2">
+        <a class="card card--link reveal" href="blog-focus-management-is-the-accessibility-work-nobody-demos.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">Frontend</span>
+            <span class="badge badge--neutral">Accessibility</span>
+          </div>
+          <h3 style="margin-top:1rem">Focus management is the accessibility work nobody demos</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Modals, route changes and async lists all move focus somewhere. Getting it right is
+            unglamorous, cheap during the build, and expensive to retrofit.
+          </p>
+        </a>
+
+        <a class="card card--link reveal" data-delay="60" href="blog-treating-the-openapi-spec-as-the-contract.html">
+          <div class="row row--wrap">
+            <span class="badge badge--neutral">OpenAPI</span>
+            <span class="badge badge--neutral">Process</span>
+          </div>
+          <h3 style="margin-top:1rem">Treating the OpenAPI spec as the contract, not the documentation</h3>
+          <p class="muted small" style="margin-top:.75rem">
+            Generating client types from the spec and failing CI when the implementation drifts.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== CTA band -->
+  <section class="section section--tight">
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Want this kind of thinking on your project?</h2>
+        <p class="lead">The decisions we write about here are the ones we'll be making on your build.</p>
+        <a class="btn btn--on-navy" href="contact.html">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================ footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="#fff" stroke-width="2"/>
+            <ellipse cx="16" cy="16" rx="6" ry="14" stroke="#3B82F6" stroke-width="1.5"/>
+            <path d="M2 16h28M5 8h22M5 24h22" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          HaizoTech
+        </a>
+        <p class="small" style="margin-top:1rem;max-width:36ch;color:#94A3B8">
+          Custom software, plainly delivered. A software services agency in Coimbatore, Tamil Nadu.
+        </p>
+      </div>
+      <div>
+        <h2 class="footer-head">Services</h2>
+        <div class="footer-links">
+          <a href="services.html">Custom software</a>
+          <a href="services.html">AI &amp; intelligent systems</a>
+          <a href="services.html">Web &amp; mobile apps</a>
+          <a href="services.html">Infrastructure &amp; security</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Company</h2>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="work.html">Our Works</a>
+          <a href="blog.html">Blog</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="footer-head">Legal</h2>
+        <div class="footer-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HaizoTech. All rights reserved.</span>
+      <span>Coimbatore, Tamil Nadu, India</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
