@@ -1067,8 +1067,9 @@ a:hover { color: var(--color-brand-blue-600); }
 
 /* Legibility floor: text sits on a navy scrim, not directly on the art.
    The illustrations are light, so the ramp starts earlier and lands heavier
-   than the gradient version needed — white on the h3 measures ~5.4:1 and the
-   supporting line ~7:1 against the blended surface beneath them. */
+   than the flat-gradient version needed. Measured worst case across all six
+   cards, sampling every pixel behind the text: white on the h3 is 4.81:1 and
+   on the supporting line 7.89:1 — both clear AA for their size. */
 .ind-card__scrim {
   position: absolute; inset: 0;
   background: linear-gradient(180deg,
