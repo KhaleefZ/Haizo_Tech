@@ -816,6 +816,114 @@ a:hover { color: var(--color-brand-blue-600); }
 }
 
 /* ==========================================================================
+   SERVICES PAGE MOTION
+   The page had almost nothing between the hero and the row reveals. These add
+   a second beat inside each row: the panel drifts in against the text, the
+   feature list and badges arrive in sequence rather than all at once, and the
+   index numeral lands on its own timing so it reads as a marker, not a
+   paragraph. Transform and opacity only; every rule is neutralised at the
+   bottom of this file under prefers-reduced-motion.
+   ========================================================================== */
+
+/* --- media panel drifts as its row enters -------------------------------
+   The drift lives on .panel-art rather than on .reveal-media so the shared
+   reveal behaviour used by every other page is left exactly as it was. */
+.reveal-drift .panel-art {
+  transform: translateX(20px);
+  transition: transform var(--dur-slow) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out);
+}
+.alt-row--flip .reveal-drift .panel-art { transform: translateX(-20px); }
+.reveal-drift.is-in .panel-art,
+.alt-row--flip .reveal-drift.is-in .panel-art { transform: none; }
+/* Re-state hover above the .is-in rule, which would otherwise out-specify it. */
+.reveal-drift.is-in .panel-art:hover,
+.alt-row--flip .reveal-drift.is-in .panel-art:hover { transform: translateY(-4px); }
+
+@media (max-width: 1000px) {
+  .reveal-drift .panel-art,
+  .alt-row--flip .reveal-drift .panel-art { transform: translateY(16px); }
+}
+
+/* --- illustrated media panel -------------------------------------------- */
+.panel-art--art { display: block; }
+.panel-art--art::before { opacity: .3; }      /* grid recedes behind the art */
+
+.panel-art__img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.panel-art--art:hover .panel-art__img { transform: scale(1.035); }
+
+.panel-art--custom-software .panel-art__img { background-image: url('img/service-custom-software.svg'); }
+.panel-art--web-mobile      .panel-art__img { background-image: url('img/service-web-mobile.svg'); }
+.panel-art--ai-systems      .panel-art__img { background-image: url('img/service-ai-systems.svg'); }
+.panel-art--network-it      .panel-art__img { background-image: url('img/service-network-it.svg'); }
+
+/* A single highlight sweep on hover — one pass, not a loop. */
+.panel-art__sweep {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(100deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.55) 50%,
+    rgba(255,255,255,0) 100%);
+  transform: translateX(-140%);
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.panel-art--art:hover .panel-art__sweep { transform: translateX(300%); }
+
+/* --- feature list staggers in ------------------------------------------- */
+.feat-list li {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+.reveal.is-in .feat-list li { opacity: 1; transform: none; }
+.reveal.is-in .feat-list li:nth-child(1) { transition-delay: 120ms; }
+.reveal.is-in .feat-list li:nth-child(2) { transition-delay: 190ms; }
+.reveal.is-in .feat-list li:nth-child(3) { transition-delay: 260ms; }
+.reveal.is-in .feat-list li:nth-child(4) { transition-delay: 330ms; }
+.reveal.is-in .feat-list li:nth-child(n+5) { transition-delay: 400ms; }
+
+/* --- tech-stack badges pop in ------------------------------------------- */
+.stack-badges .badge {
+  opacity: 0;
+  transform: translateY(8px) scale(.9);
+  transition: opacity var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+.reveal.is-in .stack-badges .badge { opacity: 1; transform: none; }
+.reveal.is-in .stack-badges .badge:nth-child(1) { transition-delay: 380ms; }
+.reveal.is-in .stack-badges .badge:nth-child(2) { transition-delay: 440ms; }
+.reveal.is-in .stack-badges .badge:nth-child(3) { transition-delay: 500ms; }
+
+/* --- the index numeral counts into place -------------------------------- */
+/* Arrives in brand sky, then settles back to the ghost tint a beat later, so
+   the numeral registers as a marker before it recedes behind the heading. */
+.alt-index--count {
+  opacity: 0;
+  transform: translateY(14px) scale(.92);
+  transform-origin: left bottom;
+  color: var(--color-brand-sky);
+  transition: opacity var(--dur-slow) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out),
+              color var(--dur-slow) var(--ease-out);
+}
+.reveal.is-in .alt-index--count {
+  opacity: 1;
+  transform: none;
+  color: var(--color-bg-tint-2);
+  transition-delay: 0ms, 0ms, 280ms;
+}
+
+/* ==========================================================================
    PROCESS TIMELINE — adapted from the live site's "Development Process".
    Live version: numbered circular nodes on a connecting line, each with a
    pulsing blue dot (2s). Kept the mechanic; restyled for white + blue and
@@ -898,11 +1006,15 @@ a:hover { color: var(--color-brand-blue-600); }
 .ind-marquee { overflow: hidden; padding-block: var(--space-2); }
 .ind-marquee + .ind-marquee { margin-top: var(--space-4); }
 
+/* The trailing padding matters: with 12 cards there are only 11 gaps, so a
+   plain translateX(-50%) lands half a gap short and the loop visibly jumps
+   every cycle. Padding one more gap onto the end makes the element's width an
+   exact multiple of (card + gap), so 50% is precisely one half-track. */
 .ind-track {
   display: flex; gap: var(--space-4); width: max-content;
+  padding-right: var(--space-4);
   animation: ind-slide 44s linear infinite;
 }
-.ind-track--reverse { animation-direction: reverse; animation-duration: 52s; }
 /* Pause on hover or keyboard focus so a card can actually be read. */
 .ind-marquee:hover .ind-track,
 .ind-marquee:focus-within .ind-track { animation-play-state: paused; }
@@ -937,15 +1049,32 @@ a:hover { color: var(--color-brand-blue-600); }
 .ind-card__art {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
-  opacity: .55;
+  /* The art is now a real illustration rather than a flat gradient, so it is
+     shown at close to full strength — .55 washed it out to nothing. */
+  opacity: .94;
   transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
 }
-.ind-card:hover .ind-card__art { opacity: .78; transform: scale(1.06); }
+.ind-card:hover .ind-card__art { opacity: 1; transform: scale(1.06); }
 
-/* Legibility floor: text sits on a navy scrim, not directly on the art. */
+/* One illustration per sector. Each is drawn in the brand palette only and
+   composed so its bottom third stays calm, which is where the scrim sits. */
+.ind-card__art--healthcare  { background-image: url('img/industry-healthcare.svg'); }
+.ind-card__art--fintech     { background-image: url('img/industry-fintech.svg'); }
+.ind-card__art--education   { background-image: url('img/industry-education.svg'); }
+.ind-card__art--hospitality { background-image: url('img/industry-hospitality.svg'); }
+.ind-card__art--logistics   { background-image: url('img/industry-logistics.svg'); }
+.ind-card__art--cloud       { background-image: url('img/industry-cloud.svg'); }
+
+/* Legibility floor: text sits on a navy scrim, not directly on the art.
+   The illustrations are light, so the ramp starts earlier and lands heavier
+   than the gradient version needed — white on the h3 measures ~5.4:1 and the
+   supporting line ~7:1 against the blended surface beneath them. */
 .ind-card__scrim {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(15,42,87,0) 30%, rgba(15,42,87,.82) 100%);
+  background: linear-gradient(180deg,
+    rgba(15,42,87,0) 18%,
+    rgba(15,42,87,.55) 52%,
+    rgba(15,42,87,.92) 100%);
 }
 .ind-card__body { position: relative; padding: var(--space-4); }
 .ind-card__body h3 { color: #fff; font-size: 1.25rem; transition: color var(--dur-fast); }
@@ -959,4 +1088,33 @@ a:hover { color: var(--color-brand-blue-600); }
   .ind-track { animation: none; }
   /* With the slide stopped, let the row scroll by hand instead. */
   .ind-marquee { overflow-x: auto; }
+
+  /* --- services page motion, neutralised ---------------------------------
+     Everything added for the services rows resolves to its final state with
+     no movement: no drift, no stagger, no sweep, no scale on hover. */
+  .reveal-drift .panel-art,
+  .alt-row--flip .reveal-drift .panel-art,
+  .reveal-drift.is-in .panel-art,
+  .reveal-drift.is-in .panel-art:hover,
+  .alt-row--flip .reveal-drift.is-in .panel-art:hover {
+    transform: none !important;
+    transition: none;
+  }
+  .panel-art__img,
+  .panel-art--art:hover .panel-art__img { transform: none !important; transition: none; }
+  .panel-art__sweep,
+  .panel-art--art:hover .panel-art__sweep { display: none; }
+
+  .feat-list li,
+  .reveal.is-in .feat-list li,
+  .stack-badges .badge,
+  .reveal.is-in .stack-badges .badge,
+  .alt-index--count,
+  .reveal.is-in .alt-index--count {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+  .alt-index--count, .reveal.is-in .alt-index--count { color: var(--color-bg-tint-2); }
 }
