@@ -1523,6 +1523,10 @@ export interface components {
             content?: string;
             audience?: components["schemas"]["AnnouncementAudience"];
         };
+        /** @description Per-type opt-outs. An absent type means on; false means off. */
+        NotificationPrefs: {
+            [key: string]: boolean;
+        } | null;
         AdminProfile: {
             id: string;
             /** Format: email */
@@ -1532,6 +1536,7 @@ export interface components {
             bio?: string | null;
             avatarUrl?: string | null;
             notificationsEnabled: boolean;
+            notificationPrefs?: components["schemas"]["NotificationPrefs"];
         };
         /** @description A partial update of your own profile; at least one field must be present. */
         UpdateProfile: {
@@ -1539,6 +1544,7 @@ export interface components {
             bio?: string | null;
             avatarUrl?: string | null;
             notificationsEnabled?: boolean;
+            notificationPrefs?: components["schemas"]["NotificationPrefs"];
         };
         ChangePassword: {
             currentPassword: string;

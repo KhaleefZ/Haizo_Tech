@@ -2521,6 +2521,11 @@ components:
         content: { type: string, minLength: 2, maxLength: 20000 }
         audience: { $ref: '#/components/schemas/AnnouncementAudience' }
 
+    NotificationPrefs:
+      type: [object, 'null']
+      description: 'Per-type opt-outs. An absent type means on; false means off.'
+      additionalProperties: { type: boolean }
+
     AdminProfile:
       type: object
       required: [id, email, name, role, notificationsEnabled]
@@ -2533,6 +2538,7 @@ components:
         bio: { type: [string, 'null'] }
         avatarUrl: { type: [string, 'null'] }
         notificationsEnabled: { type: boolean }
+        notificationPrefs: { $ref: '#/components/schemas/NotificationPrefs' }
 
     UpdateProfile:
       type: object
@@ -2544,6 +2550,7 @@ components:
         bio: { type: [string, 'null'], maxLength: 2000 }
         avatarUrl: { type: [string, 'null'], maxLength: 500 }
         notificationsEnabled: { type: boolean }
+        notificationPrefs: { $ref: '#/components/schemas/NotificationPrefs' }
 
     ChangePassword:
       type: object

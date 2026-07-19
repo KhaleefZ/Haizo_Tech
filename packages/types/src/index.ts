@@ -109,6 +109,7 @@ export type UpdateAnnouncement = Schemas['UpdateAnnouncement'];
 export type AdminProfile = Schemas['AdminProfile'];
 export type UpdateProfile = Schemas['UpdateProfile'];
 export type ChangePassword = Schemas['ChangePassword'];
+export type NotificationPrefs = Schemas['NotificationPrefs'];
 
 /**
  * Typed API client.

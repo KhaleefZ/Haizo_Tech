@@ -14,6 +14,7 @@ const PROFILE_SELECT = {
   bio: true,
   avatarUrl: true,
   notificationsEnabled: true,
+  notificationPrefs: true,
 } as const;
 
 // What issueSession needs back after a password change (incl. the bumped tv).

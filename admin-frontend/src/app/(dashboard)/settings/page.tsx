@@ -14,7 +14,6 @@ function ProfileCard({ profile }: { profile: AdminProfile }) {
   const [name, setName] = React.useState(profile.name);
   const [bio, setBio] = React.useState(profile.bio ?? '');
   const [avatarUrl, setAvatarUrl] = React.useState(profile.avatarUrl ?? '');
-  const [notify, setNotify] = React.useState(profile.notificationsEnabled);
 
   const save = useMutation({
     mutationFn: () =>
@@ -22,7 +21,6 @@ function ProfileCard({ profile }: { profile: AdminProfile }) {
         name: name.trim(),
         bio: bio.trim() === '' ? null : bio.trim(),
         avatarUrl: avatarUrl.trim() === '' ? null : avatarUrl.trim(),
-        notificationsEnabled: notify,
       }),
     onSuccess: (p) => {
       qc.setQueryData(PROFILE_KEY, p);
@@ -56,17 +54,72 @@ function ProfileCard({ profile }: { profile: AdminProfile }) {
         <Field label="Avatar URL">
           <Input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} maxLength={500} placeholder="https://…" />
         </Field>
-        <label className="flex items-center gap-2.5 rounded-token border border-border bg-bg-tint px-3.5 py-3">
-          <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} className="size-4 accent-brand-blue" />
-          <span className="text-sm">
-            <span className="font-semibold text-text-strong">Notifications</span>
-            <span className="text-text-muted"> — receive in-app and email notifications</span>
-          </span>
-        </label>
         <div className="flex justify-end">
           <Button type="submit" loading={save.isPending}>Save profile</Button>
         </div>
       </form>
+    </Card>
+  );
+}
+
+const NOTIF_TYPES: { type: string; label: string }[] = [
+  { type: 'inquiry.received', label: 'New enquiries' },
+  { type: 'task.assigned', label: 'Tasks assigned to me' },
+  { type: 'announcement.published', label: 'Announcements' },
+  { type: 'blog.published', label: 'Blog posts published' },
+  { type: 'work.published', label: 'Work published' },
+];
+
+function NotificationsCard({ profile }: { profile: AdminProfile }) {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const [enabled, setEnabled] = React.useState(profile.notificationsEnabled);
+  const prefs0 = (profile.notificationPrefs ?? {}) as Record<string, boolean>;
+  const [prefs, setPrefs] = React.useState<Record<string, boolean>>(prefs0);
+
+  // A type is on unless explicitly set to false.
+  const isOn = (type: string) => prefs[type] !== false;
+  const setOn = (type: string, on: boolean) => setPrefs((p) => ({ ...p, [type]: on }));
+
+  const save = useMutation({
+    mutationFn: () => api.me.update({ notificationsEnabled: enabled, notificationPrefs: prefs }),
+    onSuccess: (p) => {
+      qc.setQueryData(PROFILE_KEY, p);
+      qc.invalidateQueries({ queryKey: ['auth', 'me'] });
+      toast({ variant: 'success', title: 'Notification settings saved' });
+    },
+    onError: () => toast({ variant: 'error', title: 'Could not save', description: 'Try again.' }),
+  });
+
+  return (
+    <Card>
+      <h2 className="font-heading text-lg font-bold text-text-strong">Notifications</h2>
+      <p className="mt-1 text-sm text-text-muted">
+        Turning a type off stops alerts, but it still appears in your notifications history.
+      </p>
+      <div className="mt-4 space-y-3">
+        <label className="flex items-center justify-between rounded-token border border-border bg-bg-tint px-3.5 py-3">
+          <span className="text-sm font-semibold text-text-strong">All notifications</span>
+          <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} className="size-4 accent-brand-blue" />
+        </label>
+        <div className={enabled ? '' : 'pointer-events-none opacity-50'}>
+          {NOTIF_TYPES.map((t) => (
+            <label key={t.type} className="flex items-center justify-between border-b border-border py-2.5 last:border-b-0">
+              <span className="text-sm text-text">{t.label}</span>
+              <input
+                type="checkbox"
+                checked={enabled && isOn(t.type)}
+                disabled={!enabled}
+                onChange={(e) => setOn(t.type, e.target.checked)}
+                className="size-4 accent-brand-blue"
+              />
+            </label>
+          ))}
+        </div>
+        <div className="flex justify-end pt-1">
+          <Button loading={save.isPending} onClick={() => save.mutate()}>Save preferences</Button>
+        </div>
+      </div>
     </Card>
   );
 }
@@ -140,6 +193,7 @@ export default function SettingsPage() {
       ) : (
         <ProfileCard profile={profile} />
       )}
+      {profile ? <NotificationsCard profile={profile} /> : null}
       <PasswordCard />
     </div>
   );

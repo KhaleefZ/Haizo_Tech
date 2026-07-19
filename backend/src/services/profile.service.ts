@@ -1,4 +1,5 @@
-import type { AdminProfile, UpdateProfile } from '@haizo/types';
+import { Prisma } from '@prisma/client';
+import type { AdminProfile, NotificationPrefs, UpdateProfile } from '@haizo/types';
 import { profileRepository } from '../repositories/profile.repository.js';
 import { verifyPassword, hashPassword } from '../lib/auth/password.js';
 import { issueSession } from './auth.service.js';
@@ -16,6 +17,7 @@ function toAdminProfile(row: ProfileRow): AdminProfile {
     bio: row.bio,
     avatarUrl: row.avatarUrl,
     notificationsEnabled: row.notificationsEnabled,
+    notificationPrefs: (row.notificationPrefs ?? null) as NotificationPrefs,
   };
 }
 
@@ -33,6 +35,10 @@ export const profileService = {
       ...(input.avatarUrl !== undefined ? { avatarUrl: input.avatarUrl } : {}),
       ...(input.notificationsEnabled !== undefined
         ? { notificationsEnabled: input.notificationsEnabled }
+        : {}),
+      // Prisma needs DbNull (not JS null) to clear a nullable Json column.
+      ...(input.notificationPrefs !== undefined
+        ? { notificationPrefs: input.notificationPrefs ?? Prisma.DbNull }
         : {}),
     });
     return toAdminProfile(row);
