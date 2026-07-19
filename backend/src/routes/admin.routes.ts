@@ -50,10 +50,15 @@ import {
   adminUpdateInquiry,
   adminDeleteInquiry,
 } from '../controllers/inquiry.controller.js';
+import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
 const manage = [requireAuth, requireRole('SUPER_ADMIN', 'MANAGER')] as const;
 const mutate = [...manage, requireCsrf] as const;
+
+// User/team management is the top privilege — super-admin only.
+const superOnly = [requireAuth, requireRole('SUPER_ADMIN')] as const;
+const superMutate = [...superOnly, requireCsrf] as const;
 
 const router: ExpressRouter = Router();
 
@@ -129,5 +134,10 @@ router.get('/admin/inquiries/:id', ...manage, adminGetInquiry);
 router.patch('/admin/inquiries/:id', ...mutate, adminUpdateInquiry);
 // operationId: adminDeleteInquiry
 router.delete('/admin/inquiries/:id', ...mutate, adminDeleteInquiry);
+
+// operationId: adminListUsers
+router.get('/admin/users', ...superOnly, adminListUsers);
+// operationId: adminUpdateUserRole
+router.patch('/admin/users/:id', ...superMutate, adminUpdateUserRole);
 
 export default router;

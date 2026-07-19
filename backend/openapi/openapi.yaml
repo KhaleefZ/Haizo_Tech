@@ -919,6 +919,50 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      summary: List team members
+      description: Super-admin only. Managing users is the top privilege in the role matrix.
+      tags: [Admin]
+      responses:
+        '200':
+          description: All team members
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminUserList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/users/{id}:
+    patch:
+      operationId: adminUpdateUserRole
+      summary: Change a team member's role
+      description: |
+        Super-admin only. You cannot change your own role — that prevents an admin
+        accidentally locking themselves (and possibly everyone) out of user
+        management.
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateUserRole' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminUser' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -1647,6 +1691,34 @@ components:
       additionalProperties: false
       properties:
         status: { $ref: '#/components/schemas/InquiryStatus' }
+
+    AdminUser:
+      type: object
+      required: [id, email, name, role, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        role: { $ref: '#/components/schemas/Role' }
+        avatarUrl: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+
+    AdminUserList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminUser' }
+
+    UpdateUserRole:
+      type: object
+      required: [role]
+      additionalProperties: false
+      properties:
+        role: { $ref: '#/components/schemas/Role' }
 
 security:
   - sessionCookie: []

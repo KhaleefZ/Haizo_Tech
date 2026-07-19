@@ -377,6 +377,40 @@ describe('work CRUD', () => {
   });
 });
 
+describe('team / users (super-admin only)', () => {
+  it('403 for a MANAGER-or-below, 200 for a super-admin', async () => {
+    // dev session is DEV role → forbidden from user management.
+    expect((await request(app).get('/v1/admin/users').set('Cookie', dev.cookie)).status).toBe(403);
+
+    const res = await request(app).get('/v1/admin/users').set('Cookie', admin.cookie);
+    expect(res.status).toBe(200);
+    expect(res.body.data.some((u: { email: string }) => u.email === ADMIN.email)).toBe(true);
+    // The password hash must never appear in the user list.
+    expect(res.body.data.every((u: Record<string, unknown>) => !('password' in u))).toBe(true);
+  });
+
+  it('changes another user’s role but refuses self-role changes', async () => {
+    const devUser = await prisma.user.findUnique({ where: { email: DEVU.email } });
+    const adminUser = await prisma.user.findUnique({ where: { email: ADMIN.email } });
+
+    const promote = await request(app)
+      .patch(`/v1/admin/users/${devUser!.id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ role: 'MANAGER' });
+    expect(promote.status).toBe(200);
+    expect(promote.body.role).toBe('MANAGER');
+    await prisma.user.update({ where: { id: devUser!.id }, data: { role: 'DEV' } });
+
+    const self = await request(app)
+      .patch(`/v1/admin/users/${adminUser!.id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ role: 'MANAGER' });
+    expect(self.status).toBe(403);
+  });
+});
+
 describe('inquiries inbox', () => {
   it('401 unauth, 403 for DEV', async () => {
     expect((await request(app).get('/v1/admin/inquiries')).status).toBe(401);

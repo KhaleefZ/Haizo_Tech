@@ -522,6 +522,48 @@ export interface paths {
         patch: operations["adminUpdateInquiry"];
         trace?: never;
     };
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List team members
+         * @description Super-admin only. Managing users is the top privilege in the role matrix.
+         */
+        get: operations["adminListUsers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change a team member's role
+         * @description Super-admin only. You cannot change your own role — that prevents an admin
+         *     accidentally locking themselves (and possibly everyone) out of user
+         *     management.
+         */
+        patch: operations["adminUpdateUserRole"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -949,6 +991,22 @@ export interface components {
         };
         UpdateInquiry: {
             status: components["schemas"]["InquiryStatus"];
+        };
+        AdminUser: {
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            role: components["schemas"]["Role"];
+            avatarUrl?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdminUserList: {
+            data: components["schemas"]["AdminUser"][];
+        };
+        UpdateUserRole: {
+            role: components["schemas"]["Role"];
         };
     };
     responses: {
@@ -2227,6 +2285,60 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminInquiry"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListUsers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All team members */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserList"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateUserRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserRole"];
+            };
+        };
+        responses: {
+            /** @description Updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUser"];
                 };
             };
             400: components["responses"]["BadRequest"];

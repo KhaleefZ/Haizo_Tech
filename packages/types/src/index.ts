@@ -74,6 +74,10 @@ export type AdminInquiry = Schemas['AdminInquiry'];
 export type AdminInquiryList = Schemas['AdminInquiryList'];
 export type UpdateInquiry = Schemas['UpdateInquiry'];
 
+export type AdminUser = Schemas['AdminUser'];
+export type AdminUserList = Schemas['AdminUserList'];
+export type UpdateUserRole = Schemas['UpdateUserRole'];
+
 /**
  * Typed API client.
  *

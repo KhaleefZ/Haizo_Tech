@@ -41,6 +41,9 @@ import type {
   AdminInquiry,
   AdminInquiryList,
   InquiryStatus,
+  AdminUser,
+  AdminUserList,
+  Role,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -192,5 +195,10 @@ export const api = {
     updateStatus: (id: string, status: InquiryStatus) =>
       request<AdminInquiry>('PATCH', `/admin/inquiries/${id}`, { status }),
     remove: (id: string) => request<void>('DELETE', `/admin/inquiries/${id}`),
+  },
+  users: {
+    list: () => request<AdminUserList>('GET', '/admin/users'),
+    updateRole: (id: string, role: Role) =>
+      request<AdminUser>('PATCH', `/admin/users/${id}`, { role }),
   },
 };
