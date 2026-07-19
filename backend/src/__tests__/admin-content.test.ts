@@ -383,6 +383,25 @@ describe('work CRUD', () => {
   });
 });
 
+describe('global search (Cmd-K)', () => {
+  it('finds entities across types; 403 for DEV', async () => {
+    expect(
+      (await request(app).get('/v1/admin/search').query({ q: 'test' }).set('Cookie', dev.cookie)).status,
+    ).toBe(403);
+
+    const res = await request(app)
+      .get('/v1/admin/search')
+      .query({ q: 'P4b Admin' })
+      .set('Cookie', admin.cookie);
+    expect(res.status).toBe(200);
+    const user = res.body.results.find(
+      (r: { type: string; label: string }) => r.type === 'user' && r.label === 'P4b Admin',
+    );
+    expect(user).toBeTruthy();
+    expect(user.url).toBe('/team');
+  });
+});
+
 describe('activity feed', () => {
   it('auto-records admin mutations with actor + label; 403 for DEV', async () => {
     expect((await request(app).get('/v1/admin/activity').set('Cookie', dev.cookie)).status).toBe(403);

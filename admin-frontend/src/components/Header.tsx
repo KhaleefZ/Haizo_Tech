@@ -40,7 +40,18 @@ export function Header({ user }: { user: CurrentUser }) {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-end gap-2 border-b border-border bg-card px-6">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-card px-6">
+      <button
+        onClick={() => document.dispatchEvent(new Event('command-palette:open'))}
+        className="mr-auto flex items-center gap-2 rounded-token border border-border bg-bg-tint px-3 py-1.5 text-sm text-text-muted transition-colors hover:border-brand-blue hover:text-text"
+      >
+        <svg viewBox="0 0 20 20" fill="none" className="size-4">
+          <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
+          <path d="m14 14 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        <span className="hidden sm:inline">Search</span>
+        <kbd className="hidden rounded border border-border bg-card px-1.5 text-xs sm:inline">⌘K</kbd>
+      </button>
       <NotificationBell />
       <div className="mx-1 h-6 w-px bg-border" />
       <div className="flex items-center gap-3">

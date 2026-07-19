@@ -644,6 +644,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Global search across admin entities (Cmd-K) */
+        get: operations["adminSearch"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/activity": {
         parameters: {
             query?: never;
@@ -1399,6 +1416,16 @@ export interface components {
         };
         UnreadCount: {
             count: number;
+        };
+        SearchResult: {
+            type: string;
+            id: string;
+            label: string;
+            sublabel?: string | null;
+            url: string;
+        };
+        SearchResults: {
+            results: components["schemas"]["SearchResult"][];
         };
         AdminActivity: {
             id: string;
@@ -3114,6 +3141,32 @@ export interface operations {
                 };
                 content?: never;
             };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminSearch: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Grouped-ish flat results */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResults"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalError"];

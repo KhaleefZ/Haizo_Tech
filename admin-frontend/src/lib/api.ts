@@ -69,6 +69,7 @@ import type {
   NotificationPage,
   UnreadCount,
   AdminActivityList,
+  SearchResults,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -277,6 +278,9 @@ export const api = {
   activity: {
     list: (page = 1, pageSize = 50) =>
       request<AdminActivityList>('GET', `/admin/activity?page=${page}&pageSize=${pageSize}`),
+  },
+  search: {
+    query: (q: string) => request<SearchResults>('GET', `/admin/search?q=${encodeURIComponent(q)}`),
   },
   notifications: {
     list: (cursor?: string, limit = 20) => {

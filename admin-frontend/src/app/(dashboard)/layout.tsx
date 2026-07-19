@@ -16,6 +16,7 @@ import { Spinner } from '@haizo/ui';
 import { useAuth } from '../../lib/auth';
 import { Sidebar } from '../../components/Sidebar';
 import { Header } from '../../components/Header';
+import { CommandPalette } from '../../components/CommandPalette';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -44,6 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+      <CommandPalette />
     </div>
   );
 }

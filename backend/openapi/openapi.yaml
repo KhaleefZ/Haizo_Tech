@@ -1084,6 +1084,27 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/search:
+    get:
+      operationId: adminSearch
+      summary: Global search across admin entities (Cmd-K)
+      tags: [Admin]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 100 }
+      responses:
+        '200':
+          description: Grouped-ish flat results
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResults' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/activity:
     get:
       operationId: adminListActivity
@@ -2333,6 +2354,26 @@ components:
       additionalProperties: false
       properties:
         count: { type: integer, minimum: 0 }
+
+    SearchResult:
+      type: object
+      required: [type, id, label, url]
+      additionalProperties: false
+      properties:
+        type: { type: string }
+        id: { type: string }
+        label: { type: string }
+        sublabel: { type: [string, 'null'] }
+        url: { type: string }
+
+    SearchResults:
+      type: object
+      required: [results]
+      additionalProperties: false
+      properties:
+        results:
+          type: array
+          items: { $ref: '#/components/schemas/SearchResult' }
 
     AdminActivity:
       type: object
