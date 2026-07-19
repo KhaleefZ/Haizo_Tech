@@ -69,6 +69,11 @@ export type AdminBlogList = Schemas['AdminBlogList'];
 export type CreateBlog = Schemas['CreateBlog'];
 export type UpdateBlog = Schemas['UpdateBlog'];
 
+export type InquiryStatus = Schemas['InquiryStatus'];
+export type AdminInquiry = Schemas['AdminInquiry'];
+export type AdminInquiryList = Schemas['AdminInquiryList'];
+export type UpdateInquiry = Schemas['UpdateInquiry'];
+
 /**
  * Typed API client.
  *

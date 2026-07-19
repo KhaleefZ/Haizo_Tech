@@ -844,6 +844,81 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/inquiries:
+    get:
+      operationId: adminListInquiries
+      summary: List contact enquiries
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          required: false
+          schema: { $ref: '#/components/schemas/InquiryStatus' }
+      responses:
+        '200':
+          description: A page of enquiries
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminInquiryList' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/inquiries/{id}:
+    get:
+      operationId: adminGetInquiry
+      summary: Get one enquiry
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The enquiry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminInquiry' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateInquiry
+      summary: Update an enquiry's status
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateInquiry' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminInquiry' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    delete:
+      operationId: adminDeleteInquiry
+      summary: Delete an enquiry
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
 components:
   securitySchemes:
     sessionCookie:
@@ -1537,6 +1612,41 @@ components:
           items: { type: string, maxLength: 40 }
         imageUrl: { type: [string, 'null'], maxLength: 500 }
         published: { type: boolean }
+
+    InquiryStatus:
+      type: string
+      enum: [NEW, READ, REPLIED]
+
+    AdminInquiry:
+      type: object
+      required: [id, name, email, message, status, submissionDate]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        message: { type: string }
+        phone: { type: [string, 'null'] }
+        service: { type: [string, 'null'] }
+        status: { $ref: '#/components/schemas/InquiryStatus' }
+        submissionDate: { type: string, format: date-time }
+
+    AdminInquiryList:
+      type: object
+      required: [data, meta]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminInquiry' }
+        meta: { $ref: '#/components/schemas/PageMeta' }
+
+    UpdateInquiry:
+      type: object
+      required: [status]
+      additionalProperties: false
+      properties:
+        status: { $ref: '#/components/schemas/InquiryStatus' }
 
 security:
   - sessionCookie: []

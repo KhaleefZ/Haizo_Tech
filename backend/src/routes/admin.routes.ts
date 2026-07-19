@@ -44,6 +44,12 @@ import {
   adminUpdateBlog,
   adminDeleteBlog,
 } from '../controllers/admin-content.controller.js';
+import {
+  adminListInquiries,
+  adminGetInquiry,
+  adminUpdateInquiry,
+  adminDeleteInquiry,
+} from '../controllers/inquiry.controller.js';
 
 // Content is managed by admins and managers; developers and visitors cannot.
 const manage = [requireAuth, requireRole('SUPER_ADMIN', 'MANAGER')] as const;
@@ -114,5 +120,14 @@ router.get('/admin/blog/:id', ...manage, adminGetBlog);
 router.patch('/admin/blog/:id', ...mutate, adminUpdateBlog);
 // operationId: adminDeleteBlog
 router.delete('/admin/blog/:id', ...mutate, adminDeleteBlog);
+
+// operationId: adminListInquiries
+router.get('/admin/inquiries', ...manage, adminListInquiries);
+// operationId: adminGetInquiry
+router.get('/admin/inquiries/:id', ...manage, adminGetInquiry);
+// operationId: adminUpdateInquiry
+router.patch('/admin/inquiries/:id', ...mutate, adminUpdateInquiry);
+// operationId: adminDeleteInquiry
+router.delete('/admin/inquiries/:id', ...mutate, adminDeleteInquiry);
 
 export default router;

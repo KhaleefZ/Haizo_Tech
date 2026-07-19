@@ -67,6 +67,7 @@ afterAll(async () => {
   await prisma.testimonial.deleteMany({ where: { author: { startsWith: 'P4bTst' } } });
   await prisma.work.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
   await prisma.blog.deleteMany({ where: { slug: { startsWith: SLUG_PREFIX } } });
+  await prisma.inquiry.deleteMany({ where: { email: 'p4c-inquiry@test.local' } });
   await prisma.user.deleteMany({ where: { email: { in: [ADMIN.email, DEVU.email] } } });
   await prisma.$disconnect();
 });
@@ -373,6 +374,38 @@ describe('work CRUD', () => {
     expect(
       (await request(app).delete(`/v1/admin/work/${id}`).set('Cookie', admin.cookie).set('X-CSRF-Token', admin.csrf)).status,
     ).toBe(204);
+  });
+});
+
+describe('inquiries inbox', () => {
+  it('401 unauth, 403 for DEV', async () => {
+    expect((await request(app).get('/v1/admin/inquiries')).status).toBe(401);
+    expect((await request(app).get('/v1/admin/inquiries').set('Cookie', dev.cookie)).status).toBe(403);
+  });
+
+  it('lists, filters by status, updates status, deletes', async () => {
+    const row = await prisma.inquiry.create({
+      data: { name: 'Test Lead', email: 'p4c-inquiry@test.local', message: 'Please build us a thing.' },
+    });
+
+    const list = await request(app).get('/v1/admin/inquiries?status=NEW').set('Cookie', admin.cookie);
+    expect(list.status).toBe(200);
+    expect(list.body.data.every((i: { status: string }) => i.status === 'NEW')).toBe(true);
+    expect(list.body.data.some((i: { id: string }) => i.id === row.id)).toBe(true);
+
+    const upd = await request(app)
+      .patch(`/v1/admin/inquiries/${row.id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send({ status: 'REPLIED' });
+    expect(upd.status).toBe(200);
+    expect(upd.body.status).toBe('REPLIED');
+
+    const del = await request(app)
+      .delete(`/v1/admin/inquiries/${row.id}`)
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf);
+    expect(del.status).toBe(204);
   });
 });
 

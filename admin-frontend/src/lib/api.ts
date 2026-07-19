@@ -38,6 +38,9 @@ import type {
   AdminBlogList,
   CreateBlog,
   UpdateBlog,
+  AdminInquiry,
+  AdminInquiryList,
+  InquiryStatus,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -179,5 +182,15 @@ export const api = {
     create: (input: CreateBlog) => request<AdminBlog>('POST', '/admin/blog', input),
     update: (id: string, input: UpdateBlog) => request<AdminBlog>('PATCH', `/admin/blog/${id}`, input),
     remove: (id: string) => request<void>('DELETE', `/admin/blog/${id}`),
+  },
+  inquiries: {
+    list: (status?: InquiryStatus, page = 1, pageSize = 100) => {
+      const q = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+      if (status) q.set('status', status);
+      return request<AdminInquiryList>('GET', `/admin/inquiries?${q.toString()}`);
+    },
+    updateStatus: (id: string, status: InquiryStatus) =>
+      request<AdminInquiry>('PATCH', `/admin/inquiries/${id}`, { status }),
+    remove: (id: string) => request<void>('DELETE', `/admin/inquiries/${id}`),
   },
 };
