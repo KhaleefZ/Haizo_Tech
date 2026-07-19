@@ -49,6 +49,17 @@ const schema = z.object({
   MAIL_FROM: z.string().optional(),
   /** Where deep links in emails point (the admin app). */
   ADMIN_URL: z.string().url().default('http://localhost:3001'),
+
+  /**
+   * Object storage for uploads (Cloudflare R2 / any S3-compatible). All optional:
+   * without them the upload endpoints return 503 and image fields stay plain URLs.
+   */
+  S3_ENDPOINT: z.string().optional(), // R2: https://<accountid>.r2.cloudflarestorage.com
+  S3_REGION: z.string().default('auto'),
+  S3_BUCKET: z.string().optional(),
+  S3_ACCESS_KEY_ID: z.string().optional(),
+  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  S3_PUBLIC_URL: z.string().optional(), // public base for objects, e.g. https://cdn.haizotech.com
 });
 
 const parsed = schema.safeParse(process.env);
@@ -95,6 +106,13 @@ export const config = {
   // Fall back to the SMTP user as the From address if not set explicitly.
   mailFrom: raw.MAIL_FROM ?? raw.SMTP_USER,
   adminUrl: raw.ADMIN_URL,
+
+  s3Endpoint: raw.S3_ENDPOINT,
+  s3Region: raw.S3_REGION,
+  s3Bucket: raw.S3_BUCKET,
+  s3AccessKeyId: raw.S3_ACCESS_KEY_ID,
+  s3SecretAccessKey: raw.S3_SECRET_ACCESS_KEY,
+  s3PublicUrl: raw.S3_PUBLIC_URL,
 } as const;
 
 export type Config = typeof config;

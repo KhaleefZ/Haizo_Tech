@@ -71,6 +71,9 @@ import type {
   AdminActivityList,
   SearchResults,
   AnalyticsSummary,
+  PresignRequest,
+  PresignResponse,
+  ConfirmResponse,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -278,6 +281,11 @@ export const api = {
   },
   analytics: {
     get: () => request<AnalyticsSummary>('GET', '/admin/analytics'),
+  },
+  uploads: {
+    presign: (input: PresignRequest) =>
+      request<PresignResponse>('POST', '/admin/uploads/presign', input),
+    confirm: (id: string) => request<ConfirmResponse>('POST', `/admin/uploads/${id}/confirm`),
   },
   activity: {
     list: (page = 1, pageSize = 50) =>

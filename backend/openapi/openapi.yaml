@@ -1141,6 +1141,50 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /admin/uploads/presign:
+    post:
+      operationId: adminPresignUpload
+      summary: Get a presigned URL to upload a file directly to storage
+      description: |
+        Validates the mime type and size, records a PENDING Attachment, and returns
+        a short-lived PUT url. The browser uploads straight to the bucket, then calls
+        confirm. Returns 503 if object storage isn't configured.
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PresignRequest' }
+      responses:
+        '200':
+          description: Presigned upload
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PresignResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/uploads/{id}/confirm:
+    post:
+      operationId: adminConfirmUpload
+      summary: Confirm a direct upload completed
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The public URL of the stored file
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConfirmResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/analytics:
     get:
       operationId: adminGetAnalytics
@@ -1621,6 +1665,11 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
     InternalError:
       description: Unexpected server error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ServiceUnavailable:
+      description: A dependency (e.g. object storage) isn't configured
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
@@ -2431,6 +2480,33 @@ components:
           type: array
           items: { $ref: '#/components/schemas/AdminActivity' }
         meta: { $ref: '#/components/schemas/PageMeta' }
+
+    PresignRequest:
+      type: object
+      required: [filename, mimeType, size]
+      additionalProperties: false
+      properties:
+        filename: { type: string, minLength: 1, maxLength: 255 }
+        mimeType: { type: string, minLength: 1, maxLength: 100 }
+        size: { type: integer, minimum: 1 }
+
+    PresignResponse:
+      type: object
+      required: [attachmentId, key, uploadUrl, publicUrl]
+      additionalProperties: false
+      properties:
+        attachmentId: { type: string }
+        key: { type: string }
+        uploadUrl: { type: string }
+        publicUrl: { type: string }
+
+    ConfirmResponse:
+      type: object
+      required: [publicUrl, status]
+      additionalProperties: false
+      properties:
+        publicUrl: { type: string }
+        status: { type: string }
 
     RecordPageView:
       type: object

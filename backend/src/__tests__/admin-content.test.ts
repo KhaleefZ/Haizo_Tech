@@ -385,6 +385,22 @@ describe('work CRUD', () => {
   });
 });
 
+describe('uploads (object storage)', () => {
+  it('presign is 401 unauth, and 503 when storage is not configured', async () => {
+    const body = { filename: 'photo.png', mimeType: 'image/png', size: 1024 };
+    expect((await request(app).post('/v1/admin/uploads/presign').send(body)).status).toBe(401);
+
+    const res = await request(app)
+      .post('/v1/admin/uploads/presign')
+      .set('Cookie', admin.cookie)
+      .set('X-CSRF-Token', admin.csrf)
+      .send(body);
+    // Tests run without S3 credentials → the endpoint reports unavailable, not a crash.
+    expect(res.status).toBe(503);
+    expect(res.body.error.code).toBe('UNAVAILABLE');
+  });
+});
+
 describe('analytics', () => {
   it('collects page views (public) and aggregates them for the dashboard', async () => {
     for (let i = 0; i < 3; i++) {

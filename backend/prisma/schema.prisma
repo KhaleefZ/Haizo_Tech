@@ -275,6 +275,22 @@ model MetricDaily {
   views Int      @default(0)
 }
 
+// Phase 6 (additive). Object-storage uploads. A row is created PENDING when a
+// presigned URL is issued and flipped to READY once the client confirms the
+// direct upload — so half-finished uploads are distinguishable from live files.
+model Attachment {
+  id           String   @id @default(uuid())
+  key          String   @unique // object key in the bucket
+  filename     String
+  mimeType     String
+  size         Int
+  status       String   @default("PENDING") // PENDING | READY
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  @@index([status])
+}
+
 // ===========================================================================
 // PHASE 2 — content models.
 //

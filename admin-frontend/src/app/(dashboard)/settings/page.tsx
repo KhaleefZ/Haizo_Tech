@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Card, Field, Input, Skeleton, Textarea, useToast } from '@haizo/ui';
 import type { AdminProfile } from '@haizo/types';
 import { api, ApiError } from '../../../lib/api';
+import { FileUpload } from '../../../components/FileUpload';
 
 const PROFILE_KEY = ['admin', 'profile'] as const;
 
@@ -51,8 +52,14 @@ function ProfileCard({ profile }: { profile: AdminProfile }) {
         <Field label="Bio">
           <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} maxLength={2000} />
         </Field>
-        <Field label="Avatar URL">
-          <Input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} maxLength={500} placeholder="https://…" />
+        <Field label="Avatar" hint="Paste a URL or upload an image.">
+          <div className="flex items-center gap-3">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="size-10 shrink-0 rounded-full border border-border object-cover" />
+            ) : null}
+            <Input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} maxLength={500} placeholder="https://…" className="flex-1" />
+            <FileUpload accept="image/*" label="Upload" onUploaded={(url) => setAvatarUrl(url)} />
+          </div>
         </Field>
         <div className="flex justify-end">
           <Button type="submit" loading={save.isPending}>Save profile</Button>

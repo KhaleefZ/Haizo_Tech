@@ -16,6 +16,7 @@ export type ErrorCode =
   | 'NOT_FOUND'
   | 'CONFLICT'
   | 'RATE_LIMITED'
+  | 'UNAVAILABLE'
   | 'INTERNAL';
 
 const STATUS_BY_CODE: Record<ErrorCode, number> = {
@@ -25,6 +26,7 @@ const STATUS_BY_CODE: Record<ErrorCode, number> = {
   NOT_FOUND: 404,
   CONFLICT: 409,
   RATE_LIMITED: 429,
+  UNAVAILABLE: 503,
   INTERNAL: 500,
 };
 
@@ -71,6 +73,8 @@ export const forbidden = (message = 'You do not have access to that') =>
   new AppError('FORBIDDEN', message);
 
 export const conflict = (message: string) => new AppError('CONFLICT', message);
+
+export const unavailable = (message: string) => new AppError('UNAVAILABLE', message);
 
 export const validationFailed = (details: ErrorDetail[]) =>
   new AppError('VALIDATION_FAILED', 'Some fields need attention', { details });

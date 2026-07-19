@@ -56,6 +56,7 @@ import {
 import { adminListUsers, adminUpdateUserRole } from '../controllers/user.controller.js';
 import { adminGetDashboard } from '../controllers/dashboard.controller.js';
 import { adminGetAnalytics } from '../controllers/analytics.controller.js';
+import { adminPresignUpload, adminConfirmUpload } from '../controllers/upload.controller.js';
 import {
   adminListNotifications,
   adminUnreadCount,
@@ -213,6 +214,12 @@ router.post('/admin/notifications/read-all', ...selfMutate, adminMarkAllNotifica
 router.post('/admin/notifications/:id/read', ...selfMutate, adminMarkNotificationRead);
 // operationId: adminDeleteNotification
 router.delete('/admin/notifications/:id', ...selfMutate, adminDeleteNotification);
+
+// Uploads: any signed-in user (e.g. their own avatar). CSRF on the writes.
+// operationId: adminPresignUpload
+router.post('/admin/uploads/presign', ...selfMutate, adminPresignUpload);
+// operationId: adminConfirmUpload
+router.post('/admin/uploads/:id/confirm', ...selfMutate, adminConfirmUpload);
 
 // operationId: adminGetAnalytics
 router.get('/admin/analytics', ...manage, adminGetAnalytics);

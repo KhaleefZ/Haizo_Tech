@@ -85,6 +85,9 @@ export type UpdateClient = Schemas['UpdateClient'];
 
 export type DashboardStats = Schemas['DashboardStats'];
 export type RecordPageView = Schemas['RecordPageView'];
+export type PresignRequest = Schemas['PresignRequest'];
+export type PresignResponse = Schemas['PresignResponse'];
+export type ConfirmResponse = Schemas['ConfirmResponse'];
 export type AnalyticsSummary = Schemas['AnalyticsSummary'];
 export type DailyViews = Schemas['DailyViews'];
 export type PathViews = Schemas['PathViews'];

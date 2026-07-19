@@ -5,6 +5,7 @@ import { Button, Field, Input, Textarea } from '@haizo/ui';
 import type { AdminBlog, CreateBlog } from '@haizo/types';
 import { ApiError } from '../../lib/api';
 import { slugify } from '../../lib/slug';
+import { FileUpload } from '../FileUpload';
 
 const parseTags = (v: string) =>
   v.split(',').map((s) => s.trim()).filter(Boolean);
@@ -79,8 +80,11 @@ export function BlogForm({ initial, onSubmit, onCancel, pending }: Props) {
         <Field label="Tags" hint="Comma-separated.">
           <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="news, engineering" />
         </Field>
-        <Field label="Cover image URL">
-          <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} maxLength={500} placeholder="https://…" />
+        <Field label="Cover image" hint="Paste a URL or upload.">
+          <div className="flex items-center gap-2">
+            <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} maxLength={500} placeholder="https://…" className="flex-1" />
+            <FileUpload accept="image/*" label="Upload" onUploaded={(url) => setImageUrl(url)} />
+          </div>
         </Field>
       </div>
 

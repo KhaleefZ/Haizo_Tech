@@ -698,6 +698,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/uploads/presign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get a presigned URL to upload a file directly to storage
+         * @description Validates the mime type and size, records a PENDING Attachment, and returns
+         *     a short-lived PUT url. The browser uploads straight to the bucket, then calls
+         *     confirm. Returns 503 if object storage isn't configured.
+         */
+        post: operations["adminPresignUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/uploads/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm a direct upload completed */
+        post: operations["adminConfirmUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/analytics": {
         parameters: {
             query?: never;
@@ -1479,6 +1518,21 @@ export interface components {
             data: components["schemas"]["AdminActivity"][];
             meta: components["schemas"]["PageMeta"];
         };
+        PresignRequest: {
+            filename: string;
+            mimeType: string;
+            size: number;
+        };
+        PresignResponse: {
+            attachmentId: string;
+            key: string;
+            uploadUrl: string;
+            publicUrl: string;
+        };
+        ConfirmResponse: {
+            publicUrl: string;
+            status: string;
+        };
         RecordPageView: {
             path: string;
             referrer?: string | null;
@@ -1722,6 +1776,15 @@ export interface components {
         };
         /** @description Unexpected server error */
         InternalError: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description A dependency (e.g. object storage) isn't configured */
+        ServiceUnavailable: {
             headers: {
                 [name: string]: unknown;
             };
@@ -3275,6 +3338,61 @@ export interface operations {
             };
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminPresignUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresignRequest"];
+            };
+        };
+        responses: {
+            /** @description Presigned upload */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresignResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    adminConfirmUpload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The public URL of the stored file */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfirmResponse"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalError"];
         };
     };
