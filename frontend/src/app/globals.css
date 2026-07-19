@@ -4,4 +4,25 @@
 /* Tailwind v4 auto-detects sources relative to this file and skips node_modules.
    @haizo/ui is a symlinked workspace package, so its class names live outside
    that scan and every component would render unstyled without this line. */
-@source "../../../../packages/ui/src";
+@source "../../../packages/ui/src";
+
+/* Keyframes used by the marketing components. Transform/opacity only, so none of
+   them can trigger layout. The global reduced-motion floor in theme.css already
+   neutralises every one of these. */
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes slide {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .45; transform: scale(.72); }
+}

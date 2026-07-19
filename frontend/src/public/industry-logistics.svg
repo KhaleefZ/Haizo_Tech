@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Route map with vehicles and waypoints">
+  <rect width="400" height="300" fill="#EFF6FF"/>
+  <g stroke="#DBEAFE" stroke-width="1">
+    <path d="M0 40h400M0 80h400M0 120h400M0 160h400M0 200h400"/>
+    <path d="M40 0v230M80 0v230M120 0v230M160 0v230M200 0v230M240 0v230M280 0v230M320 0v230M360 0v230"/>
+  </g>
+
+  <path d="M-10 150c40-6 60-40 100-46 44-7 62 28 104 22 40-6 46-46 92-52 32-4 68 6 118 2" fill="none" stroke="#BFDBFE" stroke-width="14" stroke-linecap="round"/>
+  <path d="M-10 150c40-6 60-40 100-46 44-7 62 28 104 22 40-6 46-46 92-52 32-4 68 6 118 2" fill="none" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 8"/>
+
+  <path d="M20 208c46 6 78-28 128-30 52-2 76 26 128 20 40-5 76-22 134-18" fill="none" stroke="#93C5FD" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 7"/>
+
+  <g fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2.5">
+    <circle cx="90" cy="104" r="7"/>
+    <circle cx="194" cy="126" r="7"/>
+    <circle cx="286" cy="74" r="7"/>
+  </g>
+  <circle cx="90" cy="104" r="2.5" fill="#1D4ED8"/>
+  <circle cx="194" cy="126" r="2.5" fill="#1D4ED8"/>
+  <circle cx="286" cy="74" r="2.5" fill="#1D4ED8"/>
+
+  <path d="M38 128a12 12 0 1 1 24 0c0 9-12 22-12 22s-12-13-12-22z" fill="#0F2A57"/>
+  <circle cx="50" cy="128" r="4.5" fill="#EFF6FF"/>
+  <path d="M336 44a12 12 0 1 1 24 0c0 9-12 22-12 22s-12-13-12-22z" fill="#1D4ED8"/>
+  <circle cx="348" cy="44" r="4.5" fill="#EFF6FF"/>
+
+  <g transform="translate(122 78)">
+    <rect x="0" y="0" width="34" height="20" rx="4" fill="#0F2A57"/>
+    <path d="M34 7h10l8 7v6H34z" fill="#3B82F6"/>
+    <circle cx="10" cy="22" r="4.5" fill="#0F2A57" stroke="#EFF6FF" stroke-width="1.5"/>
+    <circle cx="42" cy="22" r="4.5" fill="#0F2A57" stroke="#EFF6FF" stroke-width="1.5"/>
+  </g>
+
+  <g transform="translate(240 96)">
+    <rect x="0" y="0" width="28" height="16" rx="3.5" fill="#1D4ED8"/>
+    <path d="M28 6h8l6 5v5H28z" fill="#93C5FD"/>
+    <circle cx="8" cy="18" r="3.8" fill="#0F2A57" stroke="#EFF6FF" stroke-width="1.4"/>
+    <circle cx="34" cy="18" r="3.8" fill="#0F2A57" stroke="#EFF6FF" stroke-width="1.4"/>
+  </g>
+
+  <rect x="252" y="150" width="118" height="46" rx="8" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <rect x="264" y="160" width="46" height="5" rx="2.5" fill="#BFDBFE"/>
+  <rect x="264" y="174" width="74" height="6" rx="3" fill="#DBEAFE"/>
+  <rect x="264" y="174" width="48" height="6" rx="3" fill="#3B82F6"/>
+
+  <path d="M0 214h400v86H0z" fill="#0F2A57" opacity=".06"/>
+  <path d="M0 240c90 12 160-12 230-4s110 12 170 4v60H0z" fill="#1D4ED8" opacity=".07"/>
+</svg>

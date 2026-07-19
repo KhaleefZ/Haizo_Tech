@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ledger with reconciliation lines and a payment flow">
+  <rect width="400" height="300" fill="#F5F8FF"/>
+
+  <rect x="16" y="20" width="184" height="176" rx="10" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <path d="M16 30a10 10 0 0 1 10-10h164a10 10 0 0 1 10 10v18H16z" fill="#0F2A57"/>
+  <rect x="28" y="31" width="58" height="6" rx="3" fill="#93C5FD"/>
+  <g font-family="Inter, system-ui, sans-serif" font-size="9" fill="#0F2A57">
+    <rect x="28" y="60" width="60" height="5" rx="2.5" fill="#BFDBFE"/>
+    <rect x="112" y="60" width="42" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="168" y="58" width="20" height="9" rx="4.5" fill="#DBEAFE"/>
+    <rect x="28" y="84" width="72" height="5" rx="2.5" fill="#BFDBFE"/>
+    <rect x="112" y="84" width="42" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="168" y="82" width="20" height="9" rx="4.5" fill="#3B82F6"/>
+    <rect x="28" y="108" width="54" height="5" rx="2.5" fill="#BFDBFE"/>
+    <rect x="112" y="108" width="42" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="168" y="106" width="20" height="9" rx="4.5" fill="#DBEAFE"/>
+    <rect x="28" y="132" width="66" height="5" rx="2.5" fill="#BFDBFE"/>
+    <rect x="112" y="132" width="42" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="168" y="130" width="20" height="9" rx="4.5" fill="#3B82F6"/>
+  </g>
+  <path d="M28 156h160" stroke="#DBEAFE" stroke-width="1.5"/>
+  <rect x="112" y="166" width="76" height="8" rx="4" fill="#1D4ED8"/>
+
+  <g stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4 4" fill="none">
+    <path d="M200 64h48"/>
+    <path d="M200 88h48"/>
+    <path d="M200 112h48"/>
+    <path d="M200 136h48"/>
+  </g>
+
+  <rect x="248" y="20" width="136" height="176" rx="10" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <path d="M248 30a10 10 0 0 1 10-10h116a10 10 0 0 1 10 10v18h-136z" fill="#1D4ED8"/>
+  <rect x="260" y="31" width="46" height="6" rx="3" fill="#DBEAFE"/>
+
+  <circle cx="284" cy="80" r="14" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <path d="M284 73v14M289 76h-7a3.5 3.5 0 0 0 0 7h4a3.5 3.5 0 0 1 0 7h-7" stroke="#1D4ED8" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M302 80h26" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M322 75l6 5-6 5" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="334" y="66" width="34" height="28" rx="6" fill="#0F2A57"/>
+  <path d="M340 76h22" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
+
+  <path d="M284 96v18M284 114h44a8 8 0 0 1 8 8v10" stroke="#BFDBFE" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="336" cy="140" r="12" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/>
+  <path d="M331 140l4 4 7-8" fill="none" stroke="#1D4ED8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="260" y="160" width="72" height="6" rx="3" fill="#DBEAFE"/>
+  <rect x="260" y="174" width="48" height="6" rx="3" fill="#EFF6FF" stroke="#DBEAFE"/>
+
+  <path d="M0 200h400v100H0z" fill="#0F2A57" opacity=".05"/>
+  <path d="M0 228c90 14 160-14 240-4s110 16 160 6v70H0z" fill="#1D4ED8" opacity=".07"/>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Multi-provider cloud control plane with linked nodes">
+  <rect width="400" height="300" fill="#F5F8FF"/>
+
+  <rect x="128" y="24" width="144" height="52" rx="10" fill="#0F2A57"/>
+  <rect x="144" y="38" width="66" height="7" rx="3.5" fill="#93C5FD"/>
+  <rect x="144" y="53" width="44" height="5" rx="2.5" fill="#3B82F6"/>
+  <circle cx="252" cy="42" r="6" fill="#3B82F6"/>
+  <circle cx="252" cy="58" r="6" fill="#1D4ED8"/>
+
+  <g stroke="#BFDBFE" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M200 76v22"/>
+    <path d="M200 98H74a8 8 0 0 0-8 8v20"/>
+    <path d="M200 98h126a8 8 0 0 1 8 8v20"/>
+    <path d="M200 98v28"/>
+  </g>
+  <g fill="#3B82F6">
+    <circle cx="200" cy="98" r="4"/>
+    <circle cx="66" cy="112" r="3"/>
+    <circle cx="334" cy="112" r="3"/>
+  </g>
+
+  <g>
+    <rect x="24" y="126" width="84" height="66" rx="9" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <path d="M40 152a11 11 0 0 1 21-4 9 9 0 0 1 2 18H44a8 8 0 0 1-4-14z" fill="#3B82F6"/>
+    <rect x="38" y="176" width="46" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+  <g>
+    <rect x="158" y="126" width="84" height="66" rx="9" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="1.5"/>
+    <path d="M174 152a11 11 0 0 1 21-4 9 9 0 0 1 2 18h-19a8 8 0 0 1-4-14z" fill="#1D4ED8"/>
+    <rect x="172" y="176" width="46" height="5" rx="2.5" fill="#BFDBFE"/>
+  </g>
+  <g>
+    <rect x="292" y="126" width="84" height="66" rx="9" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <path d="M308 152a11 11 0 0 1 21-4 9 9 0 0 1 2 18h-19a8 8 0 0 1-4-14z" fill="#0F2A57"/>
+    <rect x="306" y="176" width="46" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+
+  <g stroke="#DBEAFE" stroke-width="1.5" stroke-dasharray="4 5" fill="none">
+    <path d="M108 160h50"/>
+    <path d="M242 160h50"/>
+  </g>
+
+  <g fill="#FFFFFF" stroke="#3B82F6" stroke-width="2">
+    <circle cx="66" cy="134" r="6"/>
+    <circle cx="200" cy="134" r="6"/>
+    <circle cx="334" cy="134" r="6"/>
+  </g>
+
+  <path d="M0 200h400v100H0z" fill="#0F2A57" opacity=".05"/>
+  <path d="M0 230c80-10 140 14 210 6s120-14 190-6v70H0z" fill="#1D4ED8" opacity=".07"/>
+</svg>

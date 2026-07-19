@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Layered system architecture with services and a database">
+  <rect width="400" height="300" fill="#F5F8FF"/>
+
+  <rect x="60" y="24" width="280" height="40" rx="9" fill="#0F2A57"/>
+  <rect x="78" y="40" width="82" height="7" rx="3.5" fill="#93C5FD"/>
+  <circle cx="310" cy="44" r="6" fill="#3B82F6"/>
+
+  <path d="M200 64v18" stroke="#BFDBFE" stroke-width="2" stroke-linecap="round"/>
+  <rect x="60" y="82" width="280" height="34" rx="8" fill="#1D4ED8"/>
+  <rect x="78" y="95" width="70" height="6" rx="3" fill="#DBEAFE"/>
+  <g fill="#93C5FD">
+    <rect x="270" y="93" width="24" height="10" rx="5"/>
+    <rect x="302" y="93" width="24" height="10" rx="5"/>
+  </g>
+
+  <g stroke="#BFDBFE" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M200 116v10"/>
+    <path d="M118 126v-10h164v10"/>
+  </g>
+
+  <g>
+    <rect x="60" y="132" width="80" height="52" rx="8" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <rect x="74" y="146" width="40" height="6" rx="3" fill="#3B82F6"/>
+    <rect x="74" y="160" width="52" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="74" y="170" width="34" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+  <g>
+    <rect x="160" y="132" width="80" height="52" rx="8" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="1.5"/>
+    <rect x="174" y="146" width="40" height="6" rx="3" fill="#1D4ED8"/>
+    <rect x="174" y="160" width="52" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="174" y="170" width="30" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+  <g>
+    <rect x="260" y="132" width="80" height="52" rx="8" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+    <rect x="274" y="146" width="40" height="6" rx="3" fill="#3B82F6"/>
+    <rect x="274" y="160" width="52" height="5" rx="2.5" fill="#DBEAFE"/>
+    <rect x="274" y="170" width="38" height="5" rx="2.5" fill="#DBEAFE"/>
+  </g>
+
+  <g stroke="#BFDBFE" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M100 184v14h200v-14"/>
+    <path d="M200 184v28"/>
+  </g>
+
+  <g>
+    <ellipse cx="200" cy="222" rx="52" ry="12" fill="#3B82F6"/>
+    <path d="M148 222v22c0 6.6 23.3 12 52 12s52-5.4 52-12v-22" fill="#1D4ED8"/>
+    <ellipse cx="200" cy="222" rx="52" ry="12" fill="#3B82F6"/>
+    <path d="M148 234c0 6.6 23.3 12 52 12s52-5.4 52-12" fill="none" stroke="#DBEAFE" stroke-width="1.5"/>
+  </g>
+
+  <path d="M0 268h400v32H0z" fill="#0F2A57" opacity=".04"/>
+</svg>

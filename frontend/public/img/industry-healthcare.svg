@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Patient record with a vitals chart">
+  <rect width="400" height="300" fill="#EFF6FF"/>
+  <rect x="18" y="22" width="364" height="186" rx="12" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <path d="M18 34a12 12 0 0 1 12-12h340a12 12 0 0 1 12 12v24H18z" fill="#0F2A57"/>
+  <circle cx="40" cy="46" r="8" fill="#3B82F6"/>
+  <rect x="56" y="41" width="86" height="6" rx="3" fill="#FFFFFF" opacity=".92"/>
+  <rect x="56" y="51" width="52" height="4" rx="2" fill="#93C5FD"/>
+  <rect x="300" y="40" width="66" height="14" rx="7" fill="#1D4ED8"/>
+  <rect x="310" y="45" width="46" height="4" rx="2" fill="#DBEAFE"/>
+
+  <rect x="34" y="76" width="150" height="60" rx="8" fill="#F5F8FF" stroke="#DBEAFE"/>
+  <rect x="46" y="88" width="40" height="5" rx="2.5" fill="#93C5FD"/>
+  <text x="46" y="120" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#1D4ED8">72</text>
+  <path d="M96 118h10l5-14 6 22 6-16 4 8h14" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="196" y="76" width="76" height="60" rx="8" fill="#F5F8FF" stroke="#DBEAFE"/>
+  <rect x="208" y="88" width="34" height="5" rx="2.5" fill="#93C5FD"/>
+  <text x="208" y="120" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="700" fill="#0F2A57">98%</text>
+
+  <rect x="284" y="76" width="82" height="60" rx="8" fill="#F5F8FF" stroke="#DBEAFE"/>
+  <rect x="296" y="88" width="34" height="5" rx="2.5" fill="#93C5FD"/>
+  <text x="296" y="120" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="700" fill="#0F2A57">36.8</text>
+
+  <g fill="none" stroke="#DBEAFE" stroke-width="1">
+    <path d="M34 152h332M34 172h332M34 192h332"/>
+  </g>
+  <rect x="34" y="146" width="64" height="6" rx="3" fill="#BFDBFE"/>
+  <rect x="118" y="146" width="96" height="6" rx="3" fill="#DBEAFE"/>
+  <rect x="234" y="146" width="52" height="6" rx="3" fill="#DBEAFE"/>
+  <circle cx="352" cy="149" r="5" fill="#3B82F6"/>
+  <rect x="34" y="166" width="80" height="6" rx="3" fill="#BFDBFE"/>
+  <rect x="134" y="166" width="72" height="6" rx="3" fill="#DBEAFE"/>
+  <rect x="226" y="166" width="64" height="6" rx="3" fill="#DBEAFE"/>
+  <circle cx="352" cy="169" r="5" fill="#93C5FD"/>
+
+  <path d="M0 208h400v92H0z" fill="#0F2A57" opacity=".06"/>
+  <path d="M0 236c70-16 140-16 210 0s120 18 190 4v60H0z" fill="#1D4ED8" opacity=".08"/>
+</svg>

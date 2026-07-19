@@ -399,7 +399,7 @@ components:
 
     Service:
       type: object
-      required: [id, slug, title, summary, order, published]
+      required: [id, slug, title, summary, stack, deliverables, order, published]
       additionalProperties: false
       properties:
         id: { type: string }

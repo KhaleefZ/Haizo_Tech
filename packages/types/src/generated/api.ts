@@ -279,8 +279,8 @@ export interface components {
             summary: string;
             body?: string | null;
             icon?: string | null;
-            stack?: string[];
-            deliverables?: string[];
+            stack: string[];
+            deliverables: string[];
             timeline?: string | null;
             order: number;
             published: boolean;
