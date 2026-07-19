@@ -190,12 +190,46 @@ paths:
     post:
       operationId: logout
       summary: Clear session cookies
+      description: |
+        Clears all three cookies. Idempotent and does not require a valid access
+        token — an expired session must still be able to sign out — but it does
+        require the CSRF header, so a cross-site page cannot force a logout.
       tags: [Auth]
+      security: []
       responses:
         '204':
           description: Signed out
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/refresh:
+    post:
+      operationId: refresh
+      summary: Exchange the refresh cookie for a fresh access token
+      description: |
+        Reads `hz_rt` (sent only on this path) and, if it is valid and its
+        `tokenVersion` still matches the user, issues a new `hz_at` and rotates
+        `hz_rt` and `hz_csrf`. Requires the CSRF header. No token is returned in
+        the body. A revoked or expired refresh token is a `401`, prompting the
+        client to send the user back to the login screen.
+      tags: [Auth]
+      security: []
+      responses:
+        '200':
+          description: Session refreshed
+          headers:
+            Set-Cookie:
+              description: rotated hz_at, hz_rt and hz_csrf
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CurrentUser' }
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalError'
 

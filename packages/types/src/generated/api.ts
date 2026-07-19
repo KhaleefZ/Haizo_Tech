@@ -147,8 +147,37 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Clear session cookies */
+        /**
+         * Clear session cookies
+         * @description Clears all three cookies. Idempotent and does not require a valid access
+         *     token — an expired session must still be able to sign out — but it does
+         *     require the CSRF header, so a cross-site page cannot force a logout.
+         */
         post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Exchange the refresh cookie for a fresh access token
+         * @description Reads `hz_rt` (sent only on this path) and, if it is valid and its
+         *     `tokenVersion` still matches the user, issues a new `hz_at` and rotates
+         *     `hz_rt` and `hz_csrf`. Requires the CSRF header. No token is returned in
+         *     the body. A revoked or expired refresh token is a `401`, prompting the
+         *     client to send the user back to the login screen.
+         */
+        post: operations["refresh"];
         delete?: never;
         options?: never;
         head?: never;
@@ -651,7 +680,32 @@ export interface operations {
                 };
                 content?: never;
             };
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session refreshed */
+            200: {
+                headers: {
+                    /** @description rotated hz_at, hz_rt and hz_csrf */
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUser"];
+                };
+            };
             401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalError"];
         };
     };

@@ -8,10 +8,12 @@ import { Router } from 'express';
 import type { Router as ExpressRouter } from 'express';
 import healthRoutes from './health.routes.js';
 import contentRoutes from './content.routes.js';
+import authRoutes from './auth.routes.js';
 
 const router: ExpressRouter = Router();
 
 router.use(healthRoutes);
 router.use(contentRoutes);
+router.use(authRoutes);
 
 export default router;

@@ -52,6 +52,12 @@ model User {
   inviteTokenExpires   DateTime?
   avatarUrl            String?
 
+  // Phase 3 (additive). Bumping this invalidates every outstanding access and
+  // refresh token for the user at once — it is the claim we check on every
+  // request, so it is how "log out everywhere" and a JWT_SECRET rotation both
+  // work without a token blocklist. Defaulted, so existing rows need no backfill.
+  tokenVersion         Int            @default(0)
+
   announcements Announcement[] @relation("AnnouncementAuthor")
   blogs         Blog[]         @relation("BlogAuthor")
   notifications Notification[] @relation("UserNotifications")

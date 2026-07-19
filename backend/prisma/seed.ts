@@ -12,6 +12,7 @@
  * Idempotent — upserts by slug, so re-running is safe.
  */
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -135,6 +136,25 @@ async function main() {
       ? '✓ fabricated testimonials not carried over'
       : `✗ ${fabricated} fabricated testimonials present — remove them`,
   );
+
+  // A known SUPER_ADMIN credential for LOCAL development only — so cookie auth
+  // can be exercised in the browser and via curl without knowing a real user's
+  // password. Guarded off in production, where seeding a known password would be
+  // a backdoor. The password is bcrypt-hashed exactly like a real one.
+  if (process.env.NODE_ENV !== 'production') {
+    const password = await bcrypt.hash('DevAdmin123!', 10);
+    await prisma.user.upsert({
+      where: { email: 'dev-admin@haizotech.com' },
+      update: { password, role: 'SUPER_ADMIN', name: 'Dev Admin', tokenVersion: 0 },
+      create: {
+        email: 'dev-admin@haizotech.com',
+        password,
+        name: 'Dev Admin',
+        role: 'SUPER_ADMIN',
+      },
+    });
+    console.log('✓ dev-admin@haizotech.com / DevAdmin123! (local only)');
+  }
 }
 
 main()
