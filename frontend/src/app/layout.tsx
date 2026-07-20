@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PageTransition } from '@/components/PageTransition';
 import { Analytics } from '@/components/Analytics';
+import { SupportWidgetMount } from '@/components/support/SupportWidgetMount';
 import { CONTACT, SOCIALS } from '@/lib/contact';
 import { SITE_URL } from '@/lib/api';
 import './globals.css';
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PageTransition>{children}</PageTransition>
         <SiteFooter />
         <Analytics />
+        <SupportWidgetMount />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }}

@@ -58,7 +58,9 @@ export function createApp(): Express {
     cors({
       origin: config.corsOrigins,
       credentials: true,
-      allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'X-Request-Id'],
+      // Authorization is the visitor support widget's bearer token (staff auth is
+      // cookie-based and needs no header). Without it here, the preflight fails.
+      allowedHeaders: ['Content-Type', 'X-CSRF-Token', 'X-Request-Id', 'Authorization'],
       exposedHeaders: ['X-Request-Id'],
     }),
   );
