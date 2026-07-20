@@ -11,13 +11,15 @@ import { requireCsrf } from '../middleware/csrf.js';
  * needs and useless for password spraying.
  */
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 10,
+  // Up to 40 attempts, then a 3-minute cool-off — generous enough for a fat-
+  // fingered password, tight enough to blunt online guessing.
+  windowMs: 3 * 60 * 1000,
+  limit: 40,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: (_req, res) =>
     res.status(429).json({
-      error: { code: 'RATE_LIMITED', message: 'Too many attempts. Try again in a few minutes.' },
+      error: { code: 'RATE_LIMITED', message: 'Too many attempts. Try again in 3 minutes.' },
     }),
 });
 

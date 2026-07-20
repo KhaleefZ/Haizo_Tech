@@ -72,9 +72,20 @@ export function createApp(): Express {
   // this is the "public URL" side of an upload. `nosniff` (from helmet) plus a
   // long cache are enough; keys are uuid-prefixed so they're effectively
   // immutable. Sits outside `/v1`, so the OpenAPI validator ignores it.
+  //
+  // These are public images meant to be embedded cross-origin (the marketing site
+  // and admin both load them from this API host), so override helmet's default
+  // Cross-Origin-Resource-Policy: same-origin — otherwise the browser blocks the
+  // <img> and a blog cover / avatar silently vanishes.
   app.use(
     '/uploads',
-    express.static(uploadsDir, { index: false, dotfiles: 'ignore', maxAge: '30d', immutable: true }),
+    express.static(uploadsDir, {
+      index: false,
+      dotfiles: 'ignore',
+      maxAge: '30d',
+      immutable: true,
+      setHeaders: (res) => res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin'),
+    }),
   );
 
   app.use(
