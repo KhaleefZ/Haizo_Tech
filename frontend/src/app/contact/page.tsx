@@ -154,7 +154,7 @@ export default function ContactPage() {
                       title="Response time"
                       note="A person reads every enquiry and replies with a real answer — including when that answer is no."
                     >
-                      Within one working day
+                      Within 24 hours
                     </Method>
                   </div>
 
@@ -189,7 +189,7 @@ export default function ContactPage() {
                   <h3 className="text-h3">What happens next</h3>
                   <ol className="mt-4 flex list-decimal flex-col gap-3 pl-5 text-text-muted marker:font-semibold marker:text-brand-blue">
                     <li>
-                      We read your enquiry and reply within one working day.
+                      We read your enquiry and reply within 24 hours.
                     </li>
                     <li>A 30-minute call to understand the problem properly — no pitch deck.</li>
                     <li>

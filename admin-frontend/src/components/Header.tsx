@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { Badge, Button, useToast } from '@haizo/ui';
+import { Avatar, Badge, Button, useToast } from '@haizo/ui';
 import type { CurrentUser, Role } from '@haizo/types';
 import { useAuth } from '../lib/auth';
 import { Icon } from '../lib/icons';
@@ -13,14 +13,6 @@ const ROLE_LABEL: Record<Role, string> = {
   MANAGER: 'Manager',
   DEV: 'Developer',
 };
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? '')
-    .join('');
-}
 
 export function Header({ user }: { user: CurrentUser }) {
   const { logout } = useAuth();
@@ -55,9 +47,7 @@ export function Header({ user }: { user: CurrentUser }) {
       <NotificationBell />
       <div className="mx-1 h-6 w-px bg-border" />
       <div className="flex items-center gap-3">
-        <div className="grid size-8 place-items-center rounded-full bg-brand-blue text-xs font-semibold text-white">
-          {initials(user.name)}
-        </div>
+        <Avatar name={user.name} src={user.avatarUrl ?? undefined} className="size-8 text-xs" />
         <div className="hidden leading-tight sm:block">
           <p className="text-sm font-semibold text-text-strong">{user.name}</p>
           <p className="text-xs text-text-muted">{user.email}</p>
