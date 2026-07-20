@@ -1,7 +1,7 @@
 import type { AdminInquiry, DashboardStats } from '@haizo/types';
 import { dashboardRepository } from '../repositories/dashboard.repository.js';
 
-type InquiryRow = Awaited<ReturnType<typeof dashboardRepository.getStats>>[4][number];
+type InquiryRow = Awaited<ReturnType<typeof dashboardRepository.getStats>>[5][number];
 
 function toAdminInquiry(row: InquiryRow): AdminInquiry {
   return {
@@ -18,13 +18,14 @@ function toAdminInquiry(row: InquiryRow): AdminInquiry {
 
 export const dashboardService = {
   async getDashboard(): Promise<DashboardStats> {
-    const [newInquiries, openProjects, publishedServices, draftPosts, recent] =
+    const [newInquiries, openProjects, publishedServices, draftPosts, openSupport, recent] =
       await dashboardRepository.getStats();
     return {
       newInquiries,
       openProjects,
       publishedServices,
       draftPosts,
+      openSupport,
       recentInquiries: recent.map(toAdminInquiry),
     };
   },

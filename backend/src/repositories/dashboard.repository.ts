@@ -8,6 +8,7 @@ export const dashboardRepository = {
       prisma.project.count({ where: { NOT: { status: 'Completed' } } }),
       prisma.service.count({ where: { published: true } }),
       prisma.blog.count({ where: { published: false } }),
+      prisma.supportSession.count({ where: { status: 'OPEN' } }),
       prisma.inquiry.findMany({ orderBy: { submissionDate: 'desc' }, take: 5 }),
     ]);
   },

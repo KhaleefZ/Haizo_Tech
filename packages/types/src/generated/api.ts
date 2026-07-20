@@ -1855,6 +1855,7 @@ export interface components {
             openProjects: number;
             publishedServices: number;
             draftPosts: number;
+            openSupport: number;
             recentInquiries: components["schemas"]["AdminInquiry"][];
         };
         /** @enum {string} */

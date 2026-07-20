@@ -3030,13 +3030,14 @@ components:
 
     DashboardStats:
       type: object
-      required: [newInquiries, openProjects, publishedServices, draftPosts, recentInquiries]
+      required: [newInquiries, openProjects, publishedServices, draftPosts, openSupport, recentInquiries]
       additionalProperties: false
       properties:
         newInquiries: { type: integer, minimum: 0 }
         openProjects: { type: integer, minimum: 0 }
         publishedServices: { type: integer, minimum: 0 }
         draftPosts: { type: integer, minimum: 0 }
+        openSupport: { type: integer, minimum: 0 }
         recentInquiries:
           type: array
           items: { $ref: '#/components/schemas/AdminInquiry' }

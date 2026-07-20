@@ -12,7 +12,7 @@ import { notificationRepository } from '../repositories/notification.repository.
 import { catalogue, type NotificationType, type NotifParams } from '../lib/notifications/catalogue.js';
 import { emitToUser } from '../sockets/io.js';
 import { sendMail } from '../lib/mailer.js';
-import { config } from '../config/env.js';
+import { renderEmail, escapeHtml, adminLink } from '../lib/email/template.js';
 import { logger } from '../lib/logger.js';
 
 type NotificationRow = Awaited<ReturnType<typeof notificationRepository.create>>;
@@ -90,12 +90,18 @@ export const notificationService = {
         // Ordinary types roll up into the daily digest; only security-relevant
         // types (alwaysEmail) email immediately, ignoring the master switch.
         if (entry.alwaysEmail) {
-          const url = row.url ? `${config.adminUrl}${row.url}` : config.adminUrl;
+          const url = adminLink(row.url);
           void sendMail({
             to: s.email,
             subject: row.title,
-            html: `<p>${row.message}</p><p><a href="${url}">Open the dashboard</a></p>`,
-            text: `${row.message}\n${url}`,
+            html: renderEmail({
+              preheader: row.message,
+              heading: row.title,
+              bodyHtml: `<p style="margin:0">${escapeHtml(row.message)}</p>`,
+              ctaText: 'Open the dashboard',
+              ctaUrl: url,
+            }),
+            text: `${row.message}\n\n${url}`,
           });
         }
       }

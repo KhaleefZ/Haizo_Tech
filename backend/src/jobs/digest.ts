@@ -12,12 +12,7 @@ import { isNotificationType } from '../lib/notifications/catalogue.js';
 import { sendMail, isMailConfigured } from '../lib/mailer.js';
 import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
-  );
-}
+import { renderEmail, escapeHtml, adminLink } from '../lib/email/template.js';
 
 function prefAllows(prefs: unknown, type: string): boolean {
   const p = (prefs ?? null) as Record<string, boolean> | null;
@@ -33,23 +28,26 @@ interface DigestRow {
 function render(name: string, rows: DigestRow[]): { html: string; text: string } {
   const items = rows
     .map((n) => {
-      const url = n.url ? `${config.adminUrl}${n.url}` : config.adminUrl;
-      return `<tr><td style="padding:10px 0;border-bottom:1px solid #E2E8F0">
+      const url = adminLink(n.url);
+      return `<tr><td style="padding:12px 0;border-bottom:1px solid #E2E8F0">
         <a href="${url}" style="color:#1D4ED8;text-decoration:none;font-weight:600;font-size:15px">${escapeHtml(n.title)}</a>
-        <div style="color:#64748B;font-size:14px;margin-top:2px">${escapeHtml(n.message)}</div>
+        <div style="color:#64748B;font-size:14px;margin-top:3px;line-height:1.5">${escapeHtml(n.message)}</div>
       </td></tr>`;
     })
     .join('');
 
-  const html = `<div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:0 auto;color:#334155">
-    <h2 style="color:#0F172A;font-size:18px">Hi ${escapeHtml(name)},</h2>
-    <p>You have ${rows.length} new notification${rows.length > 1 ? 's' : ''} on HaizoTech:</p>
-    <table style="width:100%;border-collapse:collapse">${items}</table>
-    <p style="margin-top:20px"><a href="${config.adminUrl}" style="background:#1D4ED8;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none">Open the dashboard</a></p>
-    <p style="color:#94A3B8;font-size:12px;margin-top:24px">You can change what you're notified about in Settings.</p>
-  </div>`;
+  const html = renderEmail({
+    preheader: `${rows.length} new notification${rows.length > 1 ? 's' : ''} on HaizoTech`,
+    heading: `Hi ${escapeHtml(name)}, you have ${rows.length} new notification${rows.length > 1 ? 's' : ''}`,
+    bodyHtml: `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">${items}</table>`,
+    ctaText: 'Open the dashboard',
+    ctaUrl: config.adminUrl,
+    footerNote: 'Change what you’re notified about anytime in Settings.',
+  });
 
-  const text = rows.map((n) => `• ${n.title} — ${n.message}`).join('\n');
+  const text = `Hi ${name}, you have ${rows.length} new notification${rows.length > 1 ? 's' : ''}:\n\n${rows
+    .map((n) => `• ${n.title} — ${n.message}`)
+    .join('\n')}\n\n${config.adminUrl}`;
   return { html, text };
 }
 
