@@ -6,6 +6,7 @@ import { slugify } from '@/lib/slug';
 import { Reveal } from '@/components/Reveal';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { PostCover } from '@/components/PostCover';
+import { Markdown } from '@/components/Markdown';
 import {
   excerpt,
   formatDate,
@@ -64,9 +65,12 @@ export default async function BlogPost({ params }: Props) {
   // role and the remainder becomes the body — no text is duplicated or
   // invented. A single-paragraph post keeps that paragraph as the body
   // instead, otherwise promoting it would leave the article empty.
-  const hasStandfirst = body.length > 1;
+  // Promote the opening paragraph into a standfirst — unless the post leads with a
+  // Markdown heading, in which case there's no intro paragraph to lift.
+  const hasStandfirst = body.length > 1 && !/^#{1,6}\s/.test(body[0]!);
   const standfirst = hasStandfirst ? body[0] : null;
   const rest = hasStandfirst ? body.slice(1) : body;
+  const bodyMarkdown = rest.join('\n\n');
 
   /**
    * Related posts: anything sharing a tag first, then the most recent others,
@@ -174,15 +178,13 @@ export default async function BlogPost({ params }: Props) {
           <div className="mx-auto max-w-[820px] px-6">
             <ReadingProgress targetId={BODY_ID} />
 
-            {/* Body is plain text from the CMS. Rendered as paragraphs rather
-                than dangerouslySetInnerHTML — the admin is trusted, but content
-                is still content, and one XSS here would be on every reader. */}
-            <div id={BODY_ID} className="mt-10 flex max-w-[68ch] flex-col gap-5 text-text">
-              {rest.map((para, i) => (
-                <p key={i} className="leading-[1.75]">
-                  {para}
-                </p>
-              ))}
+            {/* Markdown (or plain text) from the CMS, rendered to React elements
+                by react-markdown — never dangerouslySetInnerHTML, so it stays
+                XSS-safe while giving authors real headings, bold, lists and
+                images. The first child's top margin is zeroed so it aligns with
+                the standfirst above. */}
+            <div id={BODY_ID} className="mt-10 max-w-[68ch] text-text [&>*:first-child]:mt-0">
+              <Markdown>{bodyMarkdown}</Markdown>
             </div>
 
             {/* =================================================== author card */}

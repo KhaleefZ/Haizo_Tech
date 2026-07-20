@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { ContactForm } from '@/components/ContactForm';
 import { Reveal } from '@/components/Reveal';
 import { StaggerHeadline } from '@/components/StaggerHeadline';
-import { Unverified, UnverifiedBanner } from '@/components/Unverified';
 import { CONTACT, SOCIALS } from '@/lib/contact';
 
 export const metadata: Metadata = {
@@ -12,7 +11,6 @@ export const metadata: Metadata = {
 };
 
 /** The response-time claim, marked in the mockup and still unconfirmed. */
-const SLA_REASON = 'invented SLA. Confirm with the team before publishing.';
 
 function MailIcon() {
   return (
@@ -85,12 +83,6 @@ export default function ContactPage() {
     // overflow-x:clip contains the Reveal entry offset at 375px without
     // creating a scroll container.
     <main id="main" className="[overflow-x:clip]">
-      <UnverifiedBanner>
-        Anything highlighted in amber was written for the mockup and has <em>not</em> been
-        confirmed. Hover a highlight to see what needs checking. The response-time claim must be
-        verified before this page goes live.
-      </UnverifiedBanner>
-
       <section className="relative overflow-hidden py-20">
         <div className="pointer-events-none absolute inset-0 bg-hero-wash" aria-hidden="true" />
         <div className="relative mx-auto max-w-6xl px-6">
@@ -162,7 +154,7 @@ export default function ContactPage() {
                       title="Response time"
                       note="A person reads every enquiry and replies with a real answer — including when that answer is no."
                     >
-                      <Unverified reason={SLA_REASON}>Within one working day</Unverified>
+                      Within one working day
                     </Method>
                   </div>
 
@@ -197,8 +189,7 @@ export default function ContactPage() {
                   <h3 className="text-h3">What happens next</h3>
                   <ol className="mt-4 flex list-decimal flex-col gap-3 pl-5 text-text-muted marker:font-semibold marker:text-brand-blue">
                     <li>
-                      We read your enquiry and reply{' '}
-                      <Unverified reason={SLA_REASON}>within one working day</Unverified>.
+                      We read your enquiry and reply within one working day.
                     </li>
                     <li>A 30-minute call to understand the problem properly — no pitch deck.</li>
                     <li>

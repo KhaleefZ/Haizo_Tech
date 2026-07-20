@@ -20,25 +20,15 @@ import { useState } from 'react';
  */
 
 /**
- * Legacy uploads are not servable yet.
+ * Only bare, relative `/uploads/<uuid>` paths are unservable — those are inherited
+ * from the OLD system, whose files live on a host the new backend doesn't serve.
  *
- * The Blog rows carry `/uploads/<uuid>.png` paths inherited from the old system.
- * Those files live on the old VPS, the new backend has no route for them, and
- * even once it does, helmet's Cross-Origin-Resource-Policy blocks embedding an
- * API-hosted image from the site's origin. So the browser fires a request that
- * always fails and logs a console error on every blog page.
- *
- * Rather than render a request we know cannot succeed, skip it and use the
- * glyph. Phase 6 moves uploads to R2 behind a public URL; at that point these
- * URLs resolve, this guard stops matching, and images appear with no code change.
+ * Absolute upload URLs are the NEW ones: Phase 6 stores uploads on local disk and
+ * serves them at an absolute UPLOADS_PUBLIC_URL with Cross-Origin-Resource-Policy:
+ * cross-origin, so they embed fine. Anything absolute is therefore usable.
  */
 function isServable(src: string): boolean {
-  if (src.startsWith('/uploads/')) return false;
-  try {
-    return !new URL(src, 'http://x').pathname.startsWith('/uploads/');
-  } catch {
-    return false;
-  }
+  return !src.startsWith('/uploads/');
 }
 
 export function PostCover({

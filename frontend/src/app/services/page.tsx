@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Reveal } from '@/components/Reveal';
-import { StaggerHeadline } from '@/components/StaggerHeadline';
+import { Typewriter } from '@/components/Typewriter';
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -45,7 +45,9 @@ export default async function ServicesPage() {
         <div className="pointer-events-none absolute inset-0 bg-hero-wash" aria-hidden="true" />
         <div className="relative mx-auto max-w-6xl px-6">
           <p className="text-overline uppercase text-brand-blue">Services</p>
-          <StaggerHeadline words={['Four', 'things', 'we', 'do,']} tail="done properly." />
+          <h1 className="mt-4 text-display">
+            <Typewriter phrases={['What we do, done properly.']} />
+          </h1>
           <p className="mt-6 max-w-[62ch] text-body-lg text-text">
             We keep the list short on purpose. Each of these is something our team has
             shipped into production and can still support afterwards — not a capability
