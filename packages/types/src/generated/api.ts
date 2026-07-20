@@ -1596,11 +1596,18 @@ export interface components {
             role: string;
             avatarUrl?: string | null;
         };
+        ChatAttachment: {
+            url: string;
+            filename: string;
+            mimeType: string;
+            size: number;
+        };
         ChatMessage: {
             id: string;
             conversationId: string;
             body: string;
             sender: components["schemas"]["ChatUser"];
+            attachment?: components["schemas"]["ChatAttachment"];
             clientNonce?: string | null;
             /** Format: date-time */
             createdAt: string;
@@ -1644,6 +1651,8 @@ export interface components {
         };
         PostMessage: {
             body: string;
+            /** @description A prior upload to attach to this message */
+            attachmentId?: string;
             clientNonce?: string;
         };
         RecordPageView: {

@@ -114,6 +114,14 @@ export const chatRepository = {
     return { messages: page.reverse(), nextBefore: hasMore ? page[0]?.id ?? null : null };
   },
 
+  /** READY attachments for a set of messages, keyed later by messageId. */
+  attachmentsForMessages(messageIds: string[]) {
+    return prisma.attachment.findMany({
+      where: { messageId: { in: messageIds }, status: 'READY' },
+      select: { messageId: true, key: true, filename: true, mimeType: true, size: true },
+    });
+  },
+
   findMessageByNonce(conversationId: string, clientNonce: string) {
     return prisma.message.findUnique({
       where: { conversationId_clientNonce: { conversationId, clientNonce } },

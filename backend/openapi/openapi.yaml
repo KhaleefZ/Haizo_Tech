@@ -2613,6 +2613,16 @@ components:
         role: { type: string }
         avatarUrl: { type: string, nullable: true }
 
+    ChatAttachment:
+      type: object
+      required: [url, filename, mimeType, size]
+      additionalProperties: false
+      properties:
+        url: { type: string }
+        filename: { type: string }
+        mimeType: { type: string }
+        size: { type: integer }
+
     ChatMessage:
       type: object
       required: [id, conversationId, body, sender, createdAt]
@@ -2622,6 +2632,9 @@ components:
         conversationId: { type: string }
         body: { type: string }
         sender: { $ref: '#/components/schemas/ChatUser' }
+        attachment:
+          $ref: '#/components/schemas/ChatAttachment'
+          # Optional — present only on messages that carry a file.
         clientNonce: { type: string, nullable: true }
         createdAt: { type: string, format: date-time }
 
@@ -2698,7 +2711,8 @@ components:
       required: [body]
       additionalProperties: false
       properties:
-        body: { type: string, minLength: 1, maxLength: 4000 }
+        body: { type: string, minLength: 0, maxLength: 4000 }
+        attachmentId: { type: string, description: A prior upload to attach to this message }
         clientNonce: { type: string, maxLength: 100 }
 
     RecordPageView:

@@ -53,9 +53,15 @@ export async function adminMarkConversationRead(req: Request, res: Response, nex
 export async function adminPostMessage(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.user) throw unauthenticated();
-    const { body, clientNonce } = req.body as PostMessage;
+    const { body, clientNonce, attachmentId } = req.body as PostMessage;
     res.json(
-      await chatService.postMessage(String(req.params.id), req.user.id, body, clientNonce ?? null),
+      await chatService.postMessage(
+        String(req.params.id),
+        req.user.id,
+        body,
+        clientNonce ?? null,
+        attachmentId ?? null,
+      ),
     );
   } catch (err) {
     next(err);

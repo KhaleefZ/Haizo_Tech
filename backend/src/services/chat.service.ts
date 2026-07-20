@@ -1,4 +1,5 @@
 import type {
+  ChatAttachment,
   ChatContactList,
   ChatConversation,
   ChatConversationList,
@@ -9,9 +10,29 @@ import type {
 } from '@haizo/types';
 import { Prisma } from '@prisma/client';
 import { chatRepository } from '../repositories/chat.repository.js';
+import { uploadRepository } from '../repositories/upload.repository.js';
 import { prisma } from '../lib/prisma.js';
+import { publicUrl } from '../lib/storage.js';
 import { forbidden, notFound, validationFailed } from '../lib/errors.js';
 import { emitToConversation, joinUserToConversation } from '../sockets/io.js';
+import { notificationService } from './notification.service.js';
+
+const MENTION_RE = /@([a-zA-Z0-9_]+)/g;
+
+/** Resolve @tokens in a message to member ids (matching name parts), minus the sender. */
+function resolveMentions(body: string, members: MemberWithUser[], excludeId: string): string[] {
+  const tokens = new Set([...body.matchAll(MENTION_RE)].map((m) => m[1]!.toLowerCase()));
+  if (tokens.size === 0) return [];
+  const ids = new Set<string>();
+  for (const m of members) {
+    if (m.user.id === excludeId) continue;
+    const name = m.user.name.toLowerCase();
+    const parts = name.split(/\s+/).filter(Boolean);
+    const nospace = name.replace(/\s+/g, '');
+    if ([...tokens].some((t) => t === nospace || parts.includes(t))) ids.add(m.user.id);
+  }
+  return [...ids];
+}
 
 type MemberWithUser = {
   lastReadAt: Date | null;
@@ -29,8 +50,12 @@ type MessageRow = {
   sender: { id: string; name: string; role: string; avatarUrl: string | null };
 };
 
-function toChatMessage(m: MessageRow): ChatMessage {
-  return {
+function toAttachment(a: { key: string; filename: string; mimeType: string; size: number }): ChatAttachment {
+  return { url: publicUrl(a.key), filename: a.filename, mimeType: a.mimeType, size: a.size };
+}
+
+function toChatMessage(m: MessageRow, attachment?: ChatAttachment): ChatMessage {
+  const msg: ChatMessage = {
     id: m.id,
     conversationId: m.conversationId,
     body: m.body,
@@ -43,6 +68,8 @@ function toChatMessage(m: MessageRow): ChatMessage {
       avatarUrl: m.sender.avatarUrl,
     },
   };
+  if (attachment) msg.attachment = attachment;
+  return msg;
 }
 
 /** A DM's title is the OTHER member's name; a channel's is its own name. */
@@ -166,7 +193,15 @@ export const chatService = {
   ): Promise<ChatMessagePage> {
     await this.assertMember(conversationId, userId);
     const { messages, nextBefore } = await chatRepository.listMessages(conversationId, before, limit);
-    return { data: messages.map(toChatMessage), nextBefore };
+    const atts = await chatRepository.attachmentsForMessages(messages.map((m) => m.id));
+    const byMsg = new Map(atts.map((a) => [a.messageId, toAttachment(a)]));
+    return { data: messages.map((m) => toChatMessage(m, byMsg.get(m.id))), nextBefore };
+  },
+
+  /** Rebuild a message DTO including its attachment (used on idempotent resends). */
+  async messageWithAttachment(row: MessageRow): Promise<ChatMessage> {
+    const [a] = await chatRepository.attachmentsForMessages([row.id]);
+    return toChatMessage(row, a ? toAttachment(a) : undefined);
   },
 
   async postMessage(
@@ -174,13 +209,29 @@ export const chatService = {
     userId: string,
     body: string,
     clientNonce: string | null,
+    attachmentId?: string | null,
   ): Promise<ChatMessage> {
-    await this.assertMember(conversationId, userId);
+    const conv = await this.assertMember(conversationId, userId);
+
+    if (!body.trim() && !attachmentId) {
+      throw validationFailed([{ path: 'body', message: 'A message needs text or a file' }]);
+    }
+
+    // Validate the attachment: it must be the caller's own completed upload, not
+    // already bound to another message.
+    let attachment: ChatAttachment | undefined;
+    if (attachmentId) {
+      const att = await uploadRepository.findById(attachmentId);
+      if (!att || att.status !== 'READY' || att.uploadedById !== userId || att.messageId) {
+        throw validationFailed([{ path: 'attachmentId', message: 'Invalid or already-used attachment' }]);
+      }
+      attachment = toAttachment(att);
+    }
 
     // Idempotency: a resend after a dropped ack returns the original message.
     if (clientNonce) {
       const existing = await chatRepository.findMessageByNonce(conversationId, clientNonce);
-      if (existing) return toChatMessage(existing);
+      if (existing) return this.messageWithAttachment(existing);
     }
 
     let row;
@@ -191,12 +242,29 @@ export const chatService = {
       // instead of surfacing the unique-constraint error, keeping the send idempotent.
       if (clientNonce && err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
         const existing = await chatRepository.findMessageByNonce(conversationId, clientNonce);
-        if (existing) return toChatMessage(existing);
+        if (existing) return this.messageWithAttachment(existing);
       }
       throw err;
     }
-    const message = toChatMessage(row);
+
+    if (attachmentId) await uploadRepository.attachToMessage(attachmentId, row.id);
+    const message = toChatMessage(row, attachment);
     emitToConversation(conversationId, 'chat:message', message);
+
+    // Notify anyone @mentioned (best-effort; never blocks the send).
+    const mentioned = resolveMentions(body, conv.members, userId);
+    if (mentioned.length) {
+      void notificationService.emit({
+        type: 'chat.mention',
+        recipientIds: mentioned,
+        actorId: userId,
+        entity: { type: 'conversation', id: conversationId },
+        params: {
+          actorName: row.sender.name,
+          conversation: conv.type === 'channel' ? `#${conv.name ?? 'channel'}` : undefined,
+        },
+      });
+    }
     return message;
   },
 };

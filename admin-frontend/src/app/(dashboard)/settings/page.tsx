@@ -75,6 +75,7 @@ const NOTIF_TYPES: { type: string; label: string }[] = [
   { type: 'announcement.published', label: 'Announcements' },
   { type: 'blog.published', label: 'Blog posts published' },
   { type: 'work.published', label: 'Work published' },
+  { type: 'chat.mention', label: 'Mentions in chat' },
 ];
 
 function NotificationsCard({ profile }: { profile: AdminProfile }) {

@@ -13,4 +13,9 @@ export const uploadRepository = {
   markReady(id: string) {
     return prisma.attachment.update({ where: { id }, data: { status: 'READY' } });
   },
+
+  /** Bind an upload to a chat message (its owning message). */
+  attachToMessage(id: string, messageId: string) {
+    return prisma.attachment.update({ where: { id }, data: { messageId } });
+  },
 };

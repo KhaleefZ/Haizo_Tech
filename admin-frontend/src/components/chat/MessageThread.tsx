@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { Avatar, Button, Spinner, cn } from '@haizo/ui';
-import type { ChatConversation, ChatMessage } from '@haizo/types';
+import type { ChatAttachment, ChatConversation, ChatMessage } from '@haizo/types';
 import { api, ApiError } from '../../lib/api';
 import { getSocket, useSocketEvent } from '../../lib/socket';
 import { useIsOnline } from '../../lib/presence';
@@ -13,6 +13,62 @@ interface TypingEvent {
   conversationId: string;
   userId: string;
   name: string;
+}
+
+const isImage = (mime: string) => mime.startsWith('image/');
+
+function formatBytes(n: number): string {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** Render a message body with @mentions highlighted. */
+function renderBody(text: string, mine: boolean): React.ReactNode {
+  return text.split(/(@[a-zA-Z0-9_]+)/g).map((part, i) =>
+    /^@[a-zA-Z0-9_]+$/.test(part) ? (
+      <span
+        key={i}
+        className={mine ? 'font-semibold underline decoration-white/50' : 'font-semibold text-brand-blue'}
+      >
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
+function AttachmentView({ att, mine }: { att: ChatAttachment; mine: boolean }) {
+  if (isImage(att.mimeType)) {
+    return (
+      <a href={att.url} target="_blank" rel="noreferrer" className="mt-1 block">
+        <img src={att.url} alt={att.filename} className="max-h-64 max-w-full rounded-lg object-cover" />
+      </a>
+    );
+  }
+  return (
+    <a
+      href={att.url}
+      target="_blank"
+      rel="noreferrer"
+      className={cn(
+        'mt-1 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm',
+        mine ? 'border-white/30 text-white' : 'border-border text-text-strong hover:bg-bg-tint',
+      )}
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5 shrink-0">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <path d="M14 2v6h6" />
+      </svg>
+      <span className="min-w-0">
+        <span className="block truncate font-medium">{att.filename}</span>
+        <span className={cn('block text-xs', mine ? 'text-white/70' : 'text-text-muted')}>
+          {formatBytes(att.size)}
+        </span>
+      </span>
+    </a>
+  );
 }
 
 function clock(iso: string): string {
@@ -46,6 +102,11 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
   const [sending, setSending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [typing, setTyping] = React.useState<Record<string, string>>({});
+  const [pending, setPending] = React.useState<
+    { attachmentId: string; url: string; name: string; mime: string } | null
+  >(null);
+  const [attaching, setAttaching] = React.useState(false);
+  const fileRef = React.useRef<HTMLInputElement>(null);
   // Each member's read marker (userId → ISO time), seeded from the server and
   // advanced by chat:read events. Drives the sender's read receipts.
   const [reads, setReads] = React.useState<Record<string, string | null>>(() =>
@@ -80,6 +141,7 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
     setDraft('');
     setError(null);
     setTyping({});
+    setPending(null);
     Object.values(typingTimers.current).forEach(clearTimeout);
     typingTimers.current = {};
   }, [convId]);
@@ -131,6 +193,12 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
       if (e.conversationId === convId) setReads((r) => ({ ...r, [e.userId]: e.lastReadAt }));
     },
   );
+
+  // On every (re)connect, refetch history so anything that arrived while the
+  // socket was down is caught up — a network drop loses no messages.
+  useSocketEvent('connect', () => {
+    qc.invalidateQueries({ queryKey: ['chat', 'messages', convId] });
+  });
 
   // Opening the conversation marks it read once its history has loaded.
   // scheduleMarkRead is stable per conversation, so it re-runs when either changes.
@@ -185,16 +253,34 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
     bottomRef.current?.scrollIntoView({ block: 'end' });
   }, [messages.length]);
 
+  async function attachFile(file: File) {
+    setAttaching(true);
+    setError(null);
+    try {
+      const { attachmentId, url } = await api.uploads.upload(file);
+      setPending({ attachmentId, url, name: file.name, mime: file.type });
+    } catch (err) {
+      setError(
+        err instanceof ApiError && (err.status === 413 || err.status === 400)
+          ? 'That file is too large or an unsupported type.'
+          : 'Upload failed. Try again.',
+      );
+    } finally {
+      setAttaching(false);
+    }
+  }
+
   async function send(e: React.FormEvent) {
     e.preventDefault();
     const body = draft.trim();
-    if (!body || sending) return;
+    if ((!body && !pending) || sending) return;
     setSending(true);
     setError(null);
     try {
-      const msg = await api.chat.post(convId, body, crypto.randomUUID());
+      const msg = await api.chat.post(convId, body, crypto.randomUUID(), pending?.attachmentId);
       setLive((prev) => [...prev, msg]); // instant echo; socket copy dedupes
       setDraft('');
+      setPending(null);
       stopTyping();
       qc.invalidateQueries({ queryKey: ['chat', 'conversations'] });
     } catch (err) {
@@ -305,7 +391,8 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
                               : 'rounded-tl-sm bg-bg-tint text-text-strong',
                           )}
                         >
-                          {m.body}
+                          {m.body ? renderBody(m.body, mine) : null}
+                          {m.attachment ? <AttachmentView att={m.attachment} mine={mine} /> : null}
                         </div>
                         <p className="mt-0.5 text-[0.6875rem] text-text-muted">
                           {clock(m.createdAt)}
@@ -341,7 +428,57 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
       {/* Composer */}
       <form onSubmit={send} className="border-t border-border p-3">
         {error ? <p className="mb-2 px-1 text-xs text-danger">{error}</p> : null}
+
+        {pending ? (
+          <div className="mb-2 flex items-center gap-2 rounded-token border border-border bg-bg-tint px-2.5 py-2">
+            {isImage(pending.mime) ? (
+              <img src={pending.url} alt="" className="size-9 rounded object-cover" />
+            ) : (
+              <span className="grid size-9 place-items-center rounded bg-bg-tint-2 text-text-muted">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <path d="M14 2v6h6" />
+                </svg>
+              </span>
+            )}
+            <span className="min-w-0 flex-1 truncate text-sm text-text-strong">{pending.name}</span>
+            <button
+              type="button"
+              onClick={() => setPending(null)}
+              aria-label="Remove attachment"
+              className="grid size-6 place-items-center rounded text-text-muted hover:bg-bg-tint-2 hover:text-danger"
+            >
+              <svg viewBox="0 0 20 20" fill="none" className="size-3.5">
+                <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+        ) : null}
+
+        <input
+          ref={fileRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void attachFile(f);
+            e.target.value = '';
+          }}
+        />
         <div className="flex items-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            loading={attaching}
+            onClick={() => fileRef.current?.click()}
+            aria-label="Attach a file"
+            className="px-2.5"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4">
+              <path d="M21 12.5 12.5 21a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5L11 17.5a2 2 0 0 1-3-3l7.5-7.5" />
+            </svg>
+          </Button>
           <textarea
             value={draft}
             onChange={(e) => {
@@ -358,7 +495,7 @@ export function MessageThread({ conversation, meId }: { conversation: ChatConver
             placeholder={`Message ${conversation.title}`}
             className="max-h-32 min-h-[2.5rem] flex-1 resize-none rounded-token border border-border bg-card px-3.5 py-2.5 text-sm text-text-strong outline-none placeholder:text-text-muted focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
           />
-          <Button type="submit" loading={sending} disabled={!draft.trim()}>
+          <Button type="submit" loading={sending} disabled={!draft.trim() && !pending}>
             Send
           </Button>
         </div>

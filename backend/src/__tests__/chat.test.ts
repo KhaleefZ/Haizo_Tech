@@ -213,6 +213,83 @@ describe('chat REST', () => {
   });
 });
 
+describe('chat attachments and mentions', () => {
+  const PNG = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+    'base64',
+  );
+
+  async function openDm(): Promise<string> {
+    const open = await request(app)
+      .post('/v1/admin/chat/conversations')
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ userId: userB.id });
+    convIds.add(open.body.id);
+    return open.body.id as string;
+  }
+
+  it('attaches an uploaded file to a message and refuses to reuse it', async () => {
+    const convId = await openDm();
+    const up = await request(app)
+      .post('/v1/admin/uploads')
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .attach('file', PNG, 'pic.png');
+    expect(up.status).toBe(200);
+    const attachmentId = up.body.attachmentId as string;
+
+    // An image-only message (empty body) is allowed when a file is attached.
+    const post = await request(app)
+      .post(`/v1/admin/chat/conversations/${convId}/messages`)
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ body: '', attachmentId });
+    expect(post.status).toBe(200);
+    expect(post.body.attachment.mimeType).toBe('image/png');
+    expect(post.body.attachment.url).toMatch(/pic\.png$/);
+
+    // The same upload can't be bound to a second message.
+    const reuse = await request(app)
+      .post(`/v1/admin/chat/conversations/${convId}/messages`)
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ body: 'again', attachmentId });
+    expect(reuse.status).toBe(400);
+  });
+
+  it('rejects a truly empty message', async () => {
+    const convId = await openDm();
+    const res = await request(app)
+      .post(`/v1/admin/chat/conversations/${convId}/messages`)
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ body: '   ' });
+    expect(res.status).toBe(400);
+  });
+
+  it('notifies a mentioned member', async () => {
+    const convId = await openDm();
+    await request(app)
+      .post(`/v1/admin/chat/conversations/${convId}/messages`)
+      .set('Cookie', a.cookie)
+      .set('X-CSRF-Token', a.csrf)
+      .send({ body: 'hey @ben can you review this?' }); // USERS.b is "Ben Dev"
+
+    // emit() is fire-and-forget — poll briefly for the persisted notification.
+    let notif = null;
+    for (let i = 0; i < 20 && !notif; i++) {
+      notif = await prisma.notification.findFirst({
+        where: { userId: userB.id, type: 'chat.mention' },
+        orderBy: { createdAt: 'desc' },
+      });
+      if (!notif) await new Promise((r) => setTimeout(r, 50));
+    }
+    expect(notif).toBeTruthy();
+    expect(notif?.actorId).toBe(userA.id);
+  });
+});
+
 describe('chat realtime', () => {
   it('delivers a posted message to another member over the socket', async () => {
     // DM must exist before B connects, so B's handshake join puts it in the room.

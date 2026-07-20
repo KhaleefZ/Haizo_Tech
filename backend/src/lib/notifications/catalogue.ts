@@ -12,7 +12,8 @@ export type NotificationType =
   | 'task.assigned'
   | 'announcement.published'
   | 'blog.published'
-  | 'work.published';
+  | 'work.published'
+  | 'chat.mention';
 
 export type NotifParams = Record<string, string | undefined>;
 
@@ -56,6 +57,12 @@ export const catalogue: Record<NotificationType, CatalogueEntry> = {
     title: () => 'Work published',
     message: (p) => `“${p.workTitle ?? 'A case study'}” is now live`,
     url: () => '/work',
+    defaultOn: true,
+  },
+  'chat.mention': {
+    title: () => 'You were mentioned',
+    message: (p) => `${p.actorName ?? 'Someone'} mentioned you${p.conversation ? ` in ${p.conversation}` : ' in chat'}`,
+    url: () => '/chat',
     defaultOn: true,
   },
 };

@@ -322,10 +322,11 @@ export const api = {
         `/admin/chat/conversations/${conversationId}/messages?${q.toString()}`,
       );
     },
-    post: (conversationId: string, body: string, clientNonce: string) =>
+    post: (conversationId: string, body: string, clientNonce: string, attachmentId?: string) =>
       request<ChatMessage>('POST', `/admin/chat/conversations/${conversationId}/messages`, {
         body,
         clientNonce,
+        ...(attachmentId ? { attachmentId } : {}),
       }),
     markRead: (conversationId: string) =>
       request<ChatRead>('POST', `/admin/chat/conversations/${conversationId}/read`),
