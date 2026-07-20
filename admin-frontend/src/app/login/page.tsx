@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button, Card, Field, Input } from '@haizo/ui';
 import { ApiError } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
+import { PasswordInput } from '../../components/PasswordInput';
 
 export default function LoginPage() {
   const { user, isLoading, login } = useAuth();
@@ -61,8 +62,7 @@ export default function LoginPage() {
             </Field>
 
             <Field label="Password">
-              <Input
-                type="password"
+              <PasswordInput
                 autoComplete="current-password"
                 required
                 value={password}

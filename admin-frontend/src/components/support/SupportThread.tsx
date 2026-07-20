@@ -97,32 +97,38 @@ export function SupportThread({ session }: { session: AdminSupportSession }) {
             )}
           </div>
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <Select
-            value={session.status}
-            onChange={(e) => update.mutate({ status: e.target.value as UpdateSupportSession['status'] })}
-            aria-label="Status"
-            className="h-8 w-auto text-sm"
-          >
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s[0] + s.slice(1).toLowerCase()}
-              </option>
-            ))}
-          </Select>
-          <Select
-            value={session.assignee?.id ?? ''}
-            onChange={(e) => update.mutate({ assigneeId: e.target.value || null })}
-            aria-label="Assignee"
-            className="h-8 w-auto text-sm"
-          >
-            <option value="">Unassigned</option>
-            {(staff.data?.data ?? []).map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </Select>
+        <div className="mt-3 flex flex-wrap items-end gap-3">
+          <label className="flex flex-col gap-1 text-xs font-medium text-text-muted">
+            Status
+            <Select
+              value={session.status}
+              onChange={(e) => update.mutate({ status: e.target.value as UpdateSupportSession['status'] })}
+              aria-label="Status"
+              className="w-36 py-1.5 text-sm text-text-strong"
+            >
+              {STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s[0] + s.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </Select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-text-muted">
+            Assigned to
+            <Select
+              value={session.assignee?.id ?? ''}
+              onChange={(e) => update.mutate({ assigneeId: e.target.value || null })}
+              aria-label="Assignee"
+              className="w-44 py-1.5 text-sm text-text-strong"
+            >
+              <option value="">Unassigned</option>
+              {(staff.data?.data ?? []).map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name}
+                </option>
+              ))}
+            </Select>
+          </label>
         </div>
       </div>
 

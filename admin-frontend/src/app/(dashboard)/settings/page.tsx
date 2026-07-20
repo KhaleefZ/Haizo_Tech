@@ -6,6 +6,7 @@ import { Button, Card, Field, Input, Skeleton, Textarea, useToast } from '@haizo
 import type { AdminProfile } from '@haizo/types';
 import { api, ApiError } from '../../../lib/api';
 import { FileUpload } from '../../../components/FileUpload';
+import { PasswordInput } from '../../../components/PasswordInput';
 
 const PROFILE_KEY = ['admin', 'profile'] as const;
 
@@ -163,14 +164,14 @@ function PasswordCard() {
       <p className="mt-1 text-sm text-text-muted">Changing it signs out your other devices.</p>
       <form className="mt-4 space-y-4" onSubmit={submit}>
         <Field label="Current password">
-          <Input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} required />
+          <PasswordInput autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} required />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="New password">
-            <Input type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} />
+            <PasswordInput autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} />
           </Field>
           <Field label="Confirm new password">
-            <Input type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
+            <PasswordInput autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
           </Field>
         </div>
         {error ? <p role="alert" className="text-sm text-danger">{error}</p> : null}
