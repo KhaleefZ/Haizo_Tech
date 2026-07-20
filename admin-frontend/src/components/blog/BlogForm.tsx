@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Button, Field, Input, Textarea } from '@haizo/ui';
+import { Button, Dialog, Field, Input, Textarea } from '@haizo/ui';
 import type { AdminBlog, CreateBlog } from '@haizo/types';
 import { ApiError } from '../../lib/api';
 import { slugify } from '../../lib/slug';
 import { FileUpload } from '../FileUpload';
+import { Markdown } from '../Markdown';
 
 const parseTags = (v: string) =>
   v.split(',').map((s) => s.trim()).filter(Boolean);
@@ -27,6 +28,7 @@ export function BlogForm({ initial, onSubmit, onCancel, pending }: Props) {
   const [imageUrl, setImageUrl] = React.useState(initial?.imageUrl ?? '');
   const [published, setPublished] = React.useState(initial?.published ?? false);
 
+  const [previewing, setPreviewing] = React.useState(false);
   const [slugTouched, setSlugTouched] = React.useState(isEdit);
   React.useEffect(() => {
     if (!slugTouched) setSlug(slugify(title));
@@ -107,7 +109,16 @@ export function BlogForm({ initial, onSubmit, onCancel, pending }: Props) {
         </p>
       ) : null}
 
-      <div className="flex justify-end gap-3 border-t border-border pt-4">
+      <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => setPreviewing(true)}
+          disabled={!title.trim() && !content.trim()}
+          className="mr-auto"
+        >
+          Preview
+        </Button>
         <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>
           Cancel
         </Button>
@@ -115,6 +126,31 @@ export function BlogForm({ initial, onSubmit, onCancel, pending }: Props) {
           {isEdit ? 'Save changes' : 'Create post'}
         </Button>
       </div>
+
+      <Dialog open={previewing} onClose={() => setPreviewing(false)} title="Preview" size="lg">
+        <article className="mx-auto max-w-2xl">
+          {parseTags(tags).length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {parseTags(tags).map((t) => (
+                <span key={t} className="rounded-full bg-bg-tint-2 px-2.5 py-1 text-xs font-semibold text-brand-blue">
+                  {t}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <h1 className="mt-3 font-heading text-3xl font-bold text-text-strong">{title || 'Untitled post'}</h1>
+          {imageUrl.trim() ? (
+            <img
+              src={imageUrl.trim()}
+              alt=""
+              className="mt-5 aspect-video w-full rounded-token border border-border object-cover"
+            />
+          ) : null}
+          <div className="mt-6 text-text">
+            {content.trim() ? <Markdown>{content}</Markdown> : <p className="text-text-muted">No content yet.</p>}
+          </div>
+        </article>
+      </Dialog>
     </form>
   );
 }

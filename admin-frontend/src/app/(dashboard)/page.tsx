@@ -7,6 +7,15 @@ import type { InquiryStatus } from '@haizo/types';
 import { api } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 
+function relTime(iso: string): string {
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
 function StatusBadge({ status }: { status: InquiryStatus }) {
   if (status === 'NEW') return <Badge variant="brand" dot>New</Badge>;
   if (status === 'REPLIED') return <Badge variant="success" dot>Replied</Badge>;
@@ -45,12 +54,22 @@ export default function DashboardPage() {
   const firstName = user?.name.split(/\s+/)[0] ?? 'there';
   const { data, isLoading, isError } = useQuery({ queryKey: ['admin', 'dashboard'], queryFn: () => api.dashboard.get() });
   const analytics = useQuery({ queryKey: ['admin', 'analytics'], queryFn: () => api.analytics.get() });
+  const activity = useQuery({ queryKey: ['admin', 'activity', 'recent'], queryFn: () => api.activity.list(1, 6) });
 
   const stats = [
     { label: 'New inquiries', value: data?.newInquiries, hint: 'awaiting triage', href: '/inquiries' },
+    { label: 'Open support', value: data?.openSupport, hint: 'visitor chats', href: '/support' },
     { label: 'Open projects', value: data?.openProjects, hint: 'in progress', href: '/projects' },
     { label: 'Published services', value: data?.publishedServices, hint: 'live on the site', href: '/services' },
     { label: 'Draft posts', value: data?.draftPosts, hint: 'unpublished', href: '/blog' },
+  ];
+
+  const QUICK_ACTIONS = [
+    { label: 'Write a post', href: '/blog' },
+    { label: 'Add work', href: '/work' },
+    { label: 'Add service', href: '/services' },
+    { label: 'Post announcement', href: '/announcements' },
+    { label: 'Open chat', href: '/chat' },
   ];
 
   return (
@@ -58,7 +77,20 @@ export default function DashboardPage() {
       <h1 className="font-heading text-2xl font-bold text-text-strong">Welcome back, {firstName}</h1>
       <p className="mt-1 text-sm text-text-muted">Here’s what’s happening across HaizoTech.</p>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-4 flex flex-wrap gap-2">
+        {QUICK_ACTIONS.map((a) => (
+          <Link
+            key={a.label}
+            href={a.href}
+            className="inline-flex items-center gap-1.5 rounded-token border border-border bg-card px-3 py-1.5 text-sm font-medium text-text transition-colors hover:border-brand-blue hover:text-brand-blue"
+          >
+            <span className="text-brand-blue">+</span>
+            {a.label}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
           <Link key={s.label} href={s.href}>
             <Card className="h-full transition hover:border-brand-blue hover:shadow-lift">
@@ -116,7 +148,8 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <Card className="mt-4 !p-0">
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+      <Card className="!p-0">
         <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
           <p className="text-sm font-semibold text-text-strong">Recent inquiries</p>
           <Link href="/inquiries" className="text-sm text-brand-blue hover:underline">View all</Link>
@@ -148,6 +181,34 @@ export default function DashboardPage() {
           </ul>
         )}
       </Card>
+
+      <Card className="!p-0">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+          <p className="text-sm font-semibold text-text-strong">Recent activity</p>
+          <Link href="/activity" className="text-sm text-brand-blue hover:underline">View all</Link>
+        </div>
+        {activity.isLoading ? (
+          <div className="space-y-3 p-5">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-8 w-full" />)}</div>
+        ) : activity.isError ? (
+          <EmptyState title="Couldn’t load activity" description="Only managers can see the activity feed." />
+        ) : (activity.data?.data.length ?? 0) === 0 ? (
+          <EmptyState title="No activity yet" description="Admin actions will show here." />
+        ) : (
+          <ul className="divide-y divide-border">
+            {activity.data!.data.map((a) => (
+              <li key={a.id} className="px-5 py-3">
+                <p className="text-sm text-text-strong">
+                  <span className="font-medium">{a.actorName ?? 'Someone'}</span>{' '}
+                  <span className="text-text-muted">{a.action}</span> {a.entityType}
+                  {a.entityLabel ? <span className="text-text-muted"> · {a.entityLabel}</span> : null}
+                </p>
+                <p className="mt-0.5 text-xs text-text-muted">{relTime(a.createdAt)}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+      </div>
     </div>
   );
 }

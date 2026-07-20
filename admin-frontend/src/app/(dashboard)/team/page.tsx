@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Avatar,
   Badge,
   Card,
   EmptyState,
@@ -25,10 +26,6 @@ const ROLES: { value: Role; label: string }[] = [
   { value: 'MANAGER', label: 'Manager' },
   { value: 'DEV', label: 'Developer' },
 ];
-
-function initials(name: string): string {
-  return name.split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('');
-}
 
 export default function TeamPage() {
   const qc = useQueryClient();
@@ -91,9 +88,7 @@ export default function TeamPage() {
                   <Tr key={u.id}>
                     <Td strong>
                       <span className="flex items-center gap-2.5">
-                        <span className="grid size-8 place-items-center rounded-full bg-brand-blue text-xs font-semibold text-white">
-                          {initials(u.name)}
-                        </span>
+                        <Avatar size="xs" name={u.name} src={u.avatarUrl ?? undefined} />
                         {u.name}
                         {isSelf ? <Badge variant="neutral">You</Badge> : null}
                       </span>

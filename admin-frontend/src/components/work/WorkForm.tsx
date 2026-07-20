@@ -5,9 +5,8 @@ import { Button, Field, Input, Textarea } from '@haizo/ui';
 import type { AdminWork, CreateWork } from '@haizo/types';
 import { ApiError } from '../../lib/api';
 import { slugify } from '../../lib/slug';
+import { ImageListField } from '../ImageListField';
 
-const linesToArray = (v: string) => v.split('\n').map((s) => s.trim()).filter(Boolean);
-const arrayToLines = (v: string[]) => v.join('\n');
 const emptyToNull = (v: string) => (v.trim() === '' ? null : v.trim());
 
 interface Props {
@@ -23,7 +22,7 @@ export function WorkForm({ initial, onSubmit, onCancel, pending }: Props) {
   const [slug, setSlug] = React.useState(initial?.slug ?? '');
   const [category, setCategory] = React.useState(initial?.category ?? '');
   const [description, setDescription] = React.useState(initial?.description ?? '');
-  const [imageUrls, setImageUrls] = React.useState(arrayToLines(initial?.imageUrls ?? []));
+  const [images, setImages] = React.useState<string[]>(initial?.imageUrls ?? []);
   const [liveUrl, setLiveUrl] = React.useState(initial?.liveUrl ?? '');
   const [published, setPublished] = React.useState(initial?.published ?? false);
 
@@ -45,7 +44,7 @@ export function WorkForm({ initial, onSubmit, onCancel, pending }: Props) {
         title: title.trim(),
         category: category.trim(),
         description: description.trim(),
-        imageUrls: linesToArray(imageUrls),
+        imageUrls: images,
         liveUrl: emptyToNull(liveUrl),
         published,
       });
@@ -86,8 +85,8 @@ export function WorkForm({ initial, onSubmit, onCancel, pending }: Props) {
         <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} required />
       </Field>
 
-      <Field label="Image URLs" hint="One per line.">
-        <Textarea value={imageUrls} onChange={(e) => setImageUrls(e.target.value)} rows={3} />
+      <Field label="Images" hint="Upload images or paste URLs. The first is the cover.">
+        <ImageListField value={images} onChange={setImages} />
       </Field>
 
       <label className="flex items-center gap-2.5 rounded-token border border-border bg-bg-tint px-3.5 py-3">
