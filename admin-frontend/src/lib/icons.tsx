@@ -20,6 +20,7 @@ export type IconName =
   | 'settings'
   | 'activity'
   | 'chat'
+  | 'support'
   | 'logout';
 
 const PATHS: Record<IconName, React.ReactNode> = {
@@ -39,6 +40,7 @@ const PATHS: Record<IconName, React.ReactNode> = {
   logout: <path d="M8 4H4v12h4M13 13l3-3-3-3M16 10H8" />,
   activity: <path d="M3 10h3l2-5 4 10 2-5h3" />,
   chat: <path d="M17 12a2 2 0 0 1-2 2H7l-4 3V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />,
+  support: <path d="M4 12a6 6 0 0 1 12 0M4 12v3a1.5 1.5 0 0 0 3 0v-2a1.5 1.5 0 0 0-3 0M16 12v3a1.5 1.5 0 0 1-3 0v-2a1.5 1.5 0 0 1 3 0" />,
 };
 
 export function Icon({ name, className }: { name: IconName; className?: string }) {

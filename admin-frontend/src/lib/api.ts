@@ -79,6 +79,11 @@ import type {
   ChatMessage,
   ChatRead,
   OpenConversation,
+  AdminSupportSessionList,
+  AdminSupportSessionDetail,
+  AdminSupportSession,
+  SupportMessage,
+  UpdateSupportSession,
 } from '@haizo/types';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
@@ -330,6 +335,18 @@ export const api = {
       }),
     markRead: (conversationId: string) =>
       request<ChatRead>('POST', `/admin/chat/conversations/${conversationId}/read`),
+  },
+  support: {
+    sessions: (status?: string) =>
+      request<AdminSupportSessionList>(
+        'GET',
+        `/admin/support/sessions${status ? `?status=${status}` : ''}`,
+      ),
+    session: (id: string) => request<AdminSupportSessionDetail>('GET', `/admin/support/sessions/${id}`),
+    reply: (id: string, body: string, clientNonce: string) =>
+      request<SupportMessage>('POST', `/admin/support/sessions/${id}/messages`, { body, clientNonce }),
+    update: (id: string, input: UpdateSupportSession) =>
+      request<AdminSupportSession>('PATCH', `/admin/support/sessions/${id}`, input),
   },
   activity: {
     list: (page = 1, pageSize = 50) =>

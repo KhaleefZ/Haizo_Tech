@@ -43,6 +43,7 @@ export const NAV: NavGroup[] = [
       { label: 'Projects', href: '/projects', icon: 'projects' },
       { label: 'Team', href: '/team', icon: 'team', roles: ['SUPER_ADMIN'] },
       { label: 'Chat', href: '/chat', icon: 'chat' },
+      { label: 'Support', href: '/support', icon: 'support', roles: ['SUPER_ADMIN', 'MANAGER'] },
       { label: 'Announcements', href: '/announcements', icon: 'announcements' },
     ],
   },
