@@ -15,9 +15,13 @@ export function RotatingHeadline({ items }: { items: string[] }) {
 
   return (
     <h1 className="mt-4 text-display">
-      We build{' '}
-      <Typewriter phrases={phrases} className="text-brand-blue" />
-      <span className="sr-only">{items.join(', ')}.</span>
+      <Typewriter
+        prefix="We build "
+        phrases={phrases}
+        prefixClassName="text-text-strong"
+        className="text-brand-blue"
+      />
+      <span className="sr-only">We build {items.join(', ')}.</span>
     </h1>
   );
 }

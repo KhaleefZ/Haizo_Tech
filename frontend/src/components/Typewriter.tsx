@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react';
 
 /**
  * A "writing" (typewriter) effect. It types each phrase out character by
- * character, and — when given more than one — pauses, deletes, and moves to the
- * next, forever.
+ * character, and — when looping — pauses, deletes, and moves to the next.
+ *
+ * An optional `prefix` types out once on first load and then stays put while the
+ * phrases after it cycle (e.g. "We build " + rotating services), so the whole
+ * line writes itself on load but only the tail rotates afterwards.
  *
  * Accessibility & no-JS: the first phrase is rendered in full on the server, so a
  * crawler, a screen reader, or a failed bundle all see a complete heading. With
@@ -14,24 +17,28 @@ import { useEffect, useState } from 'react';
  */
 export function Typewriter({
   phrases,
+  prefix = '',
   loop,
   className,
+  prefixClassName,
   caretClassName = 'text-brand-blue',
   typeSpeed = 55,
   deleteSpeed = 28,
   pause = 1600,
 }: {
   phrases: string[];
+  prefix?: string;
   loop?: boolean;
   className?: string;
+  prefixClassName?: string;
   caretClassName?: string;
   typeSpeed?: number;
   deleteSpeed?: number;
   pause?: number;
 }) {
   const shouldLoop = loop ?? phrases.length > 1;
-  const first = phrases[0] ?? '';
-  const [text, setText] = useState(first);
+  const fullFor = (i: number) => prefix + (phrases[i] ?? '');
+  const [text, setText] = useState(fullFor(0));
   const [index, setIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const [animating, setAnimating] = useState(false);
@@ -47,7 +54,7 @@ export function Typewriter({
 
   useEffect(() => {
     if (!animating || done) return;
-    const full = phrases[index] ?? '';
+    const full = fullFor(index);
 
     // Reached the full phrase.
     if (!deleting && text === full) {
@@ -58,8 +65,8 @@ export function Typewriter({
       const t = setTimeout(() => setDeleting(true), pause);
       return () => clearTimeout(t);
     }
-    // Fully deleted → advance to the next phrase.
-    if (deleting && text === '') {
+    // Deleted back to the prefix → advance to the next phrase (prefix stays put).
+    if (deleting && text.length <= prefix.length) {
       const t = setTimeout(() => {
         setDeleting(false);
         setIndex((i) => (i + 1) % phrases.length);
@@ -72,11 +79,15 @@ export function Typewriter({
       deleting ? deleteSpeed : typeSpeed,
     );
     return () => clearTimeout(t);
-  }, [text, deleting, index, animating, done, phrases, shouldLoop, pause, typeSpeed, deleteSpeed]);
+  }, [text, deleting, index, animating, done, phrases, prefix, shouldLoop, pause, typeSpeed, deleteSpeed]);
+
+  const shownPrefix = text.slice(0, Math.min(text.length, prefix.length));
+  const shownSuffix = text.length > prefix.length ? text.slice(prefix.length) : '';
 
   return (
     <>
-      <span className={className}>{text}</span>
+      <span className={prefixClassName}>{shownPrefix}</span>
+      <span className={className}>{shownSuffix}</span>
       <span
         aria-hidden
         className={`ml-0.5 inline-block ${caretClassName} ${

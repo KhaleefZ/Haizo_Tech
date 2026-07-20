@@ -34,7 +34,7 @@ export function IndustryBand({ industries }: { industries: Industry[] }) {
       </div>
 
       <div className="mt-10 overflow-hidden" role="region" aria-label="Industries we build for">
-        <div className="flex w-max animate-[slide_44s_linear_infinite] gap-4 pr-4 hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
+        <div className="flex w-max animate-[slide_28s_linear_infinite] gap-4 pr-4 hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
           {track.map((ind, i) => (
             <article
               key={`${ind.id}-${i}`}
