@@ -88,18 +88,24 @@ was testable.
 
 ## Status
 
+Phases 0–8 are complete; Phase 9 (QA hardening, CI/CD and cutover) is next.
+
 | Phase | | |
 |---|---|---|
 | 0 | Design prototype | ✅ approved — see [`design/`](design/README.md) |
 | 1 | Monorepo, tokens, component library, contract spine | ✅ |
 | 2 | Public site + instant content revalidation | ✅ 16/16 e2e green; revalidation measured at 149ms |
-| 3 | Backend hardening, cookie auth, full contract | ⬅ next |
-| 4 | Admin rebuild (full ops suite, light theme) | — |
-| 5 | Notifications, activity feed, Cmd-K, digests | — |
-| 6 | Attachments to S3/R2, analytics | — |
-| 7 | Internal team chat | — |
-| 8 | Public visitor chat widget | — |
-| 9 | QA, CI/CD, cutover | — |
+| 3 | Backend hardening, cookie auth, full contract | ✅ HttpOnly cookie sessions, per-route authz gates, `tokenVersion` revocation |
+| 4 | Admin rebuild (full ops suite, light theme) | ✅ content CRUD, inquiries, clients, projects + kanban, team |
+| 5 | Notifications, activity feed, Cmd-K, digests | ✅ real-time bell, per-type prefs, daily email digest |
+| 6 | Analytics + uploads | ✅ page-view analytics; uploads on **local disk** (single VPS), not S3/R2 |
+| 7 | Internal team chat | ✅ DMs + channels, presence, typing, read receipts, @mentions, attachments |
+| 8 | Public visitor chat widget | ✅ isolated visitor token (separate key + `aud`), support inbox, offline→inquiry fallback |
+| 9 | QA, CI/CD, cutover | ⬅ next |
+
+**Testing.** 83 backend tests (Vitest + Supertest against a real Postgres), plus
+Playwright e2e including a two-browser team-chat test and a visitor-isolation
+security test. `pnpm verify` runs the full gate locally.
 
 Full plan, including the cutover runbook and risk register:
 `~/.claude/plans/analsye-all-the-files-toasty-naur.md`
