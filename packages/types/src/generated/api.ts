@@ -760,6 +760,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/support/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether staff are online for live chat right now */
+        get: operations["supportAvailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/support/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a visitor support session (public, anonymous)
+         * @description Creates a visitor + an OPEN support session and returns a bearer token
+         *     scoped to that session. An optional first message can be included.
+         */
+        post: operations["startSupportSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/support/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your support session's messages (visitor token) */
+        get: operations["getSupportThread"];
+        put?: never;
+        /** Send a message in your support session (visitor token) */
+        post: operations["postSupportMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/chat/contacts": {
         parameters: {
             query?: never;
@@ -815,6 +871,58 @@ export interface paths {
          *     conversation.
          */
         post: operations["adminMarkConversationRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/support/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The support inbox (visitor chat sessions) */
+        get: operations["adminListSupportSessions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/support/sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One support session with its messages */
+        get: operations["adminGetSupportSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Assign or change the status of a support session */
+        patch: operations["adminUpdateSupportSession"];
+        trace?: never;
+    };
+    "/admin/support/sessions/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reply to a visitor in a support session */
+        post: operations["adminReplySupport"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1654,6 +1762,75 @@ export interface components {
             /** @description A prior upload to attach to this message */
             attachmentId?: string;
             clientNonce?: string;
+        };
+        SupportMessage: {
+            id: string;
+            sessionId: string;
+            body: string;
+            /** @description visitor | staff */
+            from: string;
+            staffName?: string | null;
+            clientNonce?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        StartSupport: {
+            name?: string;
+            email?: string;
+            message?: string;
+        };
+        SupportStart: {
+            /** @description Visitor bearer token scoped to this session */
+            token: string;
+            sessionId: string;
+            status: string;
+            messages: components["schemas"]["SupportMessage"][];
+        };
+        SupportThread: {
+            sessionId: string;
+            status: string;
+            messages: components["schemas"]["SupportMessage"][];
+        };
+        PostSupportMessage: {
+            body: string;
+            clientNonce?: string;
+        };
+        SupportAvailability: {
+            online: boolean;
+        };
+        AdminSupportVisitor: {
+            id: string;
+            name?: string | null;
+            email?: string | null;
+        };
+        AdminSupportAssignee: {
+            id: string;
+            name: string;
+        };
+        AdminSupportSession: {
+            id: string;
+            status: string;
+            subject?: string | null;
+            visitor: components["schemas"]["AdminSupportVisitor"];
+            assignee?: components["schemas"]["AdminSupportAssignee"];
+            lastMessage?: components["schemas"]["SupportMessage"];
+            unreadCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AdminSupportSessionList: {
+            data: components["schemas"]["AdminSupportSession"][];
+        };
+        AdminSupportSessionDetail: {
+            session: components["schemas"]["AdminSupportSession"];
+            messages: components["schemas"]["SupportMessage"][];
+        };
+        UpdateSupportSession: {
+            /** @enum {string} */
+            status?: "OPEN" | "PENDING" | "RESOLVED";
+            assigneeId?: string | null;
         };
         RecordPageView: {
             path: string;
@@ -3568,6 +3745,104 @@ export interface operations {
             500: components["responses"]["InternalError"];
         };
     };
+    supportAvailability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Availability */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportAvailability"];
+                };
+            };
+            500: components["responses"]["InternalError"];
+        };
+    };
+    startSupportSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["StartSupport"];
+            };
+        };
+        responses: {
+            /** @description Session started */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportStart"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    getSupportThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The thread */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportThread"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    postSupportMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostSupportMessage"];
+            };
+        };
+        responses: {
+            /** @description The stored message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportMessage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
     adminListChatContacts: {
         parameters: {
             query?: never;
@@ -3672,6 +3947,120 @@ export interface operations {
                     "application/json": components["schemas"]["ChatRead"];
                 };
             };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminListSupportSessions: {
+        parameters: {
+            query?: {
+                status?: "OPEN" | "PENDING" | "RESOLVED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Support sessions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSupportSessionList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminGetSupportSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session detail */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSupportSessionDetail"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminUpdateSupportSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupportSession"];
+            };
+        };
+        responses: {
+            /** @description Updated session */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSupportSession"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    adminReplySupport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["IdParam"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostSupportMessage"];
+            };
+        };
+        responses: {
+            /** @description The stored reply */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupportMessage"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];

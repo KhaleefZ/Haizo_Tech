@@ -66,6 +66,12 @@ import {
   adminMarkConversationRead,
 } from '../controllers/chat.controller.js';
 import {
+  adminListSupportSessions,
+  adminGetSupportSession,
+  adminReplySupport,
+  adminUpdateSupportSession,
+} from '../controllers/support.controller.js';
+import {
   adminListNotifications,
   adminUnreadCount,
   adminMarkNotificationRead,
@@ -248,6 +254,16 @@ router.get('/admin/chat/conversations/:id/messages', ...authed, adminListMessage
 router.post('/admin/chat/conversations/:id/messages', ...selfMutate, adminPostMessage);
 // operationId: adminMarkConversationRead
 router.post('/admin/chat/conversations/:id/read', ...selfMutate, adminMarkConversationRead);
+
+// Support inbox — visitor chat handled by staff (managers + admins).
+// operationId: adminListSupportSessions
+router.get('/admin/support/sessions', ...manage, adminListSupportSessions);
+// operationId: adminGetSupportSession
+router.get('/admin/support/sessions/:id', ...manage, adminGetSupportSession);
+// operationId: adminUpdateSupportSession
+router.patch('/admin/support/sessions/:id', ...mutate, adminUpdateSupportSession);
+// operationId: adminReplySupport
+router.post('/admin/support/sessions/:id/messages', ...mutate, adminReplySupport);
 
 // operationId: adminGetDashboard
 router.get('/admin/dashboard', ...manage, adminGetDashboard);

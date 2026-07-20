@@ -95,6 +95,17 @@ export type ChatConversationList = Schemas['ChatConversationList'];
 export type ChatContactList = Schemas['ChatContactList'];
 export type ChatRead = Schemas['ChatRead'];
 export type ChatAttachment = Schemas['ChatAttachment'];
+
+export type SupportMessage = Schemas['SupportMessage'];
+export type StartSupport = Schemas['StartSupport'];
+export type SupportStart = Schemas['SupportStart'];
+export type SupportThread = Schemas['SupportThread'];
+export type PostSupportMessage = Schemas['PostSupportMessage'];
+export type SupportAvailability = Schemas['SupportAvailability'];
+export type AdminSupportSession = Schemas['AdminSupportSession'];
+export type AdminSupportSessionList = Schemas['AdminSupportSessionList'];
+export type AdminSupportSessionDetail = Schemas['AdminSupportSessionDetail'];
+export type UpdateSupportSession = Schemas['UpdateSupportSession'];
 export type OpenConversation = Schemas['OpenConversation'];
 export type PostMessage = Schemas['PostMessage'];
 export type AnalyticsSummary = Schemas['AnalyticsSummary'];

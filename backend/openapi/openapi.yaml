@@ -1225,6 +1225,75 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '500': { $ref: '#/components/responses/InternalError' }
 
+  /support/availability:
+    get:
+      operationId: supportAvailability
+      summary: Whether staff are online for live chat right now
+      tags: [Support]
+      responses:
+        '200':
+          description: Availability
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportAvailability' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /support/session:
+    post:
+      operationId: startSupportSession
+      summary: Start a visitor support session (public, anonymous)
+      description: |
+        Creates a visitor + an OPEN support session and returns a bearer token
+        scoped to that session. An optional first message can be included.
+      tags: [Support]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StartSupport' }
+      responses:
+        '200':
+          description: Session started
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportStart' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /support/messages:
+    get:
+      operationId: getSupportThread
+      summary: Your support session's messages (visitor token)
+      tags: [Support]
+      responses:
+        '200':
+          description: The thread
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportThread' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    post:
+      operationId: postSupportMessage
+      summary: Send a message in your support session (visitor token)
+      tags: [Support]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostSupportMessage' }
+      responses:
+        '200':
+          description: The stored message
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportMessage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
   /admin/chat/contacts:
     get:
       operationId: adminListChatContacts
@@ -1309,6 +1378,91 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ChatRead' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/support/sessions:
+    get:
+      operationId: adminListSupportSessions
+      summary: The support inbox (visitor chat sessions)
+      tags: [Admin]
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema: { type: string, enum: [OPEN, PENDING, RESOLVED] }
+      responses:
+        '200':
+          description: Support sessions
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSupportSessionList' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/support/sessions/{id}:
+    get:
+      operationId: adminGetSupportSession
+      summary: One support session with its messages
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Session detail
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSupportSessionDetail' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+    patch:
+      operationId: adminUpdateSupportSession
+      summary: Assign or change the status of a support session
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateSupportSession' }
+      responses:
+        '200':
+          description: Updated session
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminSupportSession' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /admin/support/sessions/{id}/messages:
+    post:
+      operationId: adminReplySupport
+      summary: Reply to a visitor in a support session
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostSupportMessage' }
+      responses:
+        '200':
+          description: The stored reply
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SupportMessage' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
@@ -2714,6 +2868,128 @@ components:
         body: { type: string, minLength: 0, maxLength: 4000 }
         attachmentId: { type: string, description: A prior upload to attach to this message }
         clientNonce: { type: string, maxLength: 100 }
+
+    # --- Phase 8: visitor support ---
+    SupportMessage:
+      type: object
+      required: [id, sessionId, body, from, createdAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        sessionId: { type: string }
+        body: { type: string }
+        from: { type: string, description: visitor | staff }
+        staffName: { type: string, nullable: true }
+        clientNonce: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+
+    StartSupport:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string, maxLength: 120 }
+        email: { type: string, maxLength: 200 }
+        message: { type: string, maxLength: 4000 }
+
+    SupportStart:
+      type: object
+      required: [token, sessionId, status, messages]
+      additionalProperties: false
+      properties:
+        token: { type: string, description: Visitor bearer token scoped to this session }
+        sessionId: { type: string }
+        status: { type: string }
+        messages:
+          type: array
+          items: { $ref: '#/components/schemas/SupportMessage' }
+
+    SupportThread:
+      type: object
+      required: [sessionId, status, messages]
+      additionalProperties: false
+      properties:
+        sessionId: { type: string }
+        status: { type: string }
+        messages:
+          type: array
+          items: { $ref: '#/components/schemas/SupportMessage' }
+
+    PostSupportMessage:
+      type: object
+      required: [body]
+      additionalProperties: false
+      properties:
+        body: { type: string, minLength: 1, maxLength: 4000 }
+        clientNonce: { type: string, maxLength: 100 }
+
+    SupportAvailability:
+      type: object
+      required: [online]
+      additionalProperties: false
+      properties:
+        online: { type: boolean }
+
+    AdminSupportVisitor:
+      type: object
+      required: [id]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string, nullable: true }
+        email: { type: string, nullable: true }
+
+    AdminSupportAssignee:
+      type: object
+      required: [id, name]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        name: { type: string }
+
+    AdminSupportSession:
+      type: object
+      required: [id, status, visitor, unreadCount, createdAt, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { type: string }
+        status: { type: string }
+        subject: { type: string, nullable: true }
+        visitor: { $ref: '#/components/schemas/AdminSupportVisitor' }
+        assignee:
+          $ref: '#/components/schemas/AdminSupportAssignee'
+          # Optional — omitted when unassigned.
+        lastMessage:
+          $ref: '#/components/schemas/SupportMessage'
+          # Optional — omitted when the session has no messages.
+        unreadCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AdminSupportSessionList:
+      type: object
+      required: [data]
+      additionalProperties: false
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AdminSupportSession' }
+
+    AdminSupportSessionDetail:
+      type: object
+      required: [session, messages]
+      additionalProperties: false
+      properties:
+        session: { $ref: '#/components/schemas/AdminSupportSession' }
+        messages:
+          type: array
+          items: { $ref: '#/components/schemas/SupportMessage' }
+
+    UpdateSupportSession:
+      type: object
+      additionalProperties: false
+      properties:
+        status: { type: string, enum: [OPEN, PENDING, RESOLVED] }
+        assigneeId: { type: string, nullable: true }
 
     RecordPageView:
       type: object

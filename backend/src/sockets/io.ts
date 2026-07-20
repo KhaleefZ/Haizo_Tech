@@ -32,3 +32,24 @@ export function emitToConversation(conversationId: string, event: string, payloa
 export function joinUserToConversation(userId: string, conversationId: string): void {
   void io?.in(`user_${userId}`).socketsJoin(conversationRoom(conversationId));
 }
+
+// --- Phase 8: visitor support ---
+
+/** Room for one support session. A visitor socket joins ONLY its own. */
+export const supportRoom = (sessionId: string): string => `support_${sessionId}`;
+
+/** Room every staff socket joins, so the support inbox updates live. */
+export const SUPPORT_AGENTS_ROOM = 'support_agents';
+
+/**
+ * Emit a support message to the visitor (their session room) AND every staff
+ * agent (inbox room) in a single call, so a socket in both rooms receives it once.
+ */
+export function emitSupportMessage(sessionId: string, event: string, payload: unknown): void {
+  io?.to(supportRoom(sessionId)).to(SUPPORT_AGENTS_ROOM).emit(event, payload);
+}
+
+/** Emit an inbox-level event (new session, status change) to all staff. */
+export function emitToSupportAgents(event: string, payload: unknown): void {
+  io?.to(SUPPORT_AGENTS_ROOM).emit(event, payload);
+}

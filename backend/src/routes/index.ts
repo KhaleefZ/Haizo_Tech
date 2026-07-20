@@ -10,12 +10,14 @@ import healthRoutes from './health.routes.js';
 import contentRoutes from './content.routes.js';
 import authRoutes from './auth.routes.js';
 import adminRoutes from './admin.routes.js';
+import supportRoutes from './support.routes.js';
 
 const router: ExpressRouter = Router();
 
 router.use(healthRoutes);
 router.use(contentRoutes);
 router.use(authRoutes);
+router.use(supportRoutes);
 router.use(adminRoutes);
 
 export default router;

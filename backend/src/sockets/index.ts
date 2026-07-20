@@ -16,14 +16,19 @@ import type { Server as HttpServer } from 'node:http';
 import { config } from '../config/env.js';
 import { logger } from '../lib/logger.js';
 import { authenticateHandshake, SocketAuthError } from './auth.js';
-import { setIo, conversationRoom } from './io.js';
+import { authenticateVisitorHandshake, VisitorSocketAuthError } from './visitorAuth.js';
+import { setIo, conversationRoom, supportRoom, SUPPORT_AGENTS_ROOM } from './io.js';
 import { markOnline, markOffline, onlineUserIds } from './presence.js';
 import { prisma } from '../lib/prisma.js';
 import type { AuthUser } from '../middleware/auth.js';
 
 interface SocketData {
-  user: AuthUser;
-  expiresAt: number;
+  kind: 'staff' | 'visitor';
+  // Staff sockets.
+  user?: AuthUser;
+  expiresAt?: number;
+  // Visitor sockets.
+  visitor?: { visitorId: string; sessionId: string };
 }
 
 const EXPIRY_SWEEP_MS = 60_000;
@@ -36,9 +41,27 @@ export function attachSockets(httpServer: HttpServer): Server {
   setIo(io);
 
   io.use((socket, next) => {
+    const data = socket.data as SocketData;
+
+    // A visitor presents `auth: { visitorToken }` and NEVER a cookie. Route it to
+    // the visitor verifier (separate key + audience) — it can never be mistaken
+    // for a staff session.
+    const auth = socket.handshake.auth as { visitorToken?: string } | undefined;
+    if (auth?.visitorToken) {
+      try {
+        data.kind = 'visitor';
+        data.visitor = authenticateVisitorHandshake(socket.handshake);
+        return next();
+      } catch (err) {
+        if (err instanceof VisitorSocketAuthError) return next(new Error('unauthorized'));
+        logger.error({ err }, 'Visitor socket auth failed unexpectedly');
+        return next(new Error('unauthorized'));
+      }
+    }
+
     authenticateHandshake(socket.handshake)
       .then(({ user, expiresAt }) => {
-        const data = socket.data as SocketData;
+        data.kind = 'staff';
         data.user = user;
         data.expiresAt = expiresAt;
         next();
@@ -53,10 +76,22 @@ export function attachSockets(httpServer: HttpServer): Server {
   });
 
   io.on('connection', (socket) => {
-    const { user } = socket.data as SocketData;
+    const data = socket.data as SocketData;
+
+    // Visitors get exactly ONE room — their own support session — and nothing
+    // else. No user_/conv_/presence/typing. This is the whole isolation guarantee.
+    if (data.kind === 'visitor' && data.visitor) {
+      void socket.join(supportRoom(data.visitor.sessionId));
+      logger.debug({ sessionId: data.visitor.sessionId, socketId: socket.id }, 'visitor socket connected');
+      return;
+    }
+
+    const user = data.user!;
     // Personal room, so a later phase can target a specific user without tracking
     // socket ids. Disjoint from the chat/presence prefixes reserved in the plan.
     void socket.join(`user_${user.id}`);
+    // Staff watch the support inbox in real time.
+    void socket.join(SUPPORT_AGENTS_ROOM);
     logger.debug({ userId: user.id, socketId: socket.id }, 'socket connected');
 
     // Join every conversation the user belongs to, so chat messages reach them in

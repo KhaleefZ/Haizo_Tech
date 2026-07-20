@@ -82,9 +82,14 @@ const PUBLIC_ROUTES = new Set([
   'POST /inquiries',
   'POST /analytics/pageview',
   'POST /auth/login',
+  // Public visitor support: anonymous by design.
+  'GET /support/availability',
+  'POST /support/session',
 ]);
 
-const GATE_NAMES = ['requireAuth', 'requireRole', 'requireCsrf'];
+// requireVisitor is a real gate — it verifies a scoped visitor bearer token, so
+// the visitor message routes count as gated, not open.
+const GATE_NAMES = ['requireAuth', 'requireRole', 'requireCsrf', 'requireVisitor'];
 
 const mounted = walk(routesRouter);
 
