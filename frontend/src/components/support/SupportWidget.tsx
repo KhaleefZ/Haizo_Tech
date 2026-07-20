@@ -9,6 +9,7 @@ import {
   getToken,
   postMessage,
   startSession,
+  submitInquiry,
   supportApiOrigin,
 } from '../../lib/support';
 
@@ -23,9 +24,18 @@ export default function SupportWidget() {
   const [online, setOnline] = React.useState<boolean | null>(null);
   const [sending, setSending] = React.useState(false);
   const [unread, setUnread] = React.useState(0);
+  // A live session exists once the visitor has chatted (token stored).
+  const [started, setStarted] = React.useState(false);
+  const [inquiry, setInquiry] = React.useState({ name: '', email: '', message: '' });
+  const [inquirySent, setInquirySent] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
   const socketRef = React.useRef<Socket | null>(null);
   const openRef = React.useRef(open);
   const bottomRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setStarted(Boolean(getToken()));
+  }, []);
 
   React.useEffect(() => {
     openRef.current = open;
@@ -86,6 +96,7 @@ export default function SupportWidget() {
       if (!getToken()) {
         const start = await startSession({ message: body });
         setMessages(start.messages);
+        setStarted(true);
         connectSocket();
       } else {
         const m = await postMessage(body, crypto.randomUUID());
@@ -98,6 +109,22 @@ export default function SupportWidget() {
       setSending(false);
     }
   }
+
+  async function sendInquiry(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting || !inquiry.name.trim() || !inquiry.email.trim() || !inquiry.message.trim()) return;
+    setSubmitting(true);
+    const ok = await submitInquiry({
+      name: inquiry.name.trim(),
+      email: inquiry.email.trim(),
+      message: inquiry.message.trim(),
+    });
+    setSubmitting(false);
+    if (ok) setInquirySent(true);
+  }
+
+  // Offline + no live session yet → collect contact details instead of chatting.
+  const showOfflineForm = !started && online === false && !inquirySent;
 
   return (
     <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
@@ -124,6 +151,57 @@ export default function SupportWidget() {
             </button>
           </div>
 
+          {inquirySent ? (
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 px-8 text-center">
+              <span className="grid size-12 place-items-center rounded-full bg-green-100 text-green-600">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-6">
+                  <path d="m5 13 4 4L19 7" />
+                </svg>
+              </span>
+              <p className="font-semibold text-text-strong">Thanks — we’ll be in touch</p>
+              <p className="text-sm text-text-muted">We’ll reply to {inquiry.email} shortly.</p>
+            </div>
+          ) : showOfflineForm ? (
+            <form onSubmit={sendInquiry} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
+              <p className="text-sm text-text-muted">
+                We’re away right now — leave your details and we’ll get back to you by email.
+              </p>
+              <input
+                value={inquiry.name}
+                onChange={(e) => setInquiry((f) => ({ ...f, name: e.target.value }))}
+                placeholder="Your name"
+                aria-label="Your name"
+                required
+                className="rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-text-strong outline-none placeholder:text-text-muted focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
+              />
+              <input
+                type="email"
+                value={inquiry.email}
+                onChange={(e) => setInquiry((f) => ({ ...f, email: e.target.value }))}
+                placeholder="Email address"
+                aria-label="Email address"
+                required
+                className="rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-text-strong outline-none placeholder:text-text-muted focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
+              />
+              <textarea
+                value={inquiry.message}
+                onChange={(e) => setInquiry((f) => ({ ...f, message: e.target.value }))}
+                placeholder="How can we help?"
+                aria-label="How can we help?"
+                rows={4}
+                required
+                className="flex-1 resize-none rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-text-strong outline-none placeholder:text-text-muted focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
+              />
+              <button
+                type="submit"
+                disabled={submitting || !inquiry.name.trim() || !inquiry.email.trim() || !inquiry.message.trim()}
+                className="rounded-xl bg-brand-blue py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+              >
+                {submitting ? 'Sending…' : 'Send message'}
+              </button>
+            </form>
+          ) : (
+            <>
           {/* Messages */}
           <div className="flex-1 space-y-2.5 overflow-y-auto bg-bg-tint/30 px-4 py-4">
             {messages.length === 0 ? (
@@ -182,6 +260,8 @@ export default function SupportWidget() {
               </button>
             </div>
           </form>
+            </>
+          )}
         </div>
       ) : null}
 

@@ -17,6 +17,7 @@ import { prisma } from '../lib/prisma.js';
 import { hashPassword } from '../lib/auth/password.js';
 import { signVisitorToken, verifyVisitorToken } from '../lib/auth/visitorTokens.js';
 import { signAccessToken, verifyAccessToken } from '../lib/auth/tokens.js';
+import { runSupportSweep } from '../jobs/supportSweep.js';
 
 const STAFF = { email: 'phase8-agent@haizo.tech', password: 'Sup3rSecret!', name: 'Support Agent' };
 
@@ -84,6 +85,8 @@ afterAll(async () => {
     await prisma.supportSession.deleteMany({ where: { id: { in: [...sessionIds] } } });
     await prisma.visitor.deleteMany({ where: { id: { in: sessions.map((s) => s.visitorId) } } });
   }
+  // Inquiries spilled by the sweep test use a placeholder .local address.
+  await prisma.inquiry.deleteMany({ where: { email: { endsWith: '@haizotech.local' } } });
   await prisma.user.deleteMany({ where: { email: STAFF.email } });
 });
 
@@ -192,5 +195,41 @@ describe('support chat end to end', () => {
 
   it('a visitor message with no session token is rejected', async () => {
     expect((await request(app).post('/v1/support/messages').send({ body: 'hi' })).status).toBe(401);
+  });
+});
+
+describe('unanswered sessions spill into inquiries', () => {
+  it('turns an idle, unanswered session into an inquiry exactly once', async () => {
+    const start = await startSession({ message: 'Are you hiring? (unanswered test)' });
+    // Age it past the idle window (Prisma's @updatedAt blocks a normal set).
+    await prisma.$executeRaw`UPDATE "SupportSession" SET "updatedAt" = ${new Date(Date.now() - 30 * 60_000).toISOString()}::timestamp WHERE id = ${start.sessionId}`;
+
+    const spilled = await runSupportSweep(15);
+    expect(spilled).toBeGreaterThanOrEqual(1);
+
+    const session = await prisma.supportSession.findUnique({ where: { id: start.sessionId } });
+    expect(session?.inquiryId).toBeTruthy();
+    const inquiry = await prisma.inquiry.findUnique({ where: { id: session!.inquiryId! } });
+    expect(inquiry?.message).toContain('Are you hiring?');
+
+    // A second sweep must not spill it again.
+    await prisma.$executeRaw`UPDATE "SupportSession" SET "updatedAt" = ${new Date(Date.now() - 30 * 60_000).toISOString()}::timestamp WHERE id = ${start.sessionId}`;
+    await runSupportSweep(15);
+    const inquiries = await prisma.inquiry.count({ where: { message: { contains: 'Are you hiring?' } } });
+    expect(inquiries).toBe(1);
+  });
+
+  it('leaves an answered session alone', async () => {
+    const start = await startSession({ message: 'quick question' });
+    await request(app)
+      .post(`/v1/admin/support/sessions/${start.sessionId}/messages`)
+      .set('Cookie', staffCookie)
+      .set('X-CSRF-Token', staffCsrf)
+      .send({ body: 'On it!' });
+    await prisma.$executeRaw`UPDATE "SupportSession" SET "updatedAt" = ${new Date(Date.now() - 30 * 60_000).toISOString()}::timestamp WHERE id = ${start.sessionId}`;
+
+    await runSupportSweep(15);
+    const session = await prisma.supportSession.findUnique({ where: { id: start.sessionId } });
+    expect(session?.inquiryId).toBeNull();
   });
 });

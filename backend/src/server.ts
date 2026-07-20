@@ -10,6 +10,7 @@ import { prisma } from './lib/prisma.js';
 import cron from 'node-cron';
 import { attachSockets } from './sockets/index.js';
 import { runDigest } from './jobs/digest.js';
+import { runSupportSweep } from './jobs/supportSweep.js';
 import { analyticsService } from './services/analytics.service.js';
 
 const httpServer = createServer(createApp());
@@ -26,6 +27,12 @@ cron.schedule('0 8 * * *', () => {
 // Nightly analytics rollup at 00:15 — finalise yesterday, refresh today.
 cron.schedule('15 0 * * *', () => {
   void analyticsService.nightlyRollup();
+});
+
+// Every 5 minutes, spill unanswered visitor chats into inquiries so a question
+// asked while everyone was away is never lost.
+cron.schedule('*/5 * * * *', () => {
+  void runSupportSweep();
 });
 
 httpServer.listen(config.port, () => {

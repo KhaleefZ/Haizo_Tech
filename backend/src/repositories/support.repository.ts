@@ -86,6 +86,27 @@ export const supportRepository = {
     return prisma.supportSession.update({ where: { id }, data: { lastStaffReadAt: new Date() } });
   },
 
+  /**
+   * OPEN sessions that have a visitor message, NO staff reply, aren't already
+   * spilled to an Inquiry, and have been quiet since `idleBefore` — the ones a
+   * visitor asked something and nobody answered.
+   */
+  findUnanswered(idleBefore: Date) {
+    return prisma.supportSession.findMany({
+      where: {
+        status: 'OPEN',
+        inquiryId: null,
+        updatedAt: { lt: idleBefore },
+        messages: { some: { staffId: null }, none: { staffId: { not: null } } },
+      },
+      include: { visitor: true, messages: { orderBy: { createdAt: 'asc' }, take: 50 } },
+    });
+  },
+
+  markSpilled(sessionId: string, inquiryId: string) {
+    return prisma.supportSession.update({ where: { id: sessionId }, data: { inquiryId } });
+  },
+
   /** Visitor messages the staff side hasn't seen. */
   countUnreadForStaff(sessionId: string, lastStaffReadAt: Date | null) {
     return prisma.supportMessage.count({

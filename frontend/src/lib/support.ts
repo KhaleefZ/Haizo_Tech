@@ -79,6 +79,23 @@ export async function getThread(): Promise<SupportThread | null> {
   }
 }
 
+/**
+ * Offline-hours fallback: when no agent is around, the widget collects contact
+ * details and files them as a normal Inquiry so the question isn't lost.
+ */
+export async function submitInquiry(input: { name: string; email: string; message: string }): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE}/inquiries`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({ ...input, consent: true }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function postMessage(body: string, clientNonce: string): Promise<SupportMessage> {
   const token = getToken();
   if (!token) throw new Error('No support session');
